@@ -1,0 +1,94 @@
+﻿@model IEnumerable<WareHouseManger.Models.EF.Shop_Good>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <h1 class="page-header">Vật phẩm</h1>
+
+
+    <p>
+        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới vật phẩm</i></a>
+    </p>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="table-responsive">
+
+
+                <table class="table table-bordered table-sm table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                Mã vật phẩm
+                            </th>
+                            <th>
+                                Tên vật phẩm
+                            </th>
+                            <th>
+                                Loại sản phẩm
+                            </th>
+                            <th>
+                                Nhà sản xuất
+                            </th>
+                            <th>
+                                Số lượng
+                            </th>
+                            <th>
+                                ĐVT
+                            </th>
+                            <th>
+                                Số lượng tối thiểu
+                            </th>
+                            <th>
+                                Giá bán
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TemplateID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Category.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Producer.Name)
+                            </td>
+                            @*<td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>*@
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Count)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Unit.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CountMin)
+                            </td>
+                            <td>
+                                @item.Price
+                            </td>
+                            <td class="text-nowrap text-center" width="250px">
+                                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.TemplateID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>
+                                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.TemplateID"><i class="fa fa-file"> Chi tiết</i></a>
+                                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.TemplateID"><i class="fa fa-trash-o"> Xóa</i></a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

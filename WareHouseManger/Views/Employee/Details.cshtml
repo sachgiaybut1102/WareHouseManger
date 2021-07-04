@@ -1,0 +1,50 @@
+﻿@model WareHouseManger.Models.EF.Employee
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>Chi tiết</h1>
+            <h4>Nhân viên</h4>
+            <hr />
+            <div class="panel panel-default ">
+                <div class="panel-heading">Thông tin nhân viên</div>
+                <div class="panel-body">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Tên nhân viên</label>
+                        <input asp-for="Name" class="form-control" readonly />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber" class="control-label">Số điện thoại</label>
+                        <input asp-for="PhoneNumber" class="form-control" readonly />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Address" class="control-label">Địa chỉ</label>
+                        <input asp-for="Address" class="form-control" readonly />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="EMail" class="control-label"></label>
+                        <input asp-for="EMail" class="form-control" readonly />
+                        <span asp-validation-for="EMail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                    </div>
+
+                </div>
+                <div class="panel-footer text-right">
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.EmployeeID">Chỉnh sửa</a>
+                    <a class="btn btn-default" asp-action="Index">Quay lại</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
