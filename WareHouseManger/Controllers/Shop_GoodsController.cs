@@ -78,7 +78,7 @@ namespace WareHouseManger.Controllers
 
                 string templateID = category.SortName.Trim();
 
-                while(length > 0)
+                while (length > 0)
                 {
                     templateID += "0";
                     length--;
@@ -190,6 +190,30 @@ namespace WareHouseManger.Controllers
         private bool Shop_GoodExists(string id)
         {
             return _context.Shop_Goods.Any(e => e.TemplateID == id);
+        }
+
+
+        [HttpGet]
+        public async Task<JsonResult> GetAnother(string templateIDs, int categoryID)
+        {
+            var templates = await _context.Shop_Goods
+                .Where(t => !templateIDs.Contains(t.TemplateID) && t.CategoryID == categoryID)
+                .Include(t => t.Category)
+                .Include(t => t.Unit)
+                .Include(t => t.Producer)
+                .ToArrayAsync();
+
+            return Json(new
+            {
+                data = templates.Select(t => new
+                {
+                    id = t.TemplateID,
+                    name = t.Name,
+                    category = t.Category.Name,
+                    unit = t.Unit.Name,
+                    producer = t.Producer.Name
+                })
+            });
         }
     }
 }

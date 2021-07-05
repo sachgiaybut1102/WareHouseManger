@@ -271,10 +271,10 @@
                             <a href="#"><i class="fa fa-info-circle fa-fw"></i> Thông tin cá nhân<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a asp-controller="Employee">Nhân viên</a>
+                                    <a  href="Employee">Nhân viên</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Customer">Khách hàng</a>
+                                    <a  href="Customer">Khách hàng</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -283,19 +283,19 @@
                             <a href="#"><i class="fa fa-wrench fa-fw"></i> Danh mục<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a asp-controller="Producer">Nhà sản xuất</a>
+                                    <a  href="Producer">Nhà sản xuất</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Supplier">Nhà cung cấp</a>
+                                    <a  href="Supplier">Nhà cung cấp</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Shop_Goods_Category">Loại sản phẩm</a>
+                                    <a  href="Shop_Goods_Category">Loại sản phẩm</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Shop_Goods_Unit">Đơn vị tính</a>
+                                    <a  href="Shop_Goods_Unit">Đơn vị tính</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Shop_Goods">Hàng hóa</a>
+                                    <a  href="Shop_Goods">Hàng hóa</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -304,10 +304,10 @@
                             <a href="#"><i class="fa fa-shopping-cart fa-fw"></i> Nhập - xuất hàng<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a asp-controller="Shop_Goods_Receipt">Nhập hàng</a>
+                                    <a  href="Shop_Goods_Receipt">Nhập hàng</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Shop_Goods_Issues">Xuất hàng</a>
+                                    <a  href="Shop_Goods_Issues">Xuất hàng</a>
                                 </li>
                                 <!--<li>
             <a href="#">Third Level <span class="fa arrow"></span></a>
@@ -331,16 +331,16 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a asp-controller="Shop_Goods_StockTake"><i class="fa fa-wrench fa-fw"></i> Kiểm kê hàng hóa</a>
+                            <a  href="Shop_Goods_StockTake"><i class="fa fa-wrench fa-fw"></i> Kiểm kê hàng hóa</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-wrench fa-fw"></i> Quyết toán<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a asp-controller="FinalSettlement_Customer">Khách hàng</a>
+                                    <a  href="FinalSettlement_Customer">Khách hàng</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="FinalSettlement_Suplier">Nhà cung cấp</a>
+                                    <a  href="FinalSettlement_Suplier">Nhà cung cấp</a>
                                 </li>                             
                             </ul>
                             <!-- /.nav-second-level -->
@@ -366,14 +366,14 @@
     <script src="~/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
     <!-- Page-Level Plugin Scripts - Dashboard -->
-    <script src="~/js/plugins/morris/raphael-2.1.0.min.js"></script>
-    <script src="~/js/plugins/morris/morris.js"></script>
+    <!--<script src="~/js/plugins/morris/raphael-2.1.0.min.js"></script>
+    <script src="~/js/plugins/morris/morris.js"></script>-->
 
     <!-- SB Admin Scripts - Include with every page -->
     <script src="~/js/sb-admin.js"></script>
 
     <!-- Page-Level Demo Scripts - Dashboard - Use for reference -->
-    <script src="~/js/demo/dashboard-demo.js"></script>
+    <!--<script src="~/js/demo/dashboard-demo.js"></script>-->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

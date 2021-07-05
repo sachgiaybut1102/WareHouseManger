@@ -48,9 +48,16 @@ namespace WareHouseManger.Controllers
         // GET: Shop_Goods_Receipt/Create
         public IActionResult Create()
         {
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "EmployeeID");
-            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "SupplierID");
-            return View();
+            var model = new Shop_Goods_Receipt()
+            {
+                DateCreated = DateTime.Now
+            };
+
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name");
+            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name");
+            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "Name");
+
+            return View(model);
         }
 
         // POST: Shop_Goods_Receipt/Create
@@ -66,8 +73,8 @@ namespace WareHouseManger.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "EmployeeID", shop_Goods_Receipt.EmployeeID);
-            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "SupplierID", shop_Goods_Receipt.SupplierID);
+            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name", shop_Goods_Receipt.EmployeeID);
+            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "Name", shop_Goods_Receipt.SupplierID);
             return View(shop_Goods_Receipt);
         }
 
@@ -84,8 +91,8 @@ namespace WareHouseManger.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "EmployeeID", shop_Goods_Receipt.EmployeeID);
-            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "SupplierID", shop_Goods_Receipt.SupplierID);
+            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name", shop_Goods_Receipt.EmployeeID);
+            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "Name", shop_Goods_Receipt.SupplierID);
             return View(shop_Goods_Receipt);
         }
 
@@ -121,8 +128,8 @@ namespace WareHouseManger.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "EmployeeID", shop_Goods_Receipt.EmployeeID);
-            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "SupplierID", shop_Goods_Receipt.SupplierID);
+            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name", shop_Goods_Receipt.EmployeeID);
+            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "Name", shop_Goods_Receipt.SupplierID);
             return View(shop_Goods_Receipt);
         }
 
