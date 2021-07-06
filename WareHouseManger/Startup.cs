@@ -91,3 +91,5 @@ namespace WareHouseManger
         }
     }
 }
+
+//Scaffold-DbContext "Data Source=DESKTOP-Q7IUOUM;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models\EF -f -UseDatabaseNames 

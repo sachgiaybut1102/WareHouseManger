@@ -4,56 +4,69 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="row">
+    <h1 class="page-header">Phiếu nhập xuất</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Remark)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Total)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EmployeeID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Customer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Remark)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Total)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmployeeID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustomerID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.GoodsIssueID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.GoodsIssueID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.GoodsIssueID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+    <p>
+        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+    </p>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="table-responsive">
+
+
+                <table class="table table-bordered table-sm table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                Số PX
+                            </th>
+                            <th class="text-center">
+                                Ngày lập
+                            </th>
+                            <th>
+                                Tên khách hàng
+                            </th>
+                            <th>
+                                Nhân viên lập
+                            </th>
+                            <th class="text-right">
+                                Tổng tiền
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.GoodsIssueID
+                                </td>
+                                <td class="text-center">
+                                    @item.DateCreated.Value.ToString("dd/MM/yyyy")
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Customer.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Employee.Name)
+                                </td>
+                                <td class="text-right">
+                                    @string.Format("{0:N}", item.Total)
+                                </td>
+                                <td class="text-nowrap text-center" width="150px">
+                                    @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
+                                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.GoodsIssueID"><i class="fa fa-file"> Chi tiết</i></a>
+                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.GoodsIssueID"><i class="fa fa-trash-o"> Xóa</i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

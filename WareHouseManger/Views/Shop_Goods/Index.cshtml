@@ -32,16 +32,16 @@
                             <th>
                                 Nhà sản xuất
                             </th>
-                            <th>
+                            <th class="text-center">
                                 Số lượng
                             </th>
-                            <th>
+                            <th class="text-center">
                                 ĐVT
                             </th>
-                            <th>
-                                Số lượng tối thiểu
+                            <th class="text-center">
+                                SL tối thiểu
                             </th>
-                            <th>
+                            <th class="text-center">
                                 Giá bán
                             </th>
                             <th></th>
@@ -67,17 +67,17 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>*@
 
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Count)
+                            <td class="text-right">
+                                @string.Format("{0:N}", item.Count)
                             </td>
-                            <td>
+                            <td class="text-center">
                                 @Html.DisplayFor(modelItem => item.Unit.Name)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CountMin)
+                            <td class="text-right">
+                                @string.Format("{0:N}", item.CountMin)
                             </td>
-                            <td>
-                                @item.Price
+                            <td class="text-right">
+                                @string.Format("{0:N}", item.Price)
                             </td>
                             <td class="text-nowrap text-center" width="250px">
                                 <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.TemplateID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>

@@ -1,48 +1,101 @@
 ﻿@model WareHouseManger.Models.EF.Shop_Goods_Issue
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Shop_Goods_Issue</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateCreated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Remark)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Remark)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Total)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Total)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EmployeeID)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EmployeeID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.CustomerID)
-        </dd>
-    </dl>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-md-offset-0">
+            <h1>Chi tiết</h1>
+            <h4>Phiếu nhập - @Model.GoodsIssueID</h4>
+            <hr />
+            <div class="panel panel-default ">
+                <div class="panel-heading">Thông tin phiếu nhập</div>
+                <div class="panel-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Thông tin chung</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label asp-for="DateCreated" class="control-label">Ngày lập</label>
+                                    <input type="text" class="form-control bg-white" value="@Model.DateCreated.Value.ToString("dd/MM/yyyy")" readonly />
+                                    <span asp-validation-for="DateCreated" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label asp-for="CustomerID" class="control-label">Khách hàng</label>
+                                    <input type="text" class="form-control" value="@Model.Customer.Name" readonly />
+                                    <span asp-validation-for="CustomerID" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label asp-for="EmployeeID" class="control-label">Khách hàng</label>
+                                    <input type="text" class="form-control" value="@Model.Employee.Name" readonly />
+                                    <span asp-validation-for="EmployeeID" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Remark" class="control-label">Ghi chú</label>
+                                <textarea type="text" class="form-control" rows="5" readonly></textarea>
+                                <span asp-validation-for="Remark" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Danh sách chi tiết hàng hóa</div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table id="tb-shopgoods" class="table table-bordered table-sm table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã hàng hóa</th>
+                                            <th>Tên hàng hóa</th>
+                                            <th>Loại hàng hóa</th>
+                                            <th>Nhà sản xuất</th>
+                                            <th>Đơn vị tính</th>
+                                            <th class="text-center">Số lượng</th>
+                                            <th class="text-center">Đơn giá</th>
+                                            <th class="text-center">Tổng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            List<WareHouseManger.Models.EF.Shop_Goods_Issues_Detail> shop_Goods_Issues_Details = Model.Shop_Goods_Issues_Details.ToList();
+
+                                            foreach (WareHouseManger.Models.EF.Shop_Goods_Issues_Detail item in shop_Goods_Issues_Details)
+                                            {
+                                                <tr>
+                                                    <td>@item.TemplateID</td>
+                                                    <td>@item.Template.Name</td>
+                                                    <td>@item.Template.Category.Name</td>
+                                                    <td>@item.Template.Producer.Name</td>
+                                                    <td>@item.Template.Unit.Name</td>
+                                                    <td class="text-right">@{ var count = string.Format("{0:N}", item.Count); }@count</td>
+                                                    <td class="text-right">@{ var unitPrice = string.Format("{0:N}", item.UnitPrice); }@unitPrice</td>
+                                                    <td class="text-right">@{ var total = string.Format("{0:N}", (item.Count * item.UnitPrice));}@total</td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <th colspan="8" class="text-right"><span class="font-weight-bold">Tổng tiền: @{var totals = string.Format("{0:N}", shop_Goods_Issues_Details.Select(t => t.Count * t.UnitPrice).Sum());} @totals</span></th>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer text-right">
+                    <a class="btn btn-default" asp-action="Index">Quay lại</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.GoodsIssueID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @*<script src="~/js/Shop_Goods_Receipt/add.js"></script>*@
+}

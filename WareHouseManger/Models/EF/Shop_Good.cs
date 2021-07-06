@@ -19,7 +19,7 @@ namespace WareHouseManger.Models.EF
         public int? CategoryID { get; set; }
         public int? UnitID { get; set; }
         public string Description { get; set; }
-        public string Price { get; set; }
+        public int? Price { get; set; }
         public int? Count { get; set; }
         public int? CountMin { get; set; }
         public int? ProducerID { get; set; }

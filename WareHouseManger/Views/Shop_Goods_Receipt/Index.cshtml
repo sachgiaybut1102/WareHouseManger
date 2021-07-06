@@ -21,7 +21,10 @@
                     <thead>
                         <tr>
                             <th>
-                                Ngày nhận
+                                Số PN
+                            </th>
+                            <th class="text-center">
+                                Ngày lập
                             </th>
                             <th>
                                 Tên nhà cung cấp
@@ -29,7 +32,7 @@
                             <th>
                                 Nhân viên nhận
                             </th>
-                            <th>
+                            <th class="text-right">
                                 Tổng tiền
                             </th>
                             <th></th>
@@ -40,6 +43,9 @@
                         {
                             <tr>
                                 <td>
+                                    @item.GoodsReceiptID
+                                </td>
+                                <td class="text-center">
                                     @item.DateCreated.Value.ToString("dd/MM/yyyy")
                                 </td>
                                 <td>
@@ -48,11 +54,11 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Employee.Name)
                                 </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Total)
+                                <td class="text-right">
+                                    @string.Format("{0:N}", item.Total)
                                 </td>
-                                <td class="text-nowrap text-center" width="250px">
-                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>
+                                <td class="text-nowrap text-center" width="150px">
+                                    @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
                                     <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.GoodsReceiptID"><i class="fa fa-file"> Chi tiết</i></a>
                                     <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.GoodsReceiptID"><i class="fa fa-trash-o"> Xóa</i></a>
                                 </td>

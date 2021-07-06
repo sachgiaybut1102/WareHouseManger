@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WareHouseManger.Models.EF;
+using WareHouseManger.ViewModels;
 
 namespace WareHouseManger.Controllers
 {
@@ -22,7 +25,7 @@ namespace WareHouseManger.Controllers
         public async Task<IActionResult> Index()
         {
             var dB_WareHouseMangerContext = _context.Shop_Goods_Receipts.Include(s => s.Employee).Include(s => s.Supplier);
-            return View(await dB_WareHouseMangerContext.ToListAsync());
+            return View(await dB_WareHouseMangerContext.OrderByDescending(t => t.GoodsReceiptID).ToListAsync());
         }
 
         // GET: Shop_Goods_Receipt/Details/5
@@ -36,7 +39,17 @@ namespace WareHouseManger.Controllers
             var shop_Goods_Receipt = await _context.Shop_Goods_Receipts
                 .Include(s => s.Employee)
                 .Include(s => s.Supplier)
+                .Include(t => t.Shop_Goods_Receipt_Details)
+                    .ThenInclude(t => t.Template)
+                        .ThenInclude(t => t.Producer)
+                .Include(t => t.Shop_Goods_Receipt_Details)
+                    .ThenInclude(t => t.Template)
+                        .ThenInclude(t => t.Unit)
+                .Include(t => t.Shop_Goods_Receipt_Details)
+                    .ThenInclude(t => t.Template)
+                        .ThenInclude(t => t.Category)
                 .FirstOrDefaultAsync(m => m.GoodsReceiptID == id);
+
             if (shop_Goods_Receipt == null)
             {
                 return NotFound();
@@ -159,14 +172,91 @@ namespace WareHouseManger.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var shop_Goods_Receipt = await _context.Shop_Goods_Receipts.FindAsync(id);
+
+            var shop_Goods_Receipt_Details = await _context.Shop_Goods_Receipt_Details.Where(t => t.GoodsReceiptID == id).ToListAsync();
+
+            _context.Shop_Goods_Receipt_Details.RemoveRange(shop_Goods_Receipt_Details);
             _context.Shop_Goods_Receipts.Remove(shop_Goods_Receipt);
+
+            await UpdateCount(shop_Goods_Receipt_Details, -1);
+
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool Shop_Goods_ReceiptExists(string id)
         {
             return _context.Shop_Goods_Receipts.Any(e => e.GoodsReceiptID == id);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateConfirmed(Shop_Goods_Receipt info, string json)
+        {
+            string msg = "msg";
+
+            try
+            {
+                string name = "PN";
+                string maxID = await _context.Shop_Goods_Receipts.MaxAsync(t => t.GoodsReceiptID);
+
+                maxID = maxID == null ? "0" : maxID;
+
+                maxID = maxID.Replace(name, "").Trim();
+
+                int newID = int.Parse(maxID) + 1;
+
+                int length = 10 - 2 - newID.ToString().Length;
+
+                string goodsReceiptID = name;
+
+                while (length > 0)
+                {
+                    goodsReceiptID += "0";
+                    length--;
+                }
+
+                goodsReceiptID += newID;
+
+                info.GoodsReceiptID = goodsReceiptID;
+
+                List<Shop_Goods_Receipt_Detail> shop_Goods_Receipt_Details = JsonConvert.DeserializeObject<List<Shop_Goods_Receipt_Detail>>(json);
+
+                foreach (Shop_Goods_Receipt_Detail shop_Goods_Receipt_Detail in shop_Goods_Receipt_Details)
+                {
+                    shop_Goods_Receipt_Detail.GoodsReceiptID = info.GoodsReceiptID;
+                }
+
+                info.Shop_Goods_Receipt_Details = shop_Goods_Receipt_Details;
+                info.Total = info.Shop_Goods_Receipt_Details.Select(t => t.Count * t.UnitPrice).Sum();
+
+                await _context.Shop_Goods_Receipts.AddAsync(info);
+
+                await UpdateCount(shop_Goods_Receipt_Details, 1);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                msg = "";
+            }
+
+            return Json(new { msg = msg });
+        }
+
+        public async Task UpdateCount(List<Shop_Goods_Receipt_Detail> shop_Goods_Receipt_Details, int num)
+        {
+            //update count 
+            var templateIds = shop_Goods_Receipt_Details.Select(t => t.TemplateID).ToArray();
+
+            List<Shop_Good> shop_Goods = await _context.Shop_Goods.Where(t => templateIds.Contains(t.TemplateID)).ToListAsync();
+
+            foreach (Shop_Good item in shop_Goods)
+            {
+                Shop_Goods_Receipt_Detail shop_Goods_Receipt_Detail = shop_Goods_Receipt_Details.Where(t => t.TemplateID == item.TemplateID).FirstOrDefault();
+
+                item.Count += shop_Goods_Receipt_Detail.Count * num;
+            }
         }
     }
 }

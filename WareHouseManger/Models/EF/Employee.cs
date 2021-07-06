@@ -9,6 +9,7 @@ namespace WareHouseManger.Models.EF
     {
         public Employee()
         {
+            Shop_Goods_Issues = new HashSet<Shop_Goods_Issue>();
             Shop_Goods_Receipts = new HashSet<Shop_Goods_Receipt>();
             Shop_Goods_StockTakes = new HashSet<Shop_Goods_StockTake>();
         }
@@ -19,6 +20,7 @@ namespace WareHouseManger.Models.EF
         public string Address { get; set; }
         public string EMail { get; set; }
 
+        public virtual ICollection<Shop_Goods_Issue> Shop_Goods_Issues { get; set; }
         public virtual ICollection<Shop_Goods_Receipt> Shop_Goods_Receipts { get; set; }
         public virtual ICollection<Shop_Goods_StockTake> Shop_Goods_StockTakes { get; set; }
     }

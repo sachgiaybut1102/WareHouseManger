@@ -51,6 +51,14 @@
         $(tds[tds.length - 2]).children(0).val(formatNumber(value));
     });
 
+    class ShopGoodsViewModel {
+        constructor(TemplateID, Count, UnitPrice) {
+            this.TemplateID = TemplateID;
+            this.Count = Count;
+            this.UnitPrice = UnitPrice;
+        }
+    }
+
     $('#btn-addrecepit').click(function () {
         var recepit = {
             DateCreated: $('#DateCreated').val(),
@@ -64,14 +72,21 @@
         $.each($('#tb-shopgoods tbody').find('tr'), function (index, item) {
             var tds = $(item).find('td');
 
-            var recepitDetail = {
-                TemplateID: $(tds[0]).text(),
-                Count: $(tds[tds.length - 4]).children(0).val(),
-                UnitPrice: $(tds[tds.length - 3]).children(0).val(),
-            }
+            var recepitDetail = new ShopGoodsViewModel($(tds[0]).text(), formatString($(tds[tds.length - 4]).children(0).val()), formatString($(tds[tds.length - 3]).children(0).val()));
+            //{
+            //    TemplateID: $(tds[0]).text(),
+            //    Count: formatString($(tds[tds.length - 4]).children(0).val()),
+            //    UnitPrice: formatString($(tds[tds.length - 3]).children(0).val()),
+            //}
 
             recepitDetails.push(recepitDetail);
         });
+
+        console.log(recepit);
+
+        console.log(recepitDetails);
+
+        createConfirmed(recepit, recepitDetails);
     });
 });
 
@@ -146,4 +161,21 @@ function formatString(money) {
     });
 
     return x;
+}
+
+function createConfirmed(info, json) {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            info: info,
+            json: JSON.stringify(json)
+        },
+        url: '/Shop_Goods_Receipt/CreateConfirmed/',
+        success: function (result) {
+            if (result.msg == 'msg') {
+                window.location = "/Shop_Goods_Receipt";
+            }
+        }
+    })
 }

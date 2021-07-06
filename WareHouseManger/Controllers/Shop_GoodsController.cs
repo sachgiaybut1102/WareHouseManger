@@ -210,6 +210,8 @@ namespace WareHouseManger.Controllers
                     id = t.TemplateID,
                     name = t.Name,
                     category = t.Category.Name,
+                    price = t.Price,
+                    count = t.Count,
                     unit = t.Unit.Name,
                     producer = t.Producer.Name
                 })

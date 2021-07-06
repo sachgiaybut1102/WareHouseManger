@@ -40,7 +40,7 @@ namespace WareHouseManger.Models.EF
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-54ADATL\\MINHPC;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-Q7IUOUM;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
             }
         }
 
@@ -179,10 +179,6 @@ namespace WareHouseManger.Models.EF
 
                 entity.Property(e => e.Name).HasMaxLength(50);
 
-                entity.Property(e => e.Price)
-                    .HasMaxLength(10)
-                    .IsFixedLength(true);
-
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Shop_Goods)
                     .HasForeignKey(d => d.CategoryID)
@@ -233,6 +229,11 @@ namespace WareHouseManger.Models.EF
                     .WithMany(p => p.Shop_Goods_Issues)
                     .HasForeignKey(d => d.CustomerID)
                     .HasConstraintName("FK_Shop_Goods_Issues_Customer");
+
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.Shop_Goods_Issues)
+                    .HasForeignKey(d => d.EmployeeID)
+                    .HasConstraintName("FK_Shop_Goods_Issues_Employee");
             });
 
             modelBuilder.Entity<Shop_Goods_Issues_Detail>(entity =>
