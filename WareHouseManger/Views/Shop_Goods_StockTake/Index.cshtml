@@ -4,44 +4,60 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="row">
+    <h1 class="page-header">Phiếu kiểm hàng</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Remark)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employee)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Remark)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee.EmployeeID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.StockTakeID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StockTakeID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.StockTakeID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+    <p>
+        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+    </p>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="table-responsive">
+
+
+                <table class="table table-bordered table-sm table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                Số PN
+                            </th>
+                            <th class="text-center">
+                                Ngày lập
+                            </th>
+                            <th>
+                                Nhân viên lập
+                            </th>
+                            <th class="text-right">
+                                Tổng tiền
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.StockTakeID
+                                </td>
+                                <td class="text-center">
+                                    @item.DateCreated.Value.ToString("dd/MM/yyyy")
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Employee.Name)
+                                </td>
+                                <td class="text-nowrap text-center" width="150px">
+                                    @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
+                                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.StockTakeID"><i class="fa fa-file"> Chi tiết</i></a>
+                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.StockTakeID"><i class="fa fa-trash-o"> Xóa</i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

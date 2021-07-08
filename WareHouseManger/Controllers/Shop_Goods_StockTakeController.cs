@@ -47,8 +47,15 @@ namespace WareHouseManger.Controllers
         // GET: Shop_Goods_StockTake/Create
         public IActionResult Create()
         {
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "EmployeeID");
-            return View();
+            var model = new Shop_Goods_StockTake()
+            {
+                DateCreated = DateTime.Now
+            };
+
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name");
+            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name");
+
+            return View(model);
         }
 
         // POST: Shop_Goods_StockTake/Create
@@ -64,7 +71,7 @@ namespace WareHouseManger.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "EmployeeID", shop_Goods_StockTake.EmployeeID);
+            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name", shop_Goods_StockTake.EmployeeID);
             return View(shop_Goods_StockTake);
         }
 
@@ -81,7 +88,7 @@ namespace WareHouseManger.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "EmployeeID", shop_Goods_StockTake.EmployeeID);
+            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name", shop_Goods_StockTake.EmployeeID);
             return View(shop_Goods_StockTake);
         }
 
@@ -117,7 +124,7 @@ namespace WareHouseManger.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "EmployeeID", shop_Goods_StockTake.EmployeeID);
+            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name", shop_Goods_StockTake.EmployeeID);
             return View(shop_Goods_StockTake);
         }
 

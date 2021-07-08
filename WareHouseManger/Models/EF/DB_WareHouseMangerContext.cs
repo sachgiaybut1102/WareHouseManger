@@ -449,6 +449,8 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
+                entity.Property(e => e.Remark).HasMaxLength(1000);
+
                 entity.HasOne(d => d.StockTake)
                     .WithMany(p => p.Shop_Goods_StockTake_Details)
                     .HasForeignKey(d => d.StockTakeID)
