@@ -17,11 +17,17 @@ namespace WareHouseManger.Models.EF
         {
         }
 
+        public virtual DbSet<Account> Accounts { get; set; }
+        public virtual DbSet<Account_Roles_Detail> Account_Roles_Details { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Customer_Category> Customer_Categories { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<FinalSettlement_Customer> FinalSettlement_Customers { get; set; }
         public virtual DbSet<FinalSettlement_Suplier> FinalSettlement_Supliers { get; set; }
+        public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<Producer> Producers { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Roles_Detail> Roles_Details { get; set; }
         public virtual DbSet<Shop_Good> Shop_Goods { get; set; }
         public virtual DbSet<Shop_Goods_Category> Shop_Goods_Categories { get; set; }
         public virtual DbSet<Shop_Goods_Issue> Shop_Goods_Issues { get; set; }
@@ -48,6 +54,42 @@ namespace WareHouseManger.Models.EF
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
+            modelBuilder.Entity<Account>(entity =>
+            {
+                entity.ToTable("Account");
+
+                entity.Property(e => e.DateCreated).HasColumnType("date");
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(32)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.Accounts)
+                    .HasForeignKey(d => d.EmployeeID)
+                    .HasConstraintName("FK_Account_Employee");
+            });
+
+            modelBuilder.Entity<Account_Roles_Detail>(entity =>
+            {
+                entity.HasKey(e => new { e.AccountID, e.ID });
+
+                entity.ToTable("Account_Roles_Detail");
+
+                entity.HasOne(d => d.Account)
+                    .WithMany(p => p.Account_Roles_Details)
+                    .HasForeignKey(d => d.AccountID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Account_Roles_Detail_Account");
+
+                entity.HasOne(d => d.IDNavigation)
+                    .WithMany(p => p.Account_Roles_Details)
+                    .HasForeignKey(d => d.ID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Account_Roles_Detail_Roles_Detail");
+            });
+
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.ToTable("Customer");
@@ -65,6 +107,20 @@ namespace WareHouseManger.Models.EF
                     .HasMaxLength(15)
                     .IsUnicode(false)
                     .IsFixedLength(true);
+
+                entity.HasOne(d => d.CustomerCategory)
+                    .WithMany(p => p.Customers)
+                    .HasForeignKey(d => d.CustomerCategoryID)
+                    .HasConstraintName("FK_Customer_Customer_Category");
+            });
+
+            modelBuilder.Entity<Customer_Category>(entity =>
+            {
+                entity.HasKey(e => e.CustomerCategoryID);
+
+                entity.ToTable("Customer_Category");
+
+                entity.Property(e => e.Name).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -84,6 +140,11 @@ namespace WareHouseManger.Models.EF
                     .HasMaxLength(15)
                     .IsUnicode(false)
                     .IsFixedLength(true);
+
+                entity.HasOne(d => d.Position)
+                    .WithMany(p => p.Employees)
+                    .HasForeignKey(d => d.PositionID)
+                    .HasConstraintName("FK_Employee_Position");
             });
 
             modelBuilder.Entity<FinalSettlement_Customer>(entity =>
@@ -142,6 +203,17 @@ namespace WareHouseManger.Models.EF
                     .HasConstraintName("FK_FinalSettlement_Suplier_Supplier");
             });
 
+            modelBuilder.Entity<Position>(entity =>
+            {
+                entity.ToTable("Position");
+
+                entity.Property(e => e.PositionID).ValueGeneratedNever();
+
+                entity.Property(e => e.Name).HasMaxLength(255);
+
+                entity.Property(e => e.Remark).HasMaxLength(1000);
+            });
+
             modelBuilder.Entity<Producer>(entity =>
             {
                 entity.ToTable("Producer");
@@ -164,6 +236,27 @@ namespace WareHouseManger.Models.EF
                     .HasMaxLength(10)
                     .IsUnicode(false)
                     .IsFixedLength(true);
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.Property(e => e.Name).HasMaxLength(50);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(10)
+                    .IsFixedLength(true);
+            });
+
+            modelBuilder.Entity<Roles_Detail>(entity =>
+            {
+                entity.ToTable("Roles_Detail");
+
+                entity.Property(e => e.Name).HasMaxLength(50);
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.Roles_Details)
+                    .HasForeignKey(d => d.RoleID)
+                    .HasConstraintName("FK_Roles_Detail_Roles");
             });
 
             modelBuilder.Entity<Shop_Good>(entity =>

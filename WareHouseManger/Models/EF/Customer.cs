@@ -18,7 +18,9 @@ namespace WareHouseManger.Models.EF
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public string EMail { get; set; }
+        public int? CustomerCategoryID { get; set; }
 
+        public virtual Customer_Category CustomerCategory { get; set; }
         public virtual ICollection<FinalSettlement_Customer> FinalSettlement_Customers { get; set; }
         public virtual ICollection<Shop_Goods_Issue> Shop_Goods_Issues { get; set; }
     }
