@@ -1,36 +1,97 @@
 ﻿@model WareHouseManger.Models.EF.Shop_Goods_StockTake
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Shop_Goods_StockTake</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateCreated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Remark)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Remark)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Employee.EmployeeID)
-        </dd>
-    </dl>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-md-offset-0">
+            <h1>Chi tiết</h1>
+            <h4>Phiếu nhập - @Model.StockTakeID</h4>
+            <hr />
+            <div class="panel panel-default ">
+                <div class="panel-heading">Thông tin phiếu nhập</div>
+                <div class="panel-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Thông tin chung</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label asp-for="DateCreated" class="control-label">Ngày lập</label>
+                                    <input type="text" class="form-control bg-white" value="@Model.DateCreated.Value.ToString("dd/MM/yyyy")" readonly />
+                                    <span asp-validation-for="DateCreated" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="EmployeeID" class="control-label">Khách hàng</label>
+                                    <input type="text" class="form-control" value="@Model.Employee.Name" readonly />
+                                    <span asp-validation-for="EmployeeID" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Remark" class="control-label">Ghi chú</label>
+                                <textarea type="text" class="form-control" rows="5" readonly></textarea>
+                                <span asp-validation-for="Remark" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Danh sách chi tiết hàng hóa</div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table id="tb-shopgoods" class="table table-bordered table-sm table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Mã hàng hóa</th>
+                                            <th>Tên hàng hóa</th>
+                                            <th>Loại hàng hóa</th>
+                                            <th>Nhà sản xuất</th>
+                                            <th>Đơn vị tính</th>
+                                            <th class="text-center">Số lượng tồn</th>
+                                            <th class="text-center">Số lượng kiểm</th>
+                                            <th class="text-center">Ghi chú</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            List<WareHouseManger.Models.EF.Shop_Goods_StockTake_Detail> shop_Goods_StockTakes = Model.Shop_Goods_StockTake_Details.ToList();
+                                            int i = 1;
+                                            foreach (WareHouseManger.Models.EF.Shop_Goods_StockTake_Detail item in shop_Goods_StockTakes)
+                                            {
+                                                <tr>
+                                                    <td class="text-right">@i</td>
+                                                    <td>@item.TemplateID</td>
+                                                    <td>@item.Template.Name</td>
+                                                    <td class="text-center">@item.Template.Category.Name</td>
+                                                    <td>@item.Template.Producer.Name</td>
+                                                    <td class="text-center">@item.Template.Unit.Name</td>
+                                                    <td class="text-right">@{ var count = string.Format("{0:N}", item.AmountOfStock); }@count</td>
+                                                    <td class="text-right">@{ var unitPrice = string.Format("{0:N}", item.ActualAmount); }@unitPrice</td>
+                                                    <td><textarea class="form-control" readonly rows="6">@item.Remark</textarea></td>
+                                                </tr>
+
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer text-right">
+                    <a class="btn btn-default" asp-action="Index">Quay lại</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.StockTakeID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @*<script src="~/js/Shop_Goods_Receipt/add.js"></script>*@
+}

@@ -86,9 +86,15 @@
                 <h4 class="modal-title" id="myModalLabel">Danh mục hàng hóa</h4>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label class="font-weight-bold">Loại vật phẩm:</label>
-                    <select id="select-category" name="select-category" class="form-control" asp-items="ViewBag.CategoryID"></select>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-bold">Loại vật phẩm:</label>
+                        <select id="select-category" name="select-category" class="form-control" asp-items="ViewBag.CategoryID"></select>
+                    </div>
+                    <div class="form-group col-md-6 align-self-md-center">
+                        <label class="font-weight-bold">Tìm kiếm vật phẩm:</label>
+                        <input id="search" type="text" class="form-control" placeholder="Nhập vào từ khóa cần tìm" />
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table id="tb-addshopgoods" class="table table-bordered table-sm table-hover table-striped">
@@ -122,5 +128,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/fomatnumber.js"></script>
     <script src="~/js/Shop_Goods_Issues/add.js"></script>
 }

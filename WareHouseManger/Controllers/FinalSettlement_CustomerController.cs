@@ -21,7 +21,11 @@ namespace WareHouseManger.Controllers
         // GET: FinalSettlement_Customer
         public async Task<IActionResult> Index()
         {
-            var dB_WareHouseMangerContext = _context.FinalSettlement_Customers.Include(f => f.Customer).Include(f => f.GoodsIssues);
+            //var dB_WareHouseMangerContext = _context.FinalSettlement_Customers.Include(f => f.Customer).Include(f => f.GoodsIssues);
+            var dB_WareHouseMangerContext = _context.Customers
+                .Include(t => t.FinalSettlement_Customers)
+                .Include(t => t.Shop_Goods_Issues);
+
             return View(await dB_WareHouseMangerContext.ToListAsync());
         }
 
@@ -160,6 +164,20 @@ namespace WareHouseManger.Controllers
         private bool FinalSettlement_CustomerExists(int id)
         {
             return _context.FinalSettlement_Customers.Any(e => e.ID == id);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetByCustomerID(int customerID)
+        {
+            List<FinalSettlement_Customer> finalSettlement_Customers = await _context.FinalSettlement_Customers
+                .Where(t => t.CustomerID == customerID)
+                .OrderByDescending(t => t.DateCreated)
+                .ToListAsync();
+
+            return Json(new
+            {
+                data = finalSettlement_Customers
+            });
         }
     }
 }

@@ -7,7 +7,7 @@ namespace WareHouseManger.Models.EF
 {
     public partial class Shop_Goods_StockTake_Detail
     {
-        public int StockTakeID { get; set; }
+        public string StockTakeID { get; set; }
         public string TemplateID { get; set; }
         public int? AmountOfStock { get; set; }
         public int? ActualAmount { get; set; }

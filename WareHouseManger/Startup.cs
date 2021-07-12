@@ -26,11 +26,8 @@ namespace WareHouseManger
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DB_WareHouseMangerContext>(options => options/*.UseLazyLoadingProxies()*/.UseSqlServer(Configuration["ConnectionString:ConnectString"]));
-            //services.AddControllersWithViews();
-            //services.AddControllersWithViews()
-            //.AddNewtonsoftJson(options =>
-            //options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddDbContext<DB_WareHouseMangerContext>(options => options.UseSqlServer(Configuration["ConnectionString:ConnectString"]));
+
             services.AddMvc().AddRazorRuntimeCompilation();
 
             services.AddSingleton<IConfiguration>(Configuration);

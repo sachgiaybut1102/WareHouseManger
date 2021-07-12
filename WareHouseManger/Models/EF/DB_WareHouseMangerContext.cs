@@ -425,7 +425,10 @@ namespace WareHouseManger.Models.EF
 
                 entity.ToTable("Shop_Goods_StockTake");
 
-                entity.Property(e => e.StockTakeID).ValueGeneratedNever();
+                entity.Property(e => e.StockTakeID)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
 
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
@@ -443,6 +446,11 @@ namespace WareHouseManger.Models.EF
                     .HasName("PK_Shop_Goods_StockTakes_Details");
 
                 entity.ToTable("Shop_Goods_StockTake_Detail");
+
+                entity.Property(e => e.StockTakeID)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
 
                 entity.Property(e => e.TemplateID)
                     .HasMaxLength(10)

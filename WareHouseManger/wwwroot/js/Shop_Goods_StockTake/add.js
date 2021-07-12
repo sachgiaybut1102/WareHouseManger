@@ -45,45 +45,42 @@
         $(this).val(formatNumber(formatString($(this).val())));
     });
 
-    class ShopGoodsViewModel {
-        constructor(TemplateID, Count, UnitPrice) {
-            this.TemplateID = TemplateID;
-            this.Count = Count;
-            this.UnitPrice = UnitPrice;
-        }
-    }
-
     $('#btn-addrecepit').click(function () {
-        var recepit = {
+        var stockTake = {
             DateCreated: $('#DateCreated').val(),
             EmployeeID: $('#EmployeeID').val(),
             Remark: $('#Remark').val()
         };
 
-        var recepitDetails = [];
+        var stockTakeDetails = [];
 
         $.each($('#tb-shopgoods tbody').find('tr'), function (index, item) {
             var tds = $(item).find('td');
 
-            var recepitDetail = {
-                TemplateID: $(tds[0]).text(),
-                AmountOfStock: $(tds[0]).text(),
-                Remark: $(tds[0]).text(),
-            };
-            //{
-            //    TemplateID: $(tds[0]).text(),
-            //    Count: formatString($(tds[tds.length - 4]).children(0).val()),
-            //    UnitPrice: formatString($(tds[tds.length - 3]).children(0).val()),
-            //}
+            if (tds.length > 0) {
+                var stockTakeDetail = {
+                    TemplateID: $(tds[0]).text(),
+                    AmountOfStock: formatString($($(tds[tds.length - 4]).children(0)).val()),
+                    ActualAmount: formatString($($(tds[tds.length - 3]).children(0)).val()),
+                    Remark: $(tds[tds.length - 2]).text(),
+                };
 
-            recepitDetails.push(recepitDetail);
+                console.log(tds.length);
+                //{
+                //    TemplateID: $(tds[0]).text(),
+                //    Count: formatString($(tds[tds.length - 4]).children(0).val()),
+                //    UnitPrice: formatString($(tds[tds.length - 3]).children(0).val()),
+                //}
+
+                stockTakeDetails.push(stockTakeDetail);
+            }
         });
 
-        console.log(recepit);
+        console.log(stockTake);
 
-        console.log(recepitDetails);
+        console.log(stockTakeDetails);
 
-        createConfirmed(recepit, recepitDetails);
+        createConfirmed(stockTake, stockTakeDetails);
     });
 });
 
@@ -138,29 +135,6 @@ function getShopGoods(ids, categoryId) {
     })
 }
 
-function formatNumber(nStr) {
-    var groupSeperate = ',';
-
-    var x = formatString(nStr);
-
-    var rgx = /(\d+)(\d{3})/;
-
-    while (rgx.test(x)) {
-        x = x.replace(rgx, '$1' + groupSeperate + '$2');
-    }
-    return x;
-}
-
-function formatString(money) {
-    var x = '';
-    var arr = money.toString().split(',');
-    arr.forEach((str) => {
-        x += str;
-    });
-
-    return x;
-}
-
 function createConfirmed(info, json) {
     $.ajax({
         type: 'POST',
@@ -169,7 +143,7 @@ function createConfirmed(info, json) {
             info: info,
             json: JSON.stringify(json)
         },
-        url: '/Shop_Goods_Receipt/CreateConfirmed/',
+        url: '/Shop_Goods_StockTake/CreateConfirmed/',
         success: function (result) {
             if (result.msg == 'msg') {
                 window.location = "/Shop_Goods_StockTake";

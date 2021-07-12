@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WareHouseManger.Models.EF;
 
 namespace WareHouseManger.Controllers
@@ -26,7 +27,7 @@ namespace WareHouseManger.Controllers
         }
 
         // GET: Shop_Goods_StockTake/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -35,6 +36,13 @@ namespace WareHouseManger.Controllers
 
             var shop_Goods_StockTake = await _context.Shop_Goods_StockTakes
                 .Include(s => s.Employee)
+                .Include(t => t.Shop_Goods_StockTake_Details)
+                .ThenInclude(t => t.Template.Category)
+                .Include(t=>t.Shop_Goods_StockTake_Details)
+                .ThenInclude(t=>t.Template.Producer)
+                .Include(t => t.Shop_Goods_StockTake_Details)
+                .ThenInclude(t => t.Template.Unit)
+
                 .FirstOrDefaultAsync(m => m.StockTakeID == id);
             if (shop_Goods_StockTake == null)
             {
@@ -97,7 +105,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StockTakeID,DateCreated,Remark,EmployeeID")] Shop_Goods_StockTake shop_Goods_StockTake)
+        public async Task<IActionResult> Edit(string id, [Bind("StockTakeID,DateCreated,Remark,EmployeeID")] Shop_Goods_StockTake shop_Goods_StockTake)
         {
             if (id != shop_Goods_StockTake.StockTakeID)
             {
@@ -129,7 +137,7 @@ namespace WareHouseManger.Controllers
         }
 
         // GET: Shop_Goods_StockTake/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -158,9 +166,63 @@ namespace WareHouseManger.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool Shop_Goods_StockTakeExists(int id)
+        private bool Shop_Goods_StockTakeExists(string id)
         {
             return _context.Shop_Goods_StockTakes.Any(e => e.StockTakeID == id);
         }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateConfirmed(Shop_Goods_StockTake info, string json)
+        {
+            string msg = "msg";
+
+            try
+            {
+                string name = "PK";
+                string maxID = await _context.Shop_Goods_StockTakes.MaxAsync(t => t.StockTakeID);
+
+                maxID = maxID == null ? "0" : maxID;
+
+                maxID = maxID.Replace(name, "").Trim();
+
+                int newID = int.Parse(maxID) + 1;
+
+                int length = 10 - 2 - newID.ToString().Length;
+
+                string stockTakeID = name;
+
+                while (length > 0)
+                {
+                    stockTakeID += "0";
+                    length--;
+                }
+
+                stockTakeID += newID;
+
+                info.StockTakeID = stockTakeID;
+
+                List<Shop_Goods_StockTake_Detail> Shop_Goods_StockTake_Details = JsonConvert.DeserializeObject<List<Shop_Goods_StockTake_Detail>>(json);
+
+                foreach (Shop_Goods_StockTake_Detail Shop_Goods_StockTake_Detail in Shop_Goods_StockTake_Details)
+                {
+                    Shop_Goods_StockTake_Detail.StockTakeID = info.StockTakeID;
+                }
+
+                info.Shop_Goods_StockTake_Details = Shop_Goods_StockTake_Details;
+
+                await _context.Shop_Goods_StockTakes.AddAsync(info);
+
+                //await UpdateCount(Shop_Goods_StockTake_Details, 1);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                msg = "";
+            }
+
+            return Json(new { msg = msg });
+        }
+
     }
 }

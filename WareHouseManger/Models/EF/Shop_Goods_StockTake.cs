@@ -12,7 +12,7 @@ namespace WareHouseManger.Models.EF
             Shop_Goods_StockTake_Details = new HashSet<Shop_Goods_StockTake_Detail>();
         }
 
-        public int StockTakeID { get; set; }
+        public string StockTakeID { get; set; }
         public DateTime? DateCreated { get; set; }
         public string Remark { get; set; }
         public int? EmployeeID { get; set; }
