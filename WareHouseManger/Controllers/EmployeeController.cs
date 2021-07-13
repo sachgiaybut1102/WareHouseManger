@@ -154,7 +154,7 @@ namespace WareHouseManger.Controllers
         {
             var employee = await _context.Employees.FindAsync(id);
 
-            if(employee.Accounts.Count == 0)
+            if (employee.Accounts.Count == 0)
             {
                 Account account = new Account();
 
@@ -186,7 +186,25 @@ namespace WareHouseManger.Controllers
                 account.EmployeeID = employee.EmployeeID;
 
                 await _context.AddAsync(account);
-            }    
+
+            }
+
+            return RedirectToAction("Role", new { id = id });
+        }
+
+        public async Task<IActionResult> Role(int id)
+        {
+            var roles = await _context.Account_Role_Details
+                .Where(t => t.AccountID == id)
+                .Select(t => t.Role.Name)
+                .ToArrayAsync();
+
+            ViewData["Roles"] = roles;
+
+            var roleGroups = await _context.RoleGroups.Include(t => t.Roles).ToArrayAsync();
+
+
+            return View(roleGroups);
         }
     }
 }
