@@ -32,6 +32,9 @@
                             <th>
                                 Email
                             </th>
+                            <th class="text-center">
+                                Tài khoản
+                            </th>
                             <th></th>
                         </tr>
                     </thead>
@@ -50,6 +53,16 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.EMail)
+                                </td>
+                                <td class="text-center">
+                                    @if (item.Accounts.Count > 0)
+                                    {
+                                        <button class="btn btn-sm btn-success">Đang hoạt động</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-danger">Kích hoạt</button>
+                                    }
                                 </td>
                                 <td class="text-nowrap text-center" width="250px">
                                     <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.EmployeeID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>

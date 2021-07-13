@@ -41,9 +41,9 @@ namespace WareHouseManger
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
-                options.LoginPath = "/TaiKhoan/Login";
-                options.LogoutPath = "/TaiKhoan/LogOut";
-                options.AccessDeniedPath = "/TaiKhoan/AccessDenied";
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/LogOut";
+                options.AccessDeniedPath = "/Account/AccessDenied";
             });
         }
 

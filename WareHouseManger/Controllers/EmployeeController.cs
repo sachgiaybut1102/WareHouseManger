@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using WareHouseManger.Common;
 using WareHouseManger.Models.EF;
 
 namespace WareHouseManger.Controllers
@@ -147,6 +148,45 @@ namespace WareHouseManger.Controllers
         private bool EmployeeExists(int id)
         {
             return _context.Employees.Any(e => e.EmployeeID == id);
+        }
+
+        public async Task<IActionResult> ActiveAcountConfirmed(int id)
+        {
+            var employee = await _context.Employees.FindAsync(id);
+
+            if(employee.Accounts.Count == 0)
+            {
+                Account account = new Account();
+
+                string name = "NV";
+                string maxID = await _context.Accounts.MaxAsync(t => t.UserName);
+
+                maxID = maxID == null ? "0" : maxID;
+
+                maxID = maxID.Replace(name, "").Trim();
+
+                int newID = int.Parse(maxID) + 1;
+
+                int length = 10 - 2 - newID.ToString().Length;
+
+                string userName = name;
+
+                while (length > 0)
+                {
+                    userName += "0";
+                    length--;
+                }
+
+                userName += newID;
+
+                account.UserName = userName;
+                account.Password = MD5.CreateHash("123456");
+                account.StatusID = 1;
+                account.DateCreated = DateTime.Now;
+                account.EmployeeID = employee.EmployeeID;
+
+                await _context.AddAsync(account);
+            }    
         }
     }
 }

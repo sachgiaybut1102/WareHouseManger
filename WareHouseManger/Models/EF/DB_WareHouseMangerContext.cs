@@ -18,7 +18,7 @@ namespace WareHouseManger.Models.EF
         }
 
         public virtual DbSet<Account> Accounts { get; set; }
-        public virtual DbSet<Account_Roles_Detail> Account_Roles_Details { get; set; }
+        public virtual DbSet<Account_Role_Detail> Account_Role_Details { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Customer_Category> Customer_Categories { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
@@ -27,7 +27,7 @@ namespace WareHouseManger.Models.EF
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<Producer> Producers { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<Roles_Detail> Roles_Details { get; set; }
+        public virtual DbSet<RoleGroup> RoleGroups { get; set; }
         public virtual DbSet<Shop_Good> Shop_Goods { get; set; }
         public virtual DbSet<Shop_Goods_Category> Shop_Goods_Categories { get; set; }
         public virtual DbSet<Shop_Goods_Issue> Shop_Goods_Issues { get; set; }
@@ -65,29 +65,35 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
+                entity.Property(e => e.UserName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.EmployeeID)
                     .HasConstraintName("FK_Account_Employee");
             });
 
-            modelBuilder.Entity<Account_Roles_Detail>(entity =>
+            modelBuilder.Entity<Account_Role_Detail>(entity =>
             {
-                entity.HasKey(e => new { e.AccountID, e.ID });
+                entity.HasKey(e => new { e.AccountID, e.RoleID })
+                    .HasName("PK_Account_Roles_Detail");
 
-                entity.ToTable("Account_Roles_Detail");
+                entity.ToTable("Account_Role_Detail");
 
                 entity.HasOne(d => d.Account)
-                    .WithMany(p => p.Account_Roles_Details)
+                    .WithMany(p => p.Account_Role_Details)
                     .HasForeignKey(d => d.AccountID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Account_Roles_Detail_Account");
 
-                entity.HasOne(d => d.IDNavigation)
-                    .WithMany(p => p.Account_Roles_Details)
-                    .HasForeignKey(d => d.ID)
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.Account_Role_Details)
+                    .HasForeignKey(d => d.RoleID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Account_Roles_Detail_Roles_Detail");
+                    .HasConstraintName("FK_Account_Role_Detail_Role");
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -240,23 +246,25 @@ namespace WareHouseManger.Models.EF
 
             modelBuilder.Entity<Role>(entity =>
             {
+                entity.ToTable("Role");
+
+                entity.Property(e => e.Name).HasMaxLength(50);
+
+                entity.HasOne(d => d.RoleGroup)
+                    .WithMany(p => p.Roles)
+                    .HasForeignKey(d => d.RoleGroupID)
+                    .HasConstraintName("FK_Role_RoleGroup");
+            });
+
+            modelBuilder.Entity<RoleGroup>(entity =>
+            {
+                entity.ToTable("RoleGroup");
+
                 entity.Property(e => e.Name).HasMaxLength(50);
 
                 entity.Property(e => e.Status)
                     .HasMaxLength(10)
                     .IsFixedLength(true);
-            });
-
-            modelBuilder.Entity<Roles_Detail>(entity =>
-            {
-                entity.ToTable("Roles_Detail");
-
-                entity.Property(e => e.Name).HasMaxLength(50);
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.Roles_Details)
-                    .HasForeignKey(d => d.RoleID)
-                    .HasConstraintName("FK_Roles_Detail_Roles");
             });
 
             modelBuilder.Entity<Shop_Good>(entity =>

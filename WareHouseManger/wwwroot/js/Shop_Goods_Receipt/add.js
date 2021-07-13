@@ -157,7 +157,6 @@ function createConfirmed(info, json) {
     })
 }
 
-
 $("#search").on("keyup", function () {
     var value = $(this).val().toLowerCase();
     $("#tb-addshopgoods tbody tr").filter(function () {

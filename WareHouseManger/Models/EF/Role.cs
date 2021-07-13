@@ -9,13 +9,14 @@ namespace WareHouseManger.Models.EF
     {
         public Role()
         {
-            Roles_Details = new HashSet<Roles_Detail>();
+            Account_Role_Details = new HashSet<Account_Role_Detail>();
         }
 
         public int RoleID { get; set; }
         public string Name { get; set; }
-        public string Status { get; set; }
+        public int? RoleGroupID { get; set; }
 
-        public virtual ICollection<Roles_Detail> Roles_Details { get; set; }
+        public virtual RoleGroup RoleGroup { get; set; }
+        public virtual ICollection<Account_Role_Detail> Account_Role_Details { get; set; }
     }
 }
