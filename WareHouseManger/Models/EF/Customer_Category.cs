@@ -14,6 +14,7 @@ namespace WareHouseManger.Models.EF
 
         public int CustomerCategoryID { get; set; }
         public string Name { get; set; }
+        public string Remark { get; set; }
 
         public virtual ICollection<Customer> Customers { get; set; }
     }

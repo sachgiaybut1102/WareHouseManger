@@ -1,0 +1,41 @@
+﻿@model WareHouseManger.Models.EF.Customer_Category
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>Chỉnh sửa</h1>
+            <h4>Loại khách hàng</h4>
+            <hr />
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="CustomerCategoryID" />
+                <div class="panel panel-default ">
+                    <div class="panel-heading">Thông tin chức vụ</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label">Tên loại</label>
+                            <input asp-for="Name" class="form-control" autofocus />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Remark" class="control-label">Ghi chú</label>
+                            <input asp-for="Remark" class="form-control" />
+                            <span asp-validation-for="Remark" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="panel-footer text-right">
+                        <input type="submit" value="Lưu" class="btn btn-primary" />
+                        <a class="btn btn-default" asp-action="Index">Quay lại</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,52 @@
+﻿@model IEnumerable<WareHouseManger.Models.EF.Position>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <h1 class="page-header">Chức vụ</h1>
+
+
+    <p>
+        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+    </p>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                Tên chức vụ
+                            </th>
+                            <th>
+                                Ghi chú
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Remark)
+                                </td>
+                                <td class="text-nowrap text-center" width="250px">
+                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.PositionID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>
+                                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.PositionID"><i class="fa fa-file"> Chi tiết</i></a>
+                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.PositionID"><i class="fa fa-trash-o"> Xóa</i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

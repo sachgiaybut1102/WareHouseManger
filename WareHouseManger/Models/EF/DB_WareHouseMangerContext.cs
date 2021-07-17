@@ -19,6 +19,7 @@ namespace WareHouseManger.Models.EF
 
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<Account_Role_Detail> Account_Role_Details { get; set; }
+        public virtual DbSet<Account_Status> Account_Statuses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Customer_Category> Customer_Categories { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
@@ -46,7 +47,7 @@ namespace WareHouseManger.Models.EF
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-Q7IUOUM;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-54ADATL\\MINHPC;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
             }
         }
 
@@ -74,6 +75,11 @@ namespace WareHouseManger.Models.EF
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.EmployeeID)
                     .HasConstraintName("FK_Account_Employee");
+
+                entity.HasOne(d => d.Status)
+                    .WithMany(p => p.Accounts)
+                    .HasForeignKey(d => d.StatusID)
+                    .HasConstraintName("FK_Account_Account_Status");
             });
 
             modelBuilder.Entity<Account_Role_Detail>(entity =>
@@ -94,6 +100,15 @@ namespace WareHouseManger.Models.EF
                     .HasForeignKey(d => d.RoleID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Account_Role_Detail_Role");
+            });
+
+            modelBuilder.Entity<Account_Status>(entity =>
+            {
+                entity.HasKey(e => e.StatusID);
+
+                entity.ToTable("Account_Status");
+
+                entity.Property(e => e.Name).HasMaxLength(255);
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -127,6 +142,8 @@ namespace WareHouseManger.Models.EF
                 entity.ToTable("Customer_Category");
 
                 entity.Property(e => e.Name).HasMaxLength(50);
+
+                entity.Property(e => e.Remark).HasMaxLength(1000);
             });
 
             modelBuilder.Entity<Employee>(entity =>

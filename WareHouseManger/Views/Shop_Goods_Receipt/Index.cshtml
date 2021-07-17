@@ -7,13 +7,26 @@
 <div class="row">
     <h1 class="page-header">Phiếu nhập hàng</h1>
 
-
-    <p>
-        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
-    </p>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>
+                    <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+                </td>
+                <td>
+                    <div class="form-inline text-right">
+                        <input id="search" class="form-control" placeholder="Nhập vào từ khóa cần tìm" />
+                        <button class="btn btn-sm btn-primary">Tìm kiếm</button>
+                    </div>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <div class="panel panel-default">
         <div class="panel-body">
+
             <div class="table-responsive">
                 <table class="table table-bordered table-sm table-hover table-striped">
                     <thead>
@@ -68,3 +81,6 @@
         </div>
     </div>
 </div>
+@section scripts{
+
+}

@@ -20,6 +20,7 @@ namespace WareHouseManger.Models.EF
         public int? EmployeeID { get; set; }
 
         public virtual Employee Employee { get; set; }
+        public virtual Account_Status Status { get; set; }
         public virtual ICollection<Account_Role_Detail> Account_Role_Details { get; set; }
     }
 }
