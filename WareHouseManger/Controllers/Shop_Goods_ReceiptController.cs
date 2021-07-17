@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace WareHouseManger.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Index")]
         // GET: Shop_Goods_Receipt
         public async Task<IActionResult> Index()
         {
@@ -28,6 +30,7 @@ namespace WareHouseManger.Controllers
             return View(await dB_WareHouseMangerContext.OrderByDescending(t => t.GoodsReceiptID).ToListAsync());
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Details")]
         // GET: Shop_Goods_Receipt/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -58,6 +61,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Receipt);
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Create")]
         // GET: Shop_Goods_Receipt/Create
         public IActionResult Create()
         {
@@ -73,6 +77,7 @@ namespace WareHouseManger.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Create")]
         // POST: Shop_Goods_Receipt/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -91,6 +96,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Receipt);
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Edit")]
         // GET: Shop_Goods_Receipt/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -109,6 +115,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Receipt);
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Edit")]
         // POST: Shop_Goods_Receipt/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -146,6 +153,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Receipt);
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Delete")]
         // GET: Shop_Goods_Receipt/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -166,6 +174,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Receipt);
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Delete")]
         // POST: Shop_Goods_Receipt/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -190,6 +199,7 @@ namespace WareHouseManger.Controllers
             return _context.Shop_Goods_Receipts.Any(e => e.GoodsReceiptID == id);
         }
 
+        [Authorize(Roles = "Shop_Goods_Receipt_Create")]
         [HttpPost]
         public async Task<JsonResult> CreateConfirmed(Shop_Goods_Receipt info, string json)
         {
@@ -244,7 +254,7 @@ namespace WareHouseManger.Controllers
             return Json(new { msg = msg });
         }
 
-        public async Task UpdateCount(List<Shop_Goods_Receipt_Detail> shop_Goods_Receipt_Details, int num)
+        private async Task UpdateCount(List<Shop_Goods_Receipt_Detail> shop_Goods_Receipt_Details, int num)
         {
             //update count 
             var templateIds = shop_Goods_Receipt_Details.Select(t => t.TemplateID).ToArray();

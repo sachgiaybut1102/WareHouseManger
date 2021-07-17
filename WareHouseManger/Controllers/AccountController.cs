@@ -21,6 +21,7 @@ namespace WareHouseManger.Controllers
             _context = context;
         }
 
+
         public IActionResult Login()
         {
             bool isAuthenticated = User.Identity.IsAuthenticated;
@@ -37,8 +38,10 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("User,Password")] AccountViewModel account)
         {
+            account.Password = Common.MD5.CreateHash(account.Password);
+
             var model = await _context.Accounts
-                .Where(t => t.EmployeeID.ToString() == account.User && t.Password == account.Password)
+                .Where(t => t.UserName == account.User && t.Password == account.Password)
                 .FirstOrDefaultAsync();
 
             if (model != null)
@@ -57,6 +60,9 @@ namespace WareHouseManger.Controllers
 
                     claims.Add(claim);
                 }
+
+                claims.Add(new Claim("AccountID", model.AccountID.ToString()));
+                claims.Add(new Claim("UserName", model.UserName));
 
                 #region Configuration Auth
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -92,6 +98,7 @@ namespace WareHouseManger.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
+
             ViewData["Msg"] = "Sai tài khoản hoặc mật khẩu, vui lòng đăng nhập lại";
             return View();
         }
@@ -110,6 +117,37 @@ namespace WareHouseManger.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<JsonResult> UpdateRole(int roleId)
+        {
+            var id = int.Parse(User.Claims.FirstOrDefault(t => t.Type.Equals("AccountID")).Value.ToString());
+            string msg = "";
+
+            if (await _context.Roles.FindAsync(roleId) != null)
+            {
+                var detail = await _context.Account_Role_Details.Where(t => t.AccountID == id && t.RoleID == roleId).FirstOrDefaultAsync();
+
+                if (detail != null)
+                {
+                    _context.Remove(detail);
+                }
+                else
+                {
+                    await _context.Account_Role_Details.AddAsync(new Account_Role_Detail()
+                    {
+                        AccountID = id,
+                        RoleID = roleId,
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+                msg = "OK";
+            }
+
+            return Json(new { msg = msg });
         }
     }
 }

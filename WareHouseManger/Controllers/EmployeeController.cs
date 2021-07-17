@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,12 +20,14 @@ namespace WareHouseManger.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Employee_Index")]
         // GET: Employee
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employees.ToListAsync());
+            return View(await _context.Employees.Include(t => t.Accounts).OrderByDescending(t => t.EmployeeID).ToListAsync());
         }
 
+        [Authorize(Roles = "Employee_Details")]
         // GET: Employee/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -34,6 +37,7 @@ namespace WareHouseManger.Controllers
             }
 
             var employee = await _context.Employees
+                .Include(t => t.Position)
                 .FirstOrDefaultAsync(m => m.EmployeeID == id);
             if (employee == null)
             {
@@ -43,12 +47,16 @@ namespace WareHouseManger.Controllers
             return View(employee);
         }
 
+        [Authorize(Roles = "Employee_Create")]
         // GET: Employee/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Position = new SelectList(await _context.Positions.ToListAsync(), "PositionID", "Name");
+
             return View();
         }
 
+        [Authorize(Roles = "Employee_Create")]
         // POST: Employee/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -62,9 +70,12 @@ namespace WareHouseManger.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Position = new SelectList(await _context.Positions.ToListAsync(), "PositionID", "Name", employee.PositionID);
             return View(employee);
         }
 
+        [Authorize(Roles = "Employee_Edit")]
         // GET: Employee/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -78,9 +89,12 @@ namespace WareHouseManger.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Position = new SelectList(await _context.Positions.ToListAsync(), "PositionID", "Name", employee.PositionID);
             return View(employee);
         }
 
+        [Authorize(Roles = "Employee_Edit")]
         // POST: Employee/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -113,9 +127,12 @@ namespace WareHouseManger.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Position = new SelectList(await _context.Positions.ToListAsync(), "PositionID", "Name", employee.PositionID);
             return View(employee);
         }
 
+        [Authorize(Roles = "Employee_Delete")]
         // GET: Employee/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -125,6 +142,7 @@ namespace WareHouseManger.Controllers
             }
 
             var employee = await _context.Employees
+                 .Include(t => t.Position)
                 .FirstOrDefaultAsync(m => m.EmployeeID == id);
             if (employee == null)
             {
@@ -134,12 +152,16 @@ namespace WareHouseManger.Controllers
             return View(employee);
         }
 
+        [Authorize(Roles = "Employee_Delete")]
         // POST: Employee/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employees
+                .Include(t => t.Position)
+                .FirstOrDefaultAsync(m => m.EmployeeID == id);
+
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -150,6 +172,7 @@ namespace WareHouseManger.Controllers
             return _context.Employees.Any(e => e.EmployeeID == id);
         }
 
+        [Authorize(Roles = "Account_Create")]
         public async Task<IActionResult> ActiveAcountConfirmed(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
@@ -161,7 +184,7 @@ namespace WareHouseManger.Controllers
                 string name = "NV";
                 string maxID = await _context.Accounts.MaxAsync(t => t.UserName);
 
-                maxID = maxID == null ? "0" : maxID;
+                maxID = maxID == null ? "0" : maxID.Trim() == "admin" ? "0" : maxID;
 
                 maxID = maxID.Replace(name, "").Trim();
 
@@ -186,18 +209,21 @@ namespace WareHouseManger.Controllers
                 account.EmployeeID = employee.EmployeeID;
 
                 await _context.AddAsync(account);
+                await _context.SaveChangesAsync();
 
             }
 
             return RedirectToAction("Role", new { id = id });
         }
 
+        [Authorize(Roles = "Account_Edit")]
         public async Task<IActionResult> Role(int id)
         {
+
             var roles = await _context.Account_Role_Details
-                .Where(t => t.AccountID == id)
-                .Select(t => t.Role.Name)
-                .ToArrayAsync();
+                    .Where(t => t.AccountID == id)
+                    .Select(t => t.Role.Name)
+                    .ToArrayAsync();
 
             ViewData["Roles"] = roles;
 

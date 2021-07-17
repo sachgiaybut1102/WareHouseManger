@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace WareHouseManger.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Index")]
         // GET: shop_Goods_Issue
         public async Task<IActionResult> Index()
         {
@@ -28,6 +30,7 @@ namespace WareHouseManger.Controllers
             return View(await dB_WareHouseMangerContext.OrderByDescending(t => t.GoodsIssueID).ToListAsync());
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Details")]
         // GET: shop_Goods_Issue/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -58,6 +61,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Issue);
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Create")]
         // GET: shop_Goods_Issue/Create
         public IActionResult Create()
         {
@@ -73,6 +77,7 @@ namespace WareHouseManger.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Create")]
         // POST: shop_Goods_Issue/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -91,6 +96,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Issue);
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Edit")]
         // GET: shop_Goods_Issue/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -109,6 +115,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Issue);
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Edit")]
         // POST: shop_Goods_Issue/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -146,6 +153,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Issue);
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Delete")]
         // GET: shop_Goods_Issue/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -166,6 +174,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Issue);
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Delete")]
         // POST: shop_Goods_Issue/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -188,6 +197,7 @@ namespace WareHouseManger.Controllers
             return _context.Shop_Goods_Issues.Any(e => e.GoodsIssueID == id);
         }
 
+        [Authorize(Roles = "Shop_Goods_Issues_Create")]
         [HttpPost]
         public async Task<JsonResult> CreateConfirmed(Shop_Goods_Issue info, string json)
         {
@@ -242,7 +252,7 @@ namespace WareHouseManger.Controllers
             return Json(new { msg = msg });
         }
 
-        public async Task UpdateCount(List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details, int num)
+        private async Task UpdateCount(List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details, int num)
         {
             //update count 
             var templateIds = shop_Goods_Issues_Details.Select(t => t.TemplateID).ToArray();

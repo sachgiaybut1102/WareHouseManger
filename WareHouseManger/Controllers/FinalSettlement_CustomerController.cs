@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace WareHouseManger.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "FinalSettlement_Customer_Index")]
         // GET: FinalSettlement_Customer
         public async Task<IActionResult> Index()
         {
@@ -29,6 +31,7 @@ namespace WareHouseManger.Controllers
             return View(await dB_WareHouseMangerContext.ToListAsync());
         }
 
+        [Authorize(Roles = "FinalSettlement_Customer_Details")]
         // GET: FinalSettlement_Customer/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -49,6 +52,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Customer);
         }
 
+        [Authorize(Roles = "FinalSettlement_Customer_Create")]
         // GET: FinalSettlement_Customer/Create
         public IActionResult Create()
         {
@@ -57,6 +61,7 @@ namespace WareHouseManger.Controllers
             return View();
         }
 
+        [Authorize(Roles = "FinalSettlement_Customer_Create")]
         // POST: FinalSettlement_Customer/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -75,6 +80,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Customer);
         }
 
+        [Authorize(Roles = "FinalSettlement_Customer_Edit")]
         // GET: FinalSettlement_Customer/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -93,6 +99,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Customer);
         }
 
+        [Authorize(Roles = "FinalSettlement_Customer_Edit")]
         // POST: FinalSettlement_Customer/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -130,6 +137,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Customer);
         }
 
+        [Authorize(Roles = "FinalSettlement_Customer_Delete")]
         // GET: FinalSettlement_Customer/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -150,6 +158,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Customer);
         }
 
+        [Authorize(Roles = "FinalSettlement_Customer_Delete")]
         // POST: FinalSettlement_Customer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -166,6 +175,7 @@ namespace WareHouseManger.Controllers
             return _context.FinalSettlement_Customers.Any(e => e.ID == id);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<JsonResult> GetByCustomerID(int customerID)
         {

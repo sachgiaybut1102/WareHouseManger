@@ -29,7 +29,7 @@
                         string check = roles.Contains(role.Name) ? "checked" : "";
 
                         <td>
-                            <input type="checkbox" @check data-toggle="toggle" data-on="Đã kích hoạt" data-off="Chưa kích hoạt" data-onstyle="success" data-offstyle="danger">
+                            <input type="checkbox" @check class="role" data-id="@role.RoleID" data-toggle="toggle" data-on="Đã kích hoạt" data-off="Chưa kích hoạt" data-onstyle="success" data-offstyle="danger">
                         </td>
                     }
                 </tr>
@@ -41,6 +41,7 @@
 
 @section scripts{
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <script src="~/js/Account/Role/edit.js"></script>
 }
 
 @section css{

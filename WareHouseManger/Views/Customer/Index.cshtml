@@ -24,6 +24,9 @@
                                 Họ tên
                             </th>
                             <th>
+                                Loại khách hàng
+                            </th>
+                            <th>
                                 Số điện thoại
                             </th>
                             <th>
@@ -41,6 +44,9 @@
                             <tr>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CustomerCategory.Name)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PhoneNumber)

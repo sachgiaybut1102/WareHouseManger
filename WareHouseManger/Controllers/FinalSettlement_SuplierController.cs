@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace WareHouseManger.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "FinalSettlement_Suplier_Index")]
         // GET: FinalSettlement_Suplier
         public async Task<IActionResult> Index()
         {
@@ -25,6 +27,7 @@ namespace WareHouseManger.Controllers
             return View(await dB_WareHouseMangerContext.ToListAsync());
         }
 
+        [Authorize(Roles = "FinalSettlement_Suplier_Details")]
         // GET: FinalSettlement_Suplier/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -45,6 +48,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Suplier);
         }
 
+        [Authorize(Roles = "FinalSettlement_Suplier_Create")]
         // GET: FinalSettlement_Suplier/Create
         public IActionResult Create()
         {
@@ -53,6 +57,7 @@ namespace WareHouseManger.Controllers
             return View();
         }
 
+        [Authorize(Roles = "FinalSettlement_Suplier_Create")]
         // POST: FinalSettlement_Suplier/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -71,6 +76,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Suplier);
         }
 
+        [Authorize(Roles = "FinalSettlement_Suplier_Edit")]
         // GET: FinalSettlement_Suplier/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -89,6 +95,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Suplier);
         }
 
+        [Authorize(Roles = "FinalSettlement_Suplier_Edit")]
         // POST: FinalSettlement_Suplier/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -126,6 +133,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Suplier);
         }
 
+        [Authorize(Roles = "FinalSettlement_Suplier_Delete")]
         // GET: FinalSettlement_Suplier/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -146,6 +154,7 @@ namespace WareHouseManger.Controllers
             return View(finalSettlement_Suplier);
         }
 
+        [Authorize(Roles = "FinalSettlement_Suplier_Delete")]
         // POST: FinalSettlement_Suplier/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

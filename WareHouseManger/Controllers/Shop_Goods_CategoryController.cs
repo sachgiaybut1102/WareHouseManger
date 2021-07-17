@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,14 @@ namespace WareHouseManger.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Shop_Goods_Category_Index")]
         // GET: Shop_Goods_Category
         public async Task<IActionResult> Index()
         {
             return View(await _context.Shop_Goods_Categories.ToListAsync());
         }
 
+        [Authorize(Roles = "Shop_Goods_Category_Details")]
         // GET: Shop_Goods_Category/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,12 +45,14 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Category);
         }
 
+        [Authorize(Roles = "Shop_Goods_Category_Create")]
         // GET: Shop_Goods_Category/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "Shop_Goods_Category_Create")]
         // POST: Shop_Goods_Category/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -64,6 +69,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Category);
         }
 
+        [Authorize(Roles = "Shop_Goods_Category_Edit")]
         // GET: Shop_Goods_Category/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -80,6 +86,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Category);
         }
 
+        [Authorize(Roles = "Shop_Goods_Category_Edit")]
         // POST: Shop_Goods_Category/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -115,6 +122,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Category);
         }
 
+        [Authorize(Roles = "Shop_Goods_Category_Delete")]
         // GET: Shop_Goods_Category/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -133,6 +141,7 @@ namespace WareHouseManger.Controllers
             return View(shop_Goods_Category);
         }
 
+        [Authorize(Roles = "Shop_Goods_Category_Delete")]
         // POST: Shop_Goods_Category/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
