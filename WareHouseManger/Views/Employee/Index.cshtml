@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    var editRole = User.Claims.Where(t => t.Type == System.Security.Claims.ClaimTypes.Role).Select(t => t.Value == "Account_Edit").Count() > 0 ? true : false;
 }
 
 <div class="row">
@@ -9,7 +11,7 @@
 
 
     <p>
-        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới nhà cùng cấp</i></a>
+        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
     </p>
 
     <div class="panel panel-default">
@@ -57,14 +59,18 @@
                                 <td class="text-center">
                                     @if (item.Accounts.Count > 0)
                                     {
-                                        <button class="btn btn-sm btn-success">Đang hoạt động</button>
+                                        <button class="btn btn-sm btn-block btn-success">Đang hoạt động</button>
                                     }
                                     else
                                     {
-                                        <a asp-action="ActiveAcountConfirmed" asp-route-id="@item.EmployeeID"  class="btn btn-sm btn-danger">Kích hoạt</a>
+                                        <a asp-action="ActiveAcountConfirmed" asp-route-id="@item.EmployeeID" class="btn btn-sm btn-block btn-danger">Kích hoạt</a>
                                     }
                                 </td>
-                                <td class="text-nowrap text-center" width="250px">
+                                <td class="text-nowrap text-right" max-width="350px">
+                                    @if (editRole && item.Accounts.Count > 0)
+                                    {
+                                        <a class="btn btn-sm btn-primary" asp-action="Role" asp-route-id="@item.EmployeeID"><i class="fa fa-user"> Phân quyền</i></a>
+                                    }
                                     <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.EmployeeID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>
                                     <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.EmployeeID"><i class="fa fa-file"> Chi tiết</i></a>
                                     <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.EmployeeID"><i class="fa fa-trash-o"> Xóa</i></a>
