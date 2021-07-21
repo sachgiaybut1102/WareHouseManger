@@ -3,73 +3,64 @@
 @{
     ViewData["Title"] = "Delete";
 }
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <h1>Xóa</h1>
-            <h3>Bạn có chắc muốn xóa?</h3>
-            <h4>Vật phẩm</h4>
-            <hr />
-            <div class="panel panel-default ">
-                <div class="panel-heading">Thông tin nhà cung cấp</div>
-                <div class="panel-body">
-
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="Name" class="control-label">Tên vật phẩm</label>
-                        <input asp-for="Name" class="form-control" readonly />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="CategoryID" class="control-label">Loại vật phẩm</label>
-                            <input class="form-control" value="@Model.Category.Name" readonly />
-                            <span asp-validation-for="CategoryID" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="UnitID" class="control-label">Đơn vị tính</label>
-                            <input class="form-control" value="@Model.Unit.Name" readonly />
-                            <span asp-validation-for="UnitID" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="ProducerID" class="control-label">Nhà sản xuất</label>
-                        <input class="form-control" value="@Model.Producer.Name" readonly />
-                        <span asp-validation-for="ProducerID" class="text-danger"></span>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label asp-for="Price" class="control-label">Giá bán</label>
-                            <input asp-for="Price" class="form-control" readonly />
-                            <span asp-validation-for="Price" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label asp-for="Count" class="control-label">Số lượng</label>
-                            <input asp-for="Count" class="form-control" readonly />
-                            <span asp-validation-for="Count" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label asp-for="CountMin" class="control-label">Số lượng tối thiểu</label>
-                            <input asp-for="CountMin" class="form-control" readonly />
-                            <span asp-validation-for="CountMin" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Description" class="control-label">Chú thích</label>
-                        <textarea asp-for="Description" class="form-control" rows="5" readonly></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="panel-footer text-right">
-                    <form asp-action="Delete">
-                        <input type="hidden" asp-for="TemplateID" />
-                        <input type="submit" value="Xóa" class="btn btn-danger" />
-                        <a class="btn btn-default" asp-action="Index">Quay lại</a>
-                    </form>
-                </div>
+<div class="card shadow container col-6">
+    <div class="card-body">
+        <h1>Xóa</h1>
+        <h3>Bạn có chắc muốn xóa?</h3>
+        <h4>Vật phẩm</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Tên vật phẩm</label>
+            <input asp-for="Name" class="form-control" readonly />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="CategoryID" class="control-label">Loại vật phẩm</label>
+                <input class="form-control" value="@Model.Category.Name" readonly />
+                <span asp-validation-for="CategoryID" class="text-danger"></span>
             </div>
+            <div class="form-group col-md-6">
+                <label asp-for="UnitID" class="control-label">Đơn vị tính</label>
+                <input class="form-control" value="@Model.Unit.Name" readonly />
+                <span asp-validation-for="UnitID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ProducerID" class="control-label">Nhà sản xuất</label>
+            <input class="form-control" value="@Model.Producer.Name" readonly />
+            <span asp-validation-for="ProducerID" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label asp-for="Price" class="control-label">Giá bán</label>
+                <input asp-for="Price" class="form-control" readonly />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="Count" class="control-label">Số lượng</label>
+                <input asp-for="Count" class="form-control" readonly />
+                <span asp-validation-for="Count" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="CountMin" class="control-label">Số lượng tối thiểu</label>
+                <input asp-for="CountMin" class="form-control" readonly />
+                <span asp-validation-for="CountMin" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label">Chú thích</label>
+            <textarea asp-for="Description" class="form-control" rows="5" readonly></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="panel-footer text-right">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="TemplateID" />
+                <input type="submit" value="Xóa" class="btn btn-danger" />
+                <a class="btn btn-light" asp-action="Index">Quay lại</a>
+            </form>
         </div>
     </div>
 </div>

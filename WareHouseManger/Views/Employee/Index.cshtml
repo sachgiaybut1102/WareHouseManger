@@ -6,80 +6,77 @@
     var editRole = User.Claims.Where(t => t.Type == System.Security.Claims.ClaimTypes.Role).Select(t => t.Value == "Account_Edit").Count() > 0 ? true : false;
 }
 
-<div class="row">
-    <h1 class="page-header">Nhân viên</h1>
-
-
-    <p>
-        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
-    </p>
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="table-responsive">
-
-
-                <table class="table table-bordered table-sm table-hover table-striped">
-                    <thead>
+<div class="card shadow">
+    <div class="card-body">
+        <h1>Nhân viên</h1>
+        <p>
+            <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+        </p>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Tên nhân viên
+                        </th>
+                        <th>
+                            Số điện thoại
+                        </th>
+                        <th>
+                            Địa chỉ
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th class="text-center">
+                            Tài khoản
+                        </th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
                         <tr>
-                            <th>
-                                Tên nhân viên
-                            </th>
-                            <th>
-                                Số điện thoại
-                            </th>
-                            <th>
-                                Địa chỉ
-                            </th>
-                            <th>
-                                Email
-                            </th>
-                            <th class="text-center">
-                                Tài khoản
-                            </th>
-                            <th></th>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Address)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EMail)
+                            </td>
+                            <td class="text-center">
+                                @if (item.Accounts.Count > 0)
+                                {
+                                    <button class="btn btn-sm btn-block btn-success">Đang hoạt động</button>
+                                }
+                                else
+                                {
+                                    <a asp-action="ActiveAcountConfirmed" asp-route-id="@item.EmployeeID" class="btn btn-sm btn-block btn-danger">Kích hoạt</a>
+                                }
+                            </td>
+                            <td>
+                                @if (editRole && item.Accounts.Count > 0)
+                                {
+                                    <a class="btn btn-sm btn-block btn-primary" asp-action="Role" asp-route-id="@item.EmployeeID"><i class="fa fa-user"> Phân quyền</i></a>
+                                }
+                            </td>
+                            <td class="text-nowrap text-center" max-width="1px">
+                                
+                                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.EmployeeID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>
+                                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.EmployeeID"><i class="fa fa-file"> Chi tiết</i></a>
+                                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.EmployeeID"><i class="fa fa-trash-o"> Xóa</i></a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Address)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.EMail)
-                                </td>
-                                <td class="text-center">
-                                    @if (item.Accounts.Count > 0)
-                                    {
-                                        <button class="btn btn-sm btn-block btn-success">Đang hoạt động</button>
-                                    }
-                                    else
-                                    {
-                                        <a asp-action="ActiveAcountConfirmed" asp-route-id="@item.EmployeeID" class="btn btn-sm btn-block btn-danger">Kích hoạt</a>
-                                    }
-                                </td>
-                                <td class="text-nowrap text-right" max-width="350px">
-                                    @if (editRole && item.Accounts.Count > 0)
-                                    {
-                                        <a class="btn btn-sm btn-primary" asp-action="Role" asp-route-id="@item.EmployeeID"><i class="fa fa-user"> Phân quyền</i></a>
-                                    }
-                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.EmployeeID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>
-                                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.EmployeeID"><i class="fa fa-file"> Chi tiết</i></a>
-                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.EmployeeID"><i class="fa fa-trash-o"> Xóa</i></a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

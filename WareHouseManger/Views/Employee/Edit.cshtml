@@ -4,56 +4,50 @@
     ViewData["Title"] = "Edit";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <h1>Chỉnh sửa</h1>
-            <h4>nhân viên</h4>
-            <hr />
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="EmployeeID" />
-                <div class="panel panel-default ">
-                    <div class="panel-heading">Thông tin nhân viên</div>
-                    <div class="panel-body">
+<div class="card shadow container col-6">
+    <div class="card-body">
+        <h1>Chỉnh sửa</h1>
+        <h4>nhân viên</h4>
+        <hr />
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="EmployeeID" />
 
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
-                            <label asp-for="Name" class="control-label">Tên nhân viên</label>
-                            <input asp-for="Name" class="form-control" autofocus />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="PositionID" class="control-label">chức vụ</label>
-                            <select asp-for="PositionID" class="form-control" asp-items="ViewBag.Position"></select>
-                            <span asp-validation-for="PositionID" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="PhoneNumber" class="control-label">Số điện thoại</label>
-                            <input asp-for="PhoneNumber" class="form-control" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Address" class="control-label">Địa chỉ</label>
-                            <input asp-for="Address" class="form-control" />
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="EMail" class="control-label"></label>
-                            <input asp-for="EMail" class="form-control" />
-                            <span asp-validation-for="EMail" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                        </div>
 
-                    </div>
-                    <div class="panel-footer text-right">
-                        <input type="submit" value="Lưu" class="btn btn-primary" />
-                        <a class="btn btn-default" asp-action="Index">Quay lại</a>
-                    </div>
-                </div>
-            </form>
-        </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Tên nhân viên</label>
+                <input asp-for="Name" class="form-control" autofocus />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PositionID" class="control-label">chức vụ</label>
+                <select asp-for="PositionID" class="form-control" asp-items="ViewBag.Position"></select>
+                <span asp-validation-for="PositionID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label">Số điện thoại</label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label">Địa chỉ</label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EMail" class="control-label"></label>
+                <input asp-for="EMail" class="form-control" />
+                <span asp-validation-for="EMail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+            </div>
+
+            <div class="panel-footer text-right">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+                <a class="btn btn-default" asp-action="Index">Quay lại</a>
+            </div>
+        </form>
     </div>
 </div>
 @section Scripts {

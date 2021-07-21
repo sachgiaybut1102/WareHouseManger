@@ -56,7 +56,7 @@ namespace WareHouseManger.Controllers
         // GET: FinalSettlement_Customer/Create
         public IActionResult Create()
         {
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "CustomerID");
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "Name");
             ViewData["GoodsIssuesID"] = new SelectList(_context.Shop_Goods_Issues, "GoodsIssueID", "GoodsIssueID");
             return View();
         }
@@ -75,7 +75,7 @@ namespace WareHouseManger.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "CustomerID", finalSettlement_Customer.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "Name", finalSettlement_Customer.CustomerID);
             ViewData["GoodsIssuesID"] = new SelectList(_context.Shop_Goods_Issues, "GoodsIssueID", "GoodsIssueID", finalSettlement_Customer.GoodsIssuesID);
             return View(finalSettlement_Customer);
         }
@@ -94,7 +94,7 @@ namespace WareHouseManger.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "CustomerID", finalSettlement_Customer.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "Name", finalSettlement_Customer.CustomerID);
             ViewData["GoodsIssuesID"] = new SelectList(_context.Shop_Goods_Issues, "GoodsIssueID", "GoodsIssueID", finalSettlement_Customer.GoodsIssuesID);
             return View(finalSettlement_Customer);
         }
@@ -132,7 +132,7 @@ namespace WareHouseManger.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "CustomerID", finalSettlement_Customer.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "Name", finalSettlement_Customer.CustomerID);
             ViewData["GoodsIssuesID"] = new SelectList(_context.Shop_Goods_Issues, "GoodsIssueID", "GoodsIssueID", finalSettlement_Customer.GoodsIssuesID);
             return View(finalSettlement_Customer);
         }

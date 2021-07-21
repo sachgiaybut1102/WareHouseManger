@@ -6,6 +6,41 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\FinalSettlement_Suplier\index.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\Account\Role\edit.js" />
+    <None Include="wwwroot\js\bootstrap.js" />
+    <None Include="wwwroot\js\bootstrap.min.js" />
+    <None Include="wwwroot\js\demo\dashboard-demo.js" />
+    <None Include="wwwroot\js\demo\flot-demo.js" />
+    <None Include="wwwroot\js\demo\morris-demo.js" />
+    <None Include="wwwroot\js\FinalSettlement_Customer\index.js" />
+    <None Include="wwwroot\js\FinalSettlement_Suplier\index.js" />
+    <None Include="wwwroot\js\fomatnumber.js" />
+    <None Include="wwwroot\js\Home\index.js" />
+    <None Include="wwwroot\js\jquery-1.10.2.js" />
+    <None Include="wwwroot\js\plugins\dataTables\dataTables.bootstrap.js" />
+    <None Include="wwwroot\js\plugins\dataTables\jquery.dataTables.js" />
+    <None Include="wwwroot\js\plugins\flot\excanvas.min.js" />
+    <None Include="wwwroot\js\plugins\flot\jquery.flot.js" />
+    <None Include="wwwroot\js\plugins\flot\jquery.flot.pie.js" />
+    <None Include="wwwroot\js\plugins\flot\jquery.flot.resize.js" />
+    <None Include="wwwroot\js\plugins\flot\jquery.flot.tooltip.min.js" />
+    <None Include="wwwroot\js\plugins\metisMenu\jquery.metisMenu.js" />
+    <None Include="wwwroot\js\plugins\morris\morris.js" />
+    <None Include="wwwroot\js\plugins\morris\raphael-2.1.0.min.js" />
+    <None Include="wwwroot\js\sb-admin.js" />
+    <None Include="wwwroot\js\Shop_Goods_Issues\add.js" />
+    <None Include="wwwroot\js\Shop_Goods_Issues\index.js" />
+    <None Include="wwwroot\js\Shop_Goods_Receipt\add.js" />
+    <None Include="wwwroot\js\Shop_Goods_Receipt\index.js" />
+    <None Include="wwwroot\js\Shop_Goods_StockTake\add.js" />
+    <None Include="wwwroot\js\site.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7">

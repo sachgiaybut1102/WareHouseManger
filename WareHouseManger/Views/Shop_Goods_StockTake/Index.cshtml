@@ -4,57 +4,53 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="row">
-    <h1 class="page-header">Phiếu kiểm hàng</h1>
+<div class="card shado">
+    <div class="card-body">
+        <h1>Phiếu kiểm hàng</h1>
+        <p>
+            <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+        </p>
+        <div class="table-responsive">
 
 
-    <p>
-        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
-    </p>
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="table-responsive">
-
-
-                <table class="table table-bordered table-sm table-hover table-striped">
-                    <thead>
+            <table class="table table-bordered table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Số PN
+                        </th>
+                        <th class="text-center">
+                            Ngày lập
+                        </th>
+                        <th>
+                            Nhân viên lập
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
                         <tr>
-                            <th>
-                                Số PN
-                            </th>
-                            <th class="text-center">
-                                Ngày lập
-                            </th>
-                            <th>
-                                Nhân viên lập
-                            </th>
-                            <th></th>
+                            <td>
+                                @item.StockTakeID
+                            </td>
+                            <td class="text-center">
+                                @item.DateCreated.Value.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Employee.Name)
+                            </td>
+                            <td class="text-nowrap text-center" width="150px">
+                                @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
+                                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.StockTakeID"><i class="fa fa-file"> Chi tiết</i></a>
+                                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.StockTakeID"><i class="fa fa-trash-o"> Xóa</i></a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @item.StockTakeID
-                                </td>
-                                <td class="text-center">
-                                    @item.DateCreated.Value.ToString("dd/MM/yyyy")
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Employee.Name)
-                                </td>
-                                <td class="text-nowrap text-center" width="150px">
-                                    @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
-                                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.StockTakeID"><i class="fa fa-file"> Chi tiết</i></a>
-                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.StockTakeID"><i class="fa fa-trash-o"> Xóa</i></a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+  

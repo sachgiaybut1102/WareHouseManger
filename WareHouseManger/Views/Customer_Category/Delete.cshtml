@@ -3,36 +3,30 @@
 @{
     ViewData["Title"] = "Delete";
 }
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <h1>Xóa</h1>
-            <h3>Bạn có chắc muốn xóa?</h3>
-            <h4>Loại khách hàng</h4>
-            <hr />
-            <div class="panel panel-default ">
-                <div class="panel-heading">Thông tin loại khách hàng</div>
-                <div class="panel-body">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="Name" class="control-label">Tên loại</label>
-                        <input asp-for="Name" class="form-control" autofocus />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Remark" class="control-label">Ghi chú</label>
-                        <input asp-for="Remark" class="form-control" />
-                        <span asp-validation-for="Remark" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="panel-footer text-right">
-                    <form asp-action="Delete">
-                        <input type="hidden" asp-for="CustomerCategoryID" />
-                        <input type="submit" value="Xóa" class="btn btn-danger" />
-                        <a class="btn btn-default" asp-action="Index">Quay lại</a>
-                    </form>
-                </div>
-            </div>
+<div class="card shadow container col-6">
+    <div class="card-body">
+        <h1>Xóa</h1>
+        <h3>Bạn có chắc muốn xóa?</h3>
+        <h4>Loại khách hàng</h4>
+        <hr />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Tên loại</label>
+            <input asp-for="Name" class="form-control" readonly />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Remark" class="control-label">Ghi chú</label>
+            <input asp-for="Remark" class="form-control" readonly />
+            <span asp-validation-for="Remark" class="text-danger"></span>
+        </div>
+        <div class="panel-footer text-right">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="CustomerCategoryID" />
+                <input type="submit" value="Xóa" class="btn btn-danger" />
+                <a class="btn btn-light" asp-action="Index">Quay lại</a>
+            </form>
         </div>
     </div>
 </div>

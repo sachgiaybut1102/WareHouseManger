@@ -4,84 +4,81 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="row">
-    <h1 class="page-header">Quyết toán khách hàng</h1>
 
-
-    @*<p>
-            <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
-        </p>*@
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="form-group">
+<div class="card shadow">
+    <div class="card-body">
+        <h1>Quyết toán khách hàng</h1>
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+            </div>
+            <div class="form-inline">
                 <input id="search" class="form-control" placeholder="Nhập vào từ khóa cần tìm" />
+                <button class="btn btn-primary ml-1">Tìm kiếm</button>
             </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-sm table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                Mã khách hàng
-                            </th>
-                            <th>
-                                Khách hàng
-                            </th>
-                            <th class="text-right">
-                                Tổng tiền
-                            </th>
-                            <th class="text-right">
-                                Đã thanh toán
-                            </th>
-                            <th class="text-right">
-                                Còn lại
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            var totalIssuess = item.Shop_Goods_Issues.Sum(t => t.Total);
-                            var totalFinalIssuess = item.FinalSettlement_Customers.Sum(t => t.Payment);
-                            var remainder = totalIssuess - totalFinalIssuess;
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Mã khách hàng
+                        </th>
+                        <th>
+                            Khách hàng
+                        </th>
+                        <th class="text-right">
+                            Tổng tiền
+                        </th>
+                        <th class="text-right">
+                            Đã thanh toán
+                        </th>
+                        <th class="text-right">
+                            Còn lại
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var totalIssuess = item.Shop_Goods_Issues.Sum(t => t.Total);
+                        var totalFinalIssuess = item.FinalSettlement_Customers.Sum(t => t.Payment);
+                        var remainder = totalIssuess - totalFinalIssuess;
 
-                            <tr>
-                                <td>
-                                    @item.CustomerID
-                                </td>
-                                <td>
-                                    @item.Name
-                                </td>
-                                <td class="text-right">
-                                    @string.Format("{0:N}", totalIssuess)
-                                </td>
-                                <td class="text-right">
-                                    @string.Format("{0:N}", totalFinalIssuess)
-                                </td>
-                                <td class="text-right">
-                                    @string.Format("{0:N}", remainder)
-                                </td>
-                                <td class="text-nowrap text-center" width="150px">
-                                    @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
-                                    @*<a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.CustomerID"><i class="fa fa-file"> Chi tiết</i></a>*@
-                                    @*<a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.CustomerID"><i class="fa fa-trash-o"> Xóa</i></a>*@
-                                    <button class="btn btn-sm btn-info btn-details" data-id="@item.CustomerID"><i class="fa fa-file"> Chi tiết</i></button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        <tr>
+                            <td>
+                                @item.CustomerID
+                            </td>
+                            <td>
+                                @item.Name
+                            </td>
+                            <td class="text-right">
+                                @string.Format("{0:N}", totalIssuess)
+                            </td>
+                            <td class="text-right">
+                                @string.Format("{0:N}", totalFinalIssuess)
+                            </td>
+                            <td class="text-right">
+                                @string.Format("{0:N}", remainder)
+                            </td>
+                            <td class="text-nowrap text-center" width="150px">
+                                @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
+                                @*<a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.CustomerID"><i class="fa fa-file"> Chi tiết</i></a>*@
+                                @*<a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.CustomerID"><i class="fa fa-trash-o"> Xóa</i></a>*@
+                                <button class="btn btn-sm btn-info btn-details" data-id="@item.CustomerID"><i class="fa fa-file"> Chi tiết</i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="modal-finalSettlement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title" id="myModalLabel">Chi tiết quyết toán</h4>
             </div>
             <div class="modal-body">
@@ -110,7 +107,7 @@
             </div>
             <div class="modal-footer">
                 @*<button id="btn-acceptFinalSettlement" type="button" class="btn btn-primary">Thêm</button>*@
-                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">Đóng</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -122,8 +119,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title" id="myModalLabel">Thêm quyết toán:</h4>
+                <h4 class="modal-title" id="myModalLabel">Thêm quyết toán</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -139,7 +135,7 @@
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label class="font-weight-bold">Số tiền cần thanh toán:</label>
-                        <input class="form-control" readonly/>
+                        <input class="form-control" readonly />
                     </div>
                     <div class="form-group col-md-4">
                         <label class="font-weight-bold">Số tiền thanh toán:</label>
@@ -153,7 +149,7 @@
             </div>
             <div class="modal-footer">
                 @*<button id="btn-acceptFinalSettlement" type="button" class="btn btn-primary">Thêm</button>*@
-                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">Đóng</button>
             </div>
         </div>
         <!-- /.modal-content -->

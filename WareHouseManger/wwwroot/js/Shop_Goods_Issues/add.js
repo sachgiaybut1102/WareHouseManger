@@ -50,6 +50,14 @@
         $(tds[tds.length - 2]).children(0).val(formatNumber(value));
     });
 
+    class ShopGoodsViewModel {
+        constructor(TemplateID, Count, UnitPrice) {
+            this.TemplateID = TemplateID;
+            this.Count = Count;
+            this.UnitPrice = UnitPrice;
+        }
+    }
+
     $('#btn-addrecepit').click(function () {
         var recepit = {
             DateCreated: $('#DateCreated').val(),

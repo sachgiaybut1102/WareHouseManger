@@ -4,80 +4,68 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="row">
-    <h1 class="page-header">Phiếu nhập hàng</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <td>
-                    <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
-                </td>
-                <td>
-                    <div class="form-inline text-right">
-                        <input id="search" class="form-control" placeholder="Nhập vào từ khóa cần tìm" />
-                        <button class="btn btn-sm btn-primary">Tìm kiếm</button>
-                    </div>
-                    
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-
-            <div class="table-responsive">
-                <table class="table table-bordered table-sm table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                Số PN
-                            </th>
-                            <th class="text-center">
-                                Ngày lập
-                            </th>
-                            <th>
-                                Tên nhà cung cấp
-                            </th>
-                            <th>
-                                Nhân viên nhận
-                            </th>
-                            <th class="text-right">
-                                Tổng tiền
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @item.GoodsReceiptID
-                                </td>
-                                <td class="text-center">
-                                    @item.DateCreated.Value.ToString("dd/MM/yyyy")
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Supplier.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Employee.Name)
-                                </td>
-                                <td class="text-right">
-                                    @string.Format("{0:N}", item.Total)
-                                </td>
-                                <td class="text-nowrap text-center" width="150px">
-                                    @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
-                                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.GoodsReceiptID"><i class="fa fa-file"> Chi tiết</i></a>
-                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.GoodsReceiptID"><i class="fa fa-trash-o"> Xóa</i></a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+<div class="card shadow">
+    <div class="card-body">
+        <h1>Phiếu nhập hàng</h1>
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
             </div>
+            <div class="form-inline text-right">
+                <input id="search" class="form-control mr-1" placeholder="Nhập vào từ khóa cần tìm" />
+                <button class="btn btn-sm btn-primary">Tìm kiếm</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Số PN
+                        </th>
+                        <th class="text-center">
+                            Ngày lập
+                        </th>
+                        <th>
+                            Tên nhà cung cấp
+                        </th>
+                        <th>
+                            Nhân viên nhận
+                        </th>
+                        <th class="text-right">
+                            Tổng tiền
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.GoodsReceiptID
+                            </td>
+                            <td class="text-center">
+                                @item.DateCreated.Value.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Supplier.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Employee.Name)
+                            </td>
+                            <td class="text-right">
+                                @string.Format("{0:N}", item.Total)
+                            </td>
+                            <td class="text-nowrap text-center" width="150px">
+                                @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
+                                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.GoodsReceiptID"><i class="fa fa-file"> Chi tiết</i></a>
+                                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.GoodsReceiptID"><i class="fa fa-trash-o"> Xóa</i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

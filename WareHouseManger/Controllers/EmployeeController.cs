@@ -62,7 +62,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeID,Name,PhoneNumber,Address,EMail")] Employee employee)
+        public async Task<IActionResult> Create([Bind("EmployeeID,Name,PhoneNumber,Address,EMail,PositionID")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmployeeID,Name,PhoneNumber,Address,EMail")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("EmployeeID,Name,PhoneNumber,Address,EMail,PositionID")] Employee employee)
         {
             if (id != employee.EmployeeID)
             {

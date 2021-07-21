@@ -4,52 +4,46 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="row">
-    <h1 class="page-header">Vật phẩm</h1>
-
-
-    <p>
-        <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới vật phẩm</i></a>
-    </p>
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="table-responsive">
-
-
-                <table class="table table-bordered table-sm table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                Mã vật phẩm
-                            </th>
-                            <th>
-                                Tên vật phẩm
-                            </th>
-                            <th>
-                                Loại sản phẩm
-                            </th>
-                            <th>
-                                Nhà sản xuất
-                            </th>
-                            <th class="text-center">
-                                Số lượng
-                            </th>
-                            <th class="text-center">
-                                ĐVT
-                            </th>
-                            <th class="text-center">
-                                SL tối thiểu
-                            </th>
-                            <th class="text-center">
-                                Giá bán
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
+<div class="card shadow">
+    <div class="card-body">
+        <h1>Vật phẩm</h1>
+        <p>
+            <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+        </p>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Mã vật phẩm
+                        </th>
+                        <th>
+                            Tên vật phẩm
+                        </th>
+                        <th>
+                            Loại sản phẩm
+                        </th>
+                        <th>
+                            Nhà sản xuất
+                        </th>
+                        <th class="text-center">
+                            Số lượng
+                        </th>
+                        <th class="text-center">
+                            ĐVT
+                        </th>
+                        <th class="text-center">
+                            SL tối thiểu
+                        </th>
+                        <th class="text-center">
+                            Giá bán
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.TemplateID)
@@ -64,8 +58,8 @@
                                 @Html.DisplayFor(modelItem => item.Producer.Name)
                             </td>
                             @*<td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>*@
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>*@
 
                             <td class="text-right">
                                 @string.Format("{0:N}", item.Count)
@@ -85,10 +79,9 @@
                                 <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.TemplateID"><i class="fa fa-trash-o"> Xóa</i></a>
                             </td>
                         </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

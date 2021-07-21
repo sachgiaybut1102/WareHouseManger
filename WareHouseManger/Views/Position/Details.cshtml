@@ -4,32 +4,26 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <h1>Chi tiết</h1>
-            <h4>Chức vụ</h4>
-            <hr />
-            <div class="panel panel-default ">
-                <div class="panel-heading">Thông tin chức vụ</div>
-                <div class="panel-body">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="Name" class="control-label">Tên chức vụ</label>
-                        <input asp-for="Name" class="form-control" autofocus />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Remark" class="control-label">Ghi chú</label>
-                        <input asp-for="Remark" class="form-control" />
-                        <span asp-validation-for="Remark" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="panel-footer text-right">
-                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.PositionID">Chỉnh sửa</a>
-                    <a class="btn btn-default" asp-action="Index">Quay lại</a>
-                </div>
-            </div>
+<div class="card shadow container col-6">
+    <div class="card-body">
+        <h1>Chi tiết</h1>
+        <h4>Chức vụ</h4>
+        <hr />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Tên chức vụ</label>
+            <input asp-for="Name" class="form-control" readonly />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Remark" class="control-label">Ghi chú</label>
+            <input asp-for="Remark" class="form-control" readonly />
+            <span asp-validation-for="Remark" class="text-danger"></span>
+        </div>
+        <div class="panel-footer text-right">
+            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.PositionID">Chỉnh sửa</a>
+            <a class="btn btn-default" asp-action="Index">Quay lại</a>
         </div>
     </div>
 </div>

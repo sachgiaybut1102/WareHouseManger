@@ -23,7 +23,10 @@ namespace WareHouseManger.Controllers
         // GET: FinalSettlement_Suplier
         public async Task<IActionResult> Index()
         {
-            var dB_WareHouseMangerContext = _context.FinalSettlement_Supliers.Include(f => f.GoodsReceipt).Include(f => f.Supplier);
+            var dB_WareHouseMangerContext = _context.Suppliers
+                .Include(t => t.FinalSettlement_Supliers)
+                .Include(t => t.Shop_Goods_Receipts);
+
             return View(await dB_WareHouseMangerContext.ToListAsync());
         }
 
