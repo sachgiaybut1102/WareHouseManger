@@ -174,7 +174,7 @@ function createConfirmed(info, json) {
             }
 
         }
-    })
+    });
 }
 
 $("#search").on("keyup", function () {
