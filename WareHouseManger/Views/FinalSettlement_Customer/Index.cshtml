@@ -10,7 +10,7 @@
         <h1>Quyết toán khách hàng</h1>
         <div class="d-flex justify-content-between mb-3">
             <div>
-                <a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+                @*<a class="btn btn-sm btn-success" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>*@
             </div>
             <div class="form-inline">
                 <input id="search" class="form-control" placeholder="Nhập vào từ khóa cần tìm" />
@@ -64,9 +64,9 @@
                             </td>
                             <td class="text-nowrap text-center" width="150px">
                                 @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@
-                                @*<a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.CustomerID"><i class="fa fa-file"> Chi tiết</i></a>*@
+                                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.CustomerID"><i class="fa fa-file"> Chi tiết</i></a>
                                 @*<a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.CustomerID"><i class="fa fa-trash-o"> Xóa</i></a>*@
-                                <button class="btn btn-sm btn-info btn-details" data-id="@item.CustomerID"><i class="fa fa-file"> Chi tiết</i></button>
+                                @*<button class="btn btn-sm btn-info btn-details" data-id="@item.CustomerID"><i class="fa fa-file"> Chi tiết</i></button>*@
                             </td>
                         </tr>
                     }

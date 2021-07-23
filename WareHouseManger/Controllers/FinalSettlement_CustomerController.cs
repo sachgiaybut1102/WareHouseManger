@@ -40,16 +40,24 @@ namespace WareHouseManger.Controllers
                 return NotFound();
             }
 
-            var finalSettlement_Customer = await _context.FinalSettlement_Customers
-                .Include(f => f.Customer)
-                .Include(f => f.GoodsIssues)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (finalSettlement_Customer == null)
-            {
-                return NotFound();
-            }
+            //var finalSettlement_Customer = await _context.FinalSettlement_Customers
+            //    .Include(f => f.Customer)
+            //    .Include(f => f.GoodsIssues)
+            //    .FirstOrDefaultAsync(m => m.ID == id);
 
-            return View(finalSettlement_Customer);
+            List<Shop_Goods_Issue> shop_Goods_Issue = await _context.Shop_Goods_Issues
+                .Where(t => t.CustomerID == id)
+                .Include(t => t.FinalSettlement_Customers)
+                .Include(t => t.Employee)
+                .OrderByDescending(t => t.GoodsIssueID)
+                .ToListAsync();
+
+            Customer customer = await _context.Customers.Include(t => t.CustomerCategory).Where(t => t.CustomerID == id).FirstOrDefaultAsync();
+
+            ViewBag.Customer = customer;
+
+
+            return View(shop_Goods_Issue);
         }
 
         [Authorize(Roles = "FinalSettlement_Customer_Create")]
@@ -177,16 +185,67 @@ namespace WareHouseManger.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<JsonResult> GetByCustomerID(int customerID)
+        public async Task<JsonResult> GetRemain(string goodsIssueID)
         {
-            List<FinalSettlement_Customer> finalSettlement_Customers = await _context.FinalSettlement_Customers
-                .Where(t => t.CustomerID == customerID)
-                .OrderByDescending(t => t.DateCreated)
-                .ToListAsync();
+            var model = await _context.Shop_Goods_Issues
+                .Include(t => t.FinalSettlement_Customers)
+                .Where(t => t.GoodsIssueID == goodsIssueID)
+                .FirstOrDefaultAsync();
 
             return Json(new
             {
-                data = finalSettlement_Customers
+                data = new
+                {
+                    remain = model.Total - model.FinalSettlement_Customers.Select(t => t.Payment).Sum()
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<JsonResult> GetByGoodsIssueID(string goodsIssueID)
+        {
+            var model = await _context.FinalSettlement_Customers
+                .Where(t => t.GoodsIssuesID == goodsIssueID)
+                .OrderByDescending(t => t.ID)
+                .ToArrayAsync();
+
+            return Json(new
+            {
+                data = model.Select(t => new
+                {
+                    DateCreated = t.DateCreated.Value.ToString("dd/MM/yyyy"),
+                    Payment = t.Payment,
+                    Remainder = t.Remainder
+                })
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> Add(FinalSettlement_Customer info)
+        {
+            string msg = "ok";
+
+            try
+            {
+                var model = await _context.Shop_Goods_Issues
+                .Include(t => t.FinalSettlement_Customers)
+                .Where(t => t.GoodsIssueID == info.GoodsIssuesID)
+                .FirstOrDefaultAsync();
+                info.Remainder = model.Total - info.Payment - model.FinalSettlement_Customers.Select(t => t.Payment).Sum();
+                _context.FinalSettlement_Customers.Add(info);
+                await _context.SaveChangesAsync();
+
+            }
+            catch
+            {
+                msg = "";
+            }
+
+            return Json(new
+            {
+                msg = msg
             });
         }
     }

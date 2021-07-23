@@ -1,48 +1,202 @@
-﻿@model WareHouseManger.Models.EF.FinalSettlement_Customer
+﻿@model List<WareHouseManger.Models.EF.Shop_Goods_Issue>
 
 @{
     ViewData["Title"] = "Details";
+
+    var list0 = Model.Where(t => t.Total <= t.FinalSettlement_Customers.Select(t => t.Payment).Sum()).ToList();
+
+    var list1 = Model.Where(t => !list0.Contains(t)).ToList();
+
+    var customer = ViewBag.Customer as WareHouseManger.Models.EF.Customer;
 }
-
-<h1>Details</h1>
-
-<div>
-    <h4>FinalSettlement_Customer</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateCreated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Payment)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Payment)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Remainder)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Remainder)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.CustomerID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GoodsIssues)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GoodsIssues.GoodsIssueID)
-        </dd>
-    </dl>
+<div class="card shadow">
+    <div class="card-body">
+        <h1>Chi tiết quyết toán</h1>
+        <div class="card shadow">
+            <div class="card-body">
+                <h4>Thông tin khách hàng</h4>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="@customer.CustomerID" hidden/>
+                <div class="form-group">
+                    <label asp-for="@customer.Name" class="control-label">Tên khách hàng</label>
+                    <input asp-for="@customer.Name" class="form-control" readonly />
+                    <span asp-validation-for="@customer.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@customer.CustomerCategoryID" class="control-label">Loại khách hàng</label>
+                    <input class="form-control" value="@customer.CustomerCategory.Name" readonly />
+                    <span asp-validation-for="@customer.CustomerCategoryID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@customer.PhoneNumber" class="control-label">Số điện thoại</label>
+                    <input asp-for="@customer.PhoneNumber" class="form-control" readonly />
+                    <span asp-validation-for="@customer.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@customer.Address" class="control-label">Địa chỉ</label>
+                    <input asp-for="@customer.Address" class="form-control" readonly />
+                    <span asp-validation-for="@customer.Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@customer.EMail" class="control-label"></label>
+                    <input asp-for="@customer.EMail" class="form-control" readonly />
+                    <span asp-validation-for="@customer.EMail" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h3>Danh sách hóa đơn chưa quyết toán xong</h3>
+                <div class="table-responsive shadow">
+                    <table class="table table-sm table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Số hóa đơn</th>
+                                <th>Ngày lập</th>
+                                <th>Nhân viên lập</th>
+                                <th class="text-right">Tổng tiền</th>
+                                <th class="text-right">Đã thanh toán</th>
+                                <th class="text-right">Còn lại</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (list1.Count > 0)
+                            {
+                                foreach (var info in list1)
+                                {
+                                    <tr>
+                                        <td>@info.GoodsIssueID</td>
+                                        <td>@info.DateCreated.Value.ToString("dd/MM/yyyy")</td>
+                                        <td>@info.Employee.Name</td>
+                                        <td class="text-right">@{ var total0 = string.Format("{0:N}", info.Total);}@total0</td>
+                                        <td class="text-right">@{ var total1 = string.Format("{0:N}", info.FinalSettlement_Customers.Select(t => t.Payment).Sum());}@total1</td>
+                                        <td class="text-right">@{ var total2 = string.Format("{0:N}", info.Total - info.FinalSettlement_Customers.Select(t => t.Payment).Sum());}@total2</td>
+                                        <td class="text-nowrap" style="width:1px;"><button class="btn btn-sm btn-info details">Chi tiết</button></td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="font-italic">Không tìm thấy kết quả nào cả!!!</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h3>Danh sách hóa đơn đã quyết toán</h3>
+                    <div class="table-responsive shadow">
+                        <table class="table table-sm table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Số hóa đơn</th>
+                                    <th>Ngày lập</th>
+                                    <th>Nhân viên lập</th>
+                                    <th class="text-right">Tổng tiền</th>
+                                    <th class="text-right">Đã thanh toán</th>
+                                    <th class="text-right">Còn lại</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (list0.Count > 0)
+                                {
+                                    foreach (var info in list0)
+                                    {
+                                        <tr>
+                                            <td>@info.GoodsIssueID</td>
+                                            <td>@info.DateCreated.Value.ToString("dd/MM/yyyy")</td>
+                                            <td>@info.Employee.Name</td>
+                                            <td class="text-right">@{ var total0 = string.Format("{0:N}", info.Total);}@total0</td>
+                                            <td class="text-right">@{ var total1 = string.Format("{0:N}", info.FinalSettlement_Customers.Select(t => t.Payment).Sum());}@total1</td>
+                                            <td class="text-right">@{ var total2 = string.Format("{0:N}", info.Total - info.FinalSettlement_Customers.Select(t => t.Payment).Sum());}@total2</td>
+                                            <td class="text-nowrap" style="width:1px;"><button class="btn btn-sm btn-info details">Chi tiết</button></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="font-italic">Không tìm thấy kết quả nào cả!!!</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="modal fade" id="modal-addFinalSettlement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Thêm quyết toán</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-bold">Số hóa đơn:</label>
+                        <input id="id" class="form-control" readonly />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-bold">Ngày quyết toán:</label>
+                        <input id="date-created" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label class="font-weight-bold">Số tiền cần thanh toán:</label>
+                        <input id="remain" class="form-control text-right" readonly />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="font-weight-bold">Số tiền thanh toán:</label>
+                        <input id="num0" class="form-control text-right num" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="font-weight-bold">Còn lại:</label>
+                        <input id="num1" class="form-control text-right num" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="font-weight-bold">Xác nhận</label>
+                        <div>
+                            <button id="btn-acceptFinalSettlement" type="button" class="btn btn-primary">Quyết toán</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <table id="tb-history-finalsettlement" class="table table-sm table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Ngày quyết toán</th>
+                                <th class="text-right">Số tiền quyết toán</th>
+                                <th class="text-right">Còn lại</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+        
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
+
+@section scripts{
+    <script src="~/js/fomatnumber.js"></script>
+    <script src="~/js/FinalSettlement_Customer/details.js"></script>
+}

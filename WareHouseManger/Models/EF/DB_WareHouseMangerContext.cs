@@ -47,7 +47,7 @@ namespace WareHouseManger.Models.EF
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-54ADATL\\MINHPC;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-Q7IUOUM;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
             }
         }
 
@@ -174,8 +174,6 @@ namespace WareHouseManger.Models.EF
             {
                 entity.ToTable("FinalSettlement_Customer");
 
-                entity.Property(e => e.ID).ValueGeneratedNever();
-
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
                 entity.Property(e => e.GoodsIssuesID)
@@ -201,8 +199,6 @@ namespace WareHouseManger.Models.EF
             modelBuilder.Entity<FinalSettlement_Suplier>(entity =>
             {
                 entity.ToTable("FinalSettlement_Suplier");
-
-                entity.Property(e => e.ID).ValueGeneratedNever();
 
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
