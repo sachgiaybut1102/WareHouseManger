@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WareHouseManger.Models.EF;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -21,14 +22,23 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "FinalSettlement_Suplier_Index")]
         // GET: FinalSettlement_Suplier
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            var dB_WareHouseMangerContext = _context.Suppliers
-                .Include(t => t.FinalSettlement_Supliers)
-                .Include(t => t.Shop_Goods_Receipts);
+            int currentPage = (int)(page != null ? page : 1);
 
-            return View(await dB_WareHouseMangerContext.ToListAsync());
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
+            return View(await _context.Suppliers
+                .Include(t => t.FinalSettlement_Supliers)
+                .Include(t => t.Shop_Goods_Receipts)
+                .Where(t => t.Name.Contains(keyword))
+                .OrderByDescending(t => t.SupplierID)
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
+
 
         [Authorize(Roles = "FinalSettlement_Suplier_Details")]
         // GET: FinalSettlement_Suplier/Details/5
@@ -39,16 +49,18 @@ namespace WareHouseManger.Controllers
                 return NotFound();
             }
 
-            var finalSettlement_Suplier = await _context.FinalSettlement_Supliers
-                .Include(f => f.GoodsReceipt)
-                .Include(f => f.Supplier)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (finalSettlement_Suplier == null)
-            {
-                return NotFound();
-            }
+            List<Shop_Goods_Receipt> shop_Goods_Receipts = await _context.Shop_Goods_Receipts
+                 .Where(t => t.SupplierID == id)
+                 .Include(t => t.FinalSettlement_Supliers)
+                 .Include(t => t.Employee)
+                 .OrderByDescending(t => t.GoodsReceiptID)
+                 .ToListAsync();
 
-            return View(finalSettlement_Suplier);
+            Supplier supplier = await _context.Suppliers.Where(t => t.SupplierID == id).FirstOrDefaultAsync();
+
+            ViewBag.Supplier = supplier;
+
+            return View(shop_Goods_Receipts);
         }
 
         [Authorize(Roles = "FinalSettlement_Suplier_Create")]
@@ -172,6 +184,74 @@ namespace WareHouseManger.Controllers
         private bool FinalSettlement_SuplierExists(int id)
         {
             return _context.FinalSettlement_Supliers.Any(e => e.ID == id);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<JsonResult> GetRemain(string goodsReceiptID)
+        {
+            var model = await _context.Shop_Goods_Receipts
+                .Include(t => t.FinalSettlement_Supliers)
+                .Where(t => t.GoodsReceiptID == goodsReceiptID)
+                .FirstOrDefaultAsync();
+
+            return Json(new
+            {
+                data = new
+                {
+                    remain = model.Total - model.FinalSettlement_Supliers.Select(t => t.Payment).Sum()
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<JsonResult> GetByGoodsReceiptID(string goodsReceiptID)
+        {
+            var model = await _context.FinalSettlement_Supliers
+                .Where(t => t.GoodsReceiptID == goodsReceiptID)
+                .OrderByDescending(t => t.ID)
+                .ToArrayAsync();
+
+            return Json(new
+            {
+                data = model.Select(t => new
+                {
+                    DateCreated = t.DateCreated.Value.ToString("dd/MM/yyyy"),
+                    Payment = t.Payment,
+                    Remainder = t.Remainder
+                })
+            });
+        }
+
+        [Authorize(Roles = "FinalSettlement_Suplier_Create")]
+        [HttpPost]
+        public async Task<JsonResult> Add(FinalSettlement_Suplier info)
+        {
+            string msg = "ok";
+
+            try
+            {
+                var model = await _context.Shop_Goods_Receipts
+                .Include(t => t.FinalSettlement_Supliers)
+                .Where(t => t.GoodsReceiptID == info.GoodsReceiptID)
+                .FirstOrDefaultAsync();
+
+                info.Remainder = model.Total - info.Payment - model.FinalSettlement_Supliers.Select(t => t.Payment).Sum();
+
+                _context.FinalSettlement_Supliers.Add(info);
+                await _context.SaveChangesAsync();
+
+            }
+            catch
+            {
+                msg = "";
+            }
+
+            return Json(new
+            {
+                msg = msg
+            });
         }
     }
 }

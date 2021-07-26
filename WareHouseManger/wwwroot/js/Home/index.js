@@ -3,7 +3,15 @@
 
     $('#btn-submit0').click(function () {
         getDetails();
-    })
+    });
+
+    $('#datetype').change(function () {
+        if ($(this).val() == 'month') {
+            $('#month').removeAttr('disabled');
+        } else {
+            $('#month').attr('disabled', 'disabled');
+        }
+    });
 });
 
 function getDetails() {

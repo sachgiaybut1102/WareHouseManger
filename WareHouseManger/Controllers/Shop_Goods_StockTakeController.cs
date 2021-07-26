@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WareHouseManger.Models.EF;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -22,11 +23,22 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Shop_Goods_StockTake_Index")]
         // GET: Shop_Goods_StockTake
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            var dB_WareHouseMangerContext = _context.Shop_Goods_StockTakes.Include(s => s.Employee);
-            return View(await dB_WareHouseMangerContext.ToListAsync());
+            int currentPage = (int)(page != null ? page : 1);
+
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
+            return View(await _context.Shop_Goods_StockTakes
+                .Include(t=>t.Employee)
+                .Where(t => t.StockTakeID.Contains(keyword) || t.Employee.Name.Contains(keyword))
+                .OrderByDescending(t => t.StockTakeID)
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
+
 
         [Authorize(Roles = "Shop_Goods_StockTake_Details")]
         // GET: Shop_Goods_StockTake/Details/5
@@ -169,9 +181,16 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var shop_Goods_StockTake = await _context.Shop_Goods_StockTakes.FindAsync(id);
-            _context.Shop_Goods_StockTakes.Remove(shop_Goods_StockTake);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var shop_Goods_StockTake = await _context.Shop_Goods_StockTakes.FindAsync(id);
+                _context.Shop_Goods_StockTakes.Remove(shop_Goods_StockTake);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+
+            }
             return RedirectToAction(nameof(Index));
         }
 

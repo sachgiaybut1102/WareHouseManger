@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WareHouseManger.Models.EF;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -21,15 +22,23 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "FinalSettlement_Customer_Index")]
         // GET: FinalSettlement_Customer
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            //var dB_WareHouseMangerContext = _context.FinalSettlement_Customers.Include(f => f.Customer).Include(f => f.GoodsIssues);
-            var dB_WareHouseMangerContext = _context.Customers
-                .Include(t => t.FinalSettlement_Customers)
-                .Include(t => t.Shop_Goods_Issues);
+            int currentPage = (int)(page != null ? page : 1);
 
-            return View(await dB_WareHouseMangerContext.ToListAsync());
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
+            return View(await _context.Customers
+                .Include(t => t.FinalSettlement_Customers)
+                .Include(t => t.Shop_Goods_Issues)
+                .Where(t => t.Name.Contains(keyword))
+                .OrderByDescending(t => t.CustomerID)
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
+
 
         [Authorize(Roles = "FinalSettlement_Customer_Details")]
         // GET: FinalSettlement_Customer/Details/5
@@ -221,7 +230,7 @@ namespace WareHouseManger.Controllers
             });
         }
 
-        [Authorize]
+        [Authorize(Roles = "FinalSettlement_Customer_Create")]
         [HttpPost]
         public async Task<JsonResult> Add(FinalSettlement_Customer info)
         {

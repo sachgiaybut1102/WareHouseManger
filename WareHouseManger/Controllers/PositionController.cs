@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WareHouseManger.Models.EF;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -21,9 +22,19 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Position_Index")]
         // GET: Position
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            return View(await _context.Positions.ToListAsync());
+            int currentPage = (int)(page != null ? page : 1);
+
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
+            return View(await _context.Positions
+                .Where(t => t.Name.Contains(keyword))
+                .OrderByDescending(t => t.PositionID)
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
 
         [Authorize(Roles = "Position_Details")]
@@ -147,9 +158,16 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var producer = await _context.Positions.FindAsync(id);
-            _context.Positions.Remove(producer);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var producer = await _context.Positions.FindAsync(id);
+                _context.Positions.Remove(producer);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+
+            }
             return RedirectToAction(nameof(Index));
         }
 

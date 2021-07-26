@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WareHouseManger.Models.EF;
 using WareHouseManger.ViewModels;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -24,10 +25,25 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Shop_Goods_Receipt_Index")]
         // GET: Shop_Goods_Receipt
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            var dB_WareHouseMangerContext = _context.Shop_Goods_Receipts.Include(s => s.Employee).Include(s => s.Supplier);
-            return View(await dB_WareHouseMangerContext.OrderByDescending(t => t.GoodsReceiptID).ToListAsync());
+            int currentPage = (int)(page != null ? page : 1);
+
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
+            return View(await _context.Shop_Goods_Receipts
+                .Include(s => s.Employee)
+                .Include(s => s.Supplier)
+                .Where(t => t.GoodsReceiptID.Contains(keyword) ||
+                t.SupplierID.ToString().Contains(keyword) ||
+                t.Supplier.Name.Contains(keyword) ||
+                t.EmployeeID.ToString().Contains(keyword) ||
+                t.Employee.Name.Contains(keyword))
+                .OrderByDescending(t => t.GoodsReceiptID)
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
 
         [Authorize(Roles = "Shop_Goods_Receipt_Details")]
@@ -180,16 +196,23 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var shop_Goods_Receipt = await _context.Shop_Goods_Receipts.FindAsync(id);
+            try
+            {
+                var shop_Goods_Receipt = await _context.Shop_Goods_Receipts.FindAsync(id);
 
-            var shop_Goods_Receipt_Details = await _context.Shop_Goods_Receipt_Details.Where(t => t.GoodsReceiptID == id).ToListAsync();
+                var shop_Goods_Receipt_Details = await _context.Shop_Goods_Receipt_Details.Where(t => t.GoodsReceiptID == id).ToListAsync();
 
-            _context.Shop_Goods_Receipt_Details.RemoveRange(shop_Goods_Receipt_Details);
-            _context.Shop_Goods_Receipts.Remove(shop_Goods_Receipt);
+                _context.Shop_Goods_Receipt_Details.RemoveRange(shop_Goods_Receipt_Details);
+                _context.Shop_Goods_Receipts.Remove(shop_Goods_Receipt);
 
-            await UpdateCount(shop_Goods_Receipt_Details, -1);
+                await UpdateCount(shop_Goods_Receipt_Details, -1);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                 
+            }
 
             return RedirectToAction(nameof(Index));
         }

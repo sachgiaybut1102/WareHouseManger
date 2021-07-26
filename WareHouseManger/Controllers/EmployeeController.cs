@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WareHouseManger.Common;
 using WareHouseManger.Models.EF;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -22,10 +23,25 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Employee_Index")]
         // GET: Employee
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            return View(await _context.Employees.Include(t => t.Accounts).OrderByDescending(t => t.EmployeeID).ToListAsync());
+            int currentPage = (int)(page != null ? page : 1);
+
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
+            return View(await _context.Employees
+                .Include(t => t.Accounts)
+                .Where(t => t.EmployeeID.ToString().Contains(keyword) ||
+                t.Name.Contains(keyword) ||
+                t.PhoneNumber.Contains(keyword) ||
+                t.EMail.Contains(keyword))
+                .OrderByDescending(t => t.EmployeeID)
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
+
 
         [Authorize(Roles = "Employee_Details")]
         // GET: Employee/Details/5
@@ -158,12 +174,20 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees
-                .Include(t => t.Position)
-                .FirstOrDefaultAsync(m => m.EmployeeID == id);
+            try
+            {
+                var employee = await _context.Employees
+                    .Include(t => t.Position)
+                    .FirstOrDefaultAsync(m => m.EmployeeID == id);
 
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
+                _context.Employees.Remove(employee);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

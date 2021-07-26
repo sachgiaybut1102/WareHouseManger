@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WareHouseManger.Models.EF;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -21,10 +22,21 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Supplier_Index")]
         // GET: Supplier
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            return View(await _context.Suppliers.ToListAsync());
+            int currentPage = (int)(page != null ? page : 1);
+
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
+            return View(await _context.Suppliers
+                .Where(t => t.Name.Contains(keyword))
+                .OrderByDescending(t => t.SupplierID)
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
+
 
         [Authorize(Roles = "Supplier_Details")]
         // GET: Supplier/Details/5
@@ -147,9 +159,17 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var supplier = await _context.Suppliers.FindAsync(id);
-            _context.Suppliers.Remove(supplier);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var supplier = await _context.Suppliers.FindAsync(id);
+                _context.Suppliers.Remove(supplier);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

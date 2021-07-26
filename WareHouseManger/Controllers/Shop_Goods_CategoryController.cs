@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WareHouseManger.Models.EF;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -21,10 +22,21 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Shop_Goods_Category_Index")]
         // GET: Shop_Goods_Category
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            return View(await _context.Shop_Goods_Categories.ToListAsync());
+            int currentPage = (int)(page != null ? page : 1);
+
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
+            return View(await _context.Shop_Goods_Categories
+                .Where(t => t.Name.Contains(keyword))
+                .OrderByDescending(t => t.CategoryID)
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
+
 
         [Authorize(Roles = "Shop_Goods_Category_Details")]
         // GET: Shop_Goods_Category/Details/5
@@ -147,9 +159,16 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var shop_Goods_Category = await _context.Shop_Goods_Categories.FindAsync(id);
-            _context.Shop_Goods_Categories.Remove(shop_Goods_Category);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var shop_Goods_Category = await _context.Shop_Goods_Categories.FindAsync(id);
+                _context.Shop_Goods_Categories.Remove(shop_Goods_Category);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+
+            }
             return RedirectToAction(nameof(Index));
         }
 

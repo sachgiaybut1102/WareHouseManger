@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WareHouseManger.Models.EF;
+using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
@@ -21,13 +22,25 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Customer_Index")]
         // GET: Customer
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
+            int currentPage = (int)(page != null ? page : 1);
+
+            keyword = keyword != null ? keyword : "";
+
+            ViewBag.Keyword = keyword;
+
             return View(await _context.Customers
                 .Include(t => t.CustomerCategory)
+                .Where(t => t.CustomerID.ToString().Contains(keyword) ||
+                t.Name.Contains(keyword) ||
+                t.PhoneNumber.Contains(keyword) ||
+                t.EMail.Contains(keyword))
                 .OrderByDescending(t => t.CustomerCategoryID)
-                .ToListAsync());
+                .ToList()
+                .ToPagedListAsync(currentPage, 10));
         }
+
 
         [Authorize(Roles = "Customer_Details")]
         // GET: Customer/Details/5
@@ -159,12 +172,20 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers
-                .Include(t => t.CustomerCategory)
-                .FirstOrDefaultAsync(m => m.CustomerID == id);
+            try
+            {
+                var customer = await _context.Customers
+                    .Include(t => t.CustomerCategory)
+                    .FirstOrDefaultAsync(m => m.CustomerID == id);
 
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
+                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();              
+            }
+            catch
+            {
+
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -135,7 +135,7 @@
                         <span class="font-weight-bold">Thống kê theo</span>
                     </div>
                     <div class="col-auto">
-                        <select id="" class="form-control">
+                        <select id="datetype" class="form-control">
                             <option value="month">Tháng</option>
                             <option value="year">Năm</option>
                         </select>
@@ -143,7 +143,7 @@
                     <div class="col-auto">
                         <span class="font-weight-bold">Tháng</span>
                     </div>
-                    <div class="col-auto">
+                    <div id="month" class="col-auto">
                         <select id="" class="form-control">
                             @for (int i = 1; i <= 12; i++)
                             {
@@ -155,7 +155,7 @@
                         <span class="font-weight-bold">Năm</span>
                     </div>
                     <div class="col-auto">
-                        <select id="" class="form-control">
+                        <select id="year" class="form-control">
                             @for (int i = DateTime.Now.Year; i >= 1990; i--)
                             {
                                 <option value="@i">@i</option>
