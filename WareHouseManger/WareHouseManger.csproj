@@ -59,4 +59,8 @@
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DocFile\" />
+  </ItemGroup>
+
 </Project>
