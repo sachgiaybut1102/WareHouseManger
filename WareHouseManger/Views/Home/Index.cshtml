@@ -143,8 +143,8 @@
                     <div class="col-auto">
                         <span class="font-weight-bold">Tháng</span>
                     </div>
-                    <div id="month" class="col-auto">
-                        <select id="" class="form-control">
+                    <div class="col-auto">
+                        <select id="month" class="form-control">
                             @for (int i = 1; i <= 12; i++)
                             {
                                 <option value="@i">@i</option>
@@ -163,7 +163,7 @@
                         </select>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-primary">Xem thống kê</button>
+                        <button id="btn-submit-chart" class="btn btn-primary">Xem thống kê</button>
                     </div>
                 </div>
                 <!-- /.panel-heading -->
@@ -185,68 +185,22 @@
         </div>
         <div class="card mt-3">
             <div class="card-body">
-                <h3>Danh sách sản phẩm bán chạy</h3>
+                <h3>Danh sách sản phẩm theo doanh thu</h3>
                 <!-- /.panel-heading -->
 
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-striped">
+                    <table id="tb-rank-shopgoods" class="table table-bordered table-hover table-striped">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Mã sản phẩm</th>
                                 <th>Tên sản phẩm</th>
-                                <th>Số lượng đã bán</th>
+                                <th class="text-right">Số lượng đã bán</th>
+                                <th class="text-right">Doanh thu</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>3326</td>
-                                <td>10/21/2013</td>
-                                <td>3:29 PM</td>
-                                <td>$321.33</td>
-                            </tr>
-                            <tr>
-                                <td>3325</td>
-                                <td>10/21/2013</td>
-                                <td>3:20 PM</td>
-                                <td>$234.34</td>
-                            </tr>
-                            <tr>
-                                <td>3324</td>
-                                <td>10/21/2013</td>
-                                <td>3:03 PM</td>
-                                <td>$724.17</td>
-                            </tr>
-                            <tr>
-                                <td>3323</td>
-                                <td>10/21/2013</td>
-                                <td>3:00 PM</td>
-                                <td>$23.71</td>
-                            </tr>
-                            <tr>
-                                <td>3322</td>
-                                <td>10/21/2013</td>
-                                <td>2:49 PM</td>
-                                <td>$8345.23</td>
-                            </tr>
-                            <tr>
-                                <td>3321</td>
-                                <td>10/21/2013</td>
-                                <td>2:23 PM</td>
-                                <td>$245.12</td>
-                            </tr>
-                            <tr>
-                                <td>3320</td>
-                                <td>10/21/2013</td>
-                                <td>2:15 PM</td>
-                                <td>$5663.54</td>
-                            </tr>
-                            <tr>
-                                <td>3319</td>
-                                <td>10/21/2013</td>
-                                <td>2:13 PM</td>
-                                <td>$943.45</td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
@@ -261,5 +215,6 @@
     <script src="~/js/fomatnumber.js"></script>
     <script src="~/js/plugins/morris/raphael-2.1.0.min.js"></script>
     <script src="~/js/plugins/morris/morris.js"></script>
+    <script src="/vendor/chart.js/Chart.min.js"></script>
     <script src="~/js/Home/index.js"></script>
 }

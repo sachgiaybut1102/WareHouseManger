@@ -44,9 +44,9 @@
                                 <th>Loại hàng hóa</th>
                                 <th>Nhà sản xuất</th>
                                 <th>Đơn vị tính</th>
-                                <th class="text-center">Số lượng</th>
-                                <th class="text-center">Đơn giá</th>
-                                <th class="text-center">Tổng</th>
+                                <th class="text-right">Số lượng</th>
+                                <th class="text-right">Đơn giá</th>
+                                <th class="text-right">Tổng</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,13 +61,13 @@
                                         <td>@item.Template.Category.Name</td>
                                         <td>@item.Template.Producer.Name</td>
                                         <td>@item.Template.Unit.Name</td>
-                                        <td class="text-right">@{ var count = string.Format("{0:N}", item.Count); }@count</td>
-                                        <td class="text-right">@{ var unitPrice = string.Format("{0:N}", item.UnitPrice); }@unitPrice</td>
-                                        <td class="text-right">@{ var total = string.Format("{0:N}", (item.Count * item.UnitPrice));}@total</td>
+                                        <td class="text-right">@{ var count = string.Format("{0:N}", item.Count).Replace(".00", ""); }@count</td>
+                                        <td class="text-right">@{ var unitPrice = string.Format("{0:N}", item.UnitPrice).Replace(".00", ""); }@unitPrice</td>
+                                        <td class="text-right">@{ var total = string.Format("{0:N}", (item.Count * item.UnitPrice)).Replace(".00", "");}@total</td>
                                     </tr>
                                 }
                                 <tr>
-                                    <th colspan="8" class="text-right"><span class="font-weight-bold">Tổng tiền: @{var totals = string.Format("{0:N}", shop_Goods_Receipt_Details.Select(t => t.Count * t.UnitPrice).Sum());} @totals</span></th>
+                                    <th colspan="8" class="text-right"><span class="font-weight-bold">Tổng tiền: @{var totals = string.Format("{0:N}", shop_Goods_Receipt_Details.Select(t => t.Count * t.UnitPrice).Sum()).Replace(".00", "");} @totals</span></th>
                                 </tr>
                             }
                         </tbody>

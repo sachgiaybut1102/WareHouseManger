@@ -58,7 +58,7 @@
                                 @Html.DisplayFor(modelItem => item.Employee.Name)
                             </td>
                             <td class="text-right">
-                                @string.Format("{0:N}", item.Total)
+                                @string.Format("{0:N}", item.Total).Replace(".00", "")
                             </td>
                             <td class="text-nowrap text-center" width="150px">
                                 @*<a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.GoodsReceiptID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>*@

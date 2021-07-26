@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WareHouseManger.Models;
+using WareHouseManger.Models.EF;
 
 namespace WareHouseManger.Controllers
 {
@@ -37,6 +38,7 @@ namespace WareHouseManger.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult GetDetails(DateTime startDate, DateTime endDate)
         {
@@ -56,6 +58,59 @@ namespace WareHouseManger.Controllers
                     revenue = revenue,
                     cost = cost
                 }
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetChart(string type, int month, int year)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            List<StatisticsInfo> sumReceipts = new List<StatisticsInfo>();
+            List<StatisticsInfo> sumIssues = new List<StatisticsInfo>();
+
+            if (type == "month")
+            {
+                sumReceipts = await statisticsDAO.GetCountShop_Goods_ReceiptByMonth(month, year);
+                sumIssues = await statisticsDAO.GetCountShop_Goods_IssuesByMonth(month, year);
+            }
+            else if (type == "year")
+            {
+                sumReceipts = await statisticsDAO.GetCountShop_Goods_ReceiptByYear(year);
+                sumIssues = await statisticsDAO.GetCountShop_Goods_IssuesByYear(year);
+            }
+
+            return Json(new
+            {
+                data = new
+                {
+                    sumReceipts = sumReceipts,
+                    sumIssues = sumIssues
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetRankTemplate(string type, int month, int year)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            List<StatisticsShopGoodsInfo> list = new List<StatisticsShopGoodsInfo>();
+
+            if (type == "month")
+            {
+                list = await statisticsDAO.GetRankShop_GoodsByMonth(month, year);
+            }
+            else if (type == "year")
+            {
+                list = await statisticsDAO.GetRankShop_GoodsByYear(year);
+            }
+
+            return Json(new
+            {
+                data = list
             });
         }
     }

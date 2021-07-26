@@ -1,11 +1,11 @@
 ﻿$(document).ready(function () {
     $('body').on('click', '.toggle', function () {
-       
         getShopGoods($($(this).children(0)).data('id'), this);
         console.log(checked);
+    });
 
-        
-    })
+    $('.toggle').removeAttr('style');
+    $('.toggle').addClass('btn-block');
 });
 
 function getShopGoods(roleId, element) {

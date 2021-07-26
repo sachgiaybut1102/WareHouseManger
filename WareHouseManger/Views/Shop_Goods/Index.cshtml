@@ -71,16 +71,16 @@
                         </td>*@
 
                             <td class="text-right">
-                                @string.Format("{0:N}", item.Count)
+                                @string.Format("{0:N}", item.Count).Replace(".00","")
                             </td>
                             <td class="text-center">
                                 @Html.DisplayFor(modelItem => item.Unit.Name)
                             </td>
                             <td class="text-right">
-                                @string.Format("{0:N}", item.CountMin)
+                                @string.Format("{0:N}", item.CountMin).Replace(".00", "")
                             </td>
                             <td class="text-right">
-                                @string.Format("{0:N}", item.Price)
+                                @string.Format("{0:N}", item.Price).Replace(".00", "")
                             </td>
                             <td class="text-nowrap text-center" width="250px">
                                 <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.TemplateID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>

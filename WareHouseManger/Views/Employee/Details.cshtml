@@ -17,7 +17,7 @@
         </div>
         <div class="form-group">
             <label asp-for="PositionID" class="control-label">chức vụ</label>
-            <input class="form-control" value="@Model.Position.Name" readonly/>
+            <input class="form-control" value="@Model.Position.Name" readonly />
             <span asp-validation-for="PositionID" class="text-danger"></span>
         </div>
         <div class="form-group">
@@ -35,6 +35,27 @@
             <input asp-for="EMail" class="form-control" readonly />
             <span asp-validation-for="EMail" class="text-danger"></span>
         </div>
+        <h4>Tài khoản</h4>
+        <hr />
+        @if (Model.Accounts.Count() > 0)
+        {
+            var account = Model.Accounts.FirstOrDefault();
+
+            <div class="form-group form-inline">
+                <label asp-for="@account.UserName" class="control-label">Tên tài khoản:</label>
+                <label asp-for="@account.UserName" class="control-label">&nbsp; @account.UserName</label>
+
+                <span asp-validation-for="@account.UserName" class="text-danger"></span>
+            </div>
+            <div>
+                <a asp-action="ChangePassword" asp-route-id="@Model.EmployeeID" class="btn btn-sm btn-dark"><i class="fa fa-user-edit"> Đổi mật khẩu</i></a>
+                <a class="btn btn-sm btn-primary" href="/Employee/Role/1"><i class="fa fa-user"> Phân quyền</i></a>
+            </div>
+        }
+        else
+        {
+            <a asp-action="ActiveAcountConfirmed" asp-route-id="@Model.EmployeeID" class="btn btn-sm btn-success"><i class="fa fa-user-edit"> Kích hoạt tài khoản</i></a>
+        }
         <div class="panel-footer text-right">
             <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.EmployeeID">Chỉnh sửa</a>
             <a class="btn btn-default" asp-action="Index">Quay lại</a>

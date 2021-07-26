@@ -79,7 +79,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TemplateID,Name,CategoryID,UnitID,Description,Price,Count,CountMin,ProducerID")] Shop_Good shop_Good)
+        public async Task<IActionResult> Create([Bind("TemplateID,Name,CategoryID,UnitID,Description,Price,ProducerID")] Shop_Good shop_Good)
         {
             if (ModelState.IsValid)
             {
@@ -106,6 +106,8 @@ namespace WareHouseManger.Controllers
                 templateID += newID;
 
                 shop_Good.TemplateID = templateID;
+                shop_Good.Count = 0;
+                shop_Good.CountMin = 1;
 
                 _context.Add(shop_Good);
                 await _context.SaveChangesAsync();
@@ -143,7 +145,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("TemplateID,Name,CategoryID,UnitID,Description,Price,Count,CountMin,ProducerID")] Shop_Good shop_Good)
+        public async Task<IActionResult> Edit(string id, [Bind("TemplateID,Name,CategoryID,UnitID,Description,Price,ProducerID")] Shop_Good shop_Good)
         {
             if (id != shop_Good.TemplateID)
             {
@@ -154,7 +156,16 @@ namespace WareHouseManger.Controllers
             {
                 try
                 {
-                    _context.Update(shop_Good);
+                    var shop_Good0 = await _context.Shop_Goods.FindAsync(shop_Good.TemplateID);
+
+                    shop_Good0.Name = shop_Good.Name;
+                    shop_Good0.CategoryID = shop_Good.CategoryID;
+                    shop_Good0.UnitID = shop_Good.UnitID;
+                    shop_Good0.Description = shop_Good.Description;
+                    shop_Good0.Price = shop_Good.Price;
+                    shop_Good0.ProducerID = shop_Good.ProducerID;
+
+                    //_context.Update(shop_Good);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

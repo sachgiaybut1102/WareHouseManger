@@ -40,18 +40,19 @@
             <div class="row">
                 <div class="form-group col-md-4">
                     <label asp-for="Price" class="control-label">Giá bán</label>
-                    <input asp-for="Price" class="form-control" />
+                    <input id="price" class="form-control text-right num" />
+                    <input asp-for="Price" class="form-control" hidden />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="Count" class="control-label">Số lượng</label>
-                    <input asp-for="Count" class="form-control" />
+                    <input asp-for="Count" class="form-control" value="@string.Format("{0:G29}",Model.Count)" readonly />
                     <span asp-validation-for="Count" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-4">
                     <label asp-for="CountMin" class="control-label">Số lượng tối thiểu</label>
-                    <input asp-for="CountMin" class="form-control" />
+                    <input asp-for="CountMin" class="form-control" readonly />
                     <span asp-validation-for="CountMin" class="text-danger"></span>
                 </div>
             </div>
@@ -69,4 +70,6 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/fomatnumber.js"></script>
+    <script src="~/js/Shop_Goods/common.js"></script>
 }

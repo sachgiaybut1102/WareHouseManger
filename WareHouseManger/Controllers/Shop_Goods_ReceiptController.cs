@@ -211,7 +211,7 @@ namespace WareHouseManger.Controllers
             }
             catch
             {
-                 
+
             }
 
             return RedirectToAction(nameof(Index));
