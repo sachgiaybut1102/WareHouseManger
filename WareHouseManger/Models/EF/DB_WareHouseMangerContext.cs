@@ -174,8 +174,6 @@ namespace WareHouseManger.Models.EF
             {
                 entity.ToTable("FinalSettlement_Customer");
 
-                entity.Property(e => e.ID).ValueGeneratedNever();
-
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
                 entity.Property(e => e.GoodsIssuesID)
