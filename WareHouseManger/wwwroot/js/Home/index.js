@@ -95,8 +95,9 @@ function getRankTemplate() {
                     '<td>' + (i + 1) + '</td>' +
                     '<td>' + e.templateID + '</td>' +
                     '<td>' + e.name + '</td>' +
+                    '<td class="text-center">' + e.unit + '</td>' +
                     '<td class="text-right">' + formatNumber(e.count) + '</td>' +
-                        '<td class="text-right">' + formatNumber(e.turnover) + '</td>' +
+                    '<td class="text-right">' + formatNumber(e.turnover) + '</td>' +
                     '</tr>';
             });
 

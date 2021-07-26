@@ -261,7 +261,7 @@ namespace WareHouseManger.Controllers
                 }
 
                 info.Shop_Goods_Receipt_Details = shop_Goods_Receipt_Details;
-                info.Total = info.Shop_Goods_Receipt_Details.Select(t => t.Count * t.UnitPrice).Sum();
+                info.Total = info.Shop_Goods_Receipt_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
 
                 await _context.Shop_Goods_Receipts.AddAsync(info);
 

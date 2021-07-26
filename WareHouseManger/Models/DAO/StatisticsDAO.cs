@@ -159,6 +159,7 @@ namespace WareHouseManger.Models.DAO
             var shop_Goods_Issues = await _context.Shop_Goods_Issues
                 .Include(t => t.Shop_Goods_Issues_Details)
                 .ThenInclude(t => t.Template)
+                .ThenInclude(t => t.Unit)
                 .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year)
                 .Select(t => t.Shop_Goods_Issues_Details)
                 .ToArrayAsync();
@@ -181,7 +182,8 @@ namespace WareHouseManger.Models.DAO
                     TemplateID = teamplate.Key,
                     Name = teamplate.FirstOrDefault().Template.Name,
                     Count = (decimal)teamplate.Sum(t => t.Count),
-                    Turnover = teamplate.Sum(t => (decimal)(t.Count * t.UnitPrice))
+                    Turnover = teamplate.Sum(t => (decimal)(t.Count * t.UnitPrice)),
+                    Unit = teamplate.FirstOrDefault().Template.Unit.Name
                 });
             }
 
@@ -195,6 +197,7 @@ namespace WareHouseManger.Models.DAO
             var shop_Goods_Issues = await _context.Shop_Goods_Issues
                 .Include(t => t.Shop_Goods_Issues_Details)
                 .ThenInclude(t => t.Template)
+                .ThenInclude(t=>t.Unit)
                 .Where(t => t.DateCreated.Value.Year == year)
                 .Select(t => t.Shop_Goods_Issues_Details)
                 .ToArrayAsync();
@@ -217,7 +220,8 @@ namespace WareHouseManger.Models.DAO
                     TemplateID = teamplate.Key,
                     Name = teamplate.FirstOrDefault().Template.Name,
                     Count = (decimal)teamplate.Sum(t => t.Count),
-                    Turnover = teamplate.Sum(t => (decimal)(t.Count * t.UnitPrice))
+                    Turnover = teamplate.Sum(t => (decimal)(t.Count * t.UnitPrice)),
+                    Unit = teamplate.FirstOrDefault().Template.Unit.Name
                 });
             }
 

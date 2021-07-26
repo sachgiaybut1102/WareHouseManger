@@ -11,5 +11,6 @@ namespace WareHouseManger.Models.EF
         public string Name { get; set; }
         public decimal Count { get; set; }
         public decimal Turnover { get; set; }
+        public string Unit { get; set; }
     }
 }
