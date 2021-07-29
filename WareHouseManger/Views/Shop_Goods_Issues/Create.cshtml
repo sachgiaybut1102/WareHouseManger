@@ -19,12 +19,22 @@
             </div>
             <div class="form-group col-md-4">
                 <label asp-for="CustomerID" class="control-label">Khách hàng</label>
-                <select asp-for="CustomerID" class="form-control" asp-items="@ViewBag.CustomerID"></select>
+                @*<select asp-for="CustomerID" class="form-control" data-live-search="true" asp-items="@ViewBag.CustomerID"></select>*@
+                @{
+                    List<WareHouseManger.Models.EF.Customer> customers = ViewBag.CustomerID as List<WareHouseManger.Models.EF.Customer>;
+                }
+                <input id="customerID" name="employeeID" class="form-control open-dialog" data-target="modal-customer" />
+                <input id="CustomerID" name="EmployeeID" class="form-control" hidden />
                 <span asp-validation-for="CustomerID" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
                 <label asp-for="EmployeeID" class="control-label">Nhân viên</label>
-                <select asp-for="EmployeeID" class="form-control" asp-items="@ViewBag.EmployeeID"></select>
+                @*<select asp-for="EmployeeID" class="form-control" asp-items="@ViewBag.EmployeeID"></select>*@
+                @{
+                    var employees = ViewBag.EmployeeID as List<WareHouseManger.Models.EF.Employee>;
+                }
+                <input id="employeeID" name="employeeID" class="form-control  open-dialog" data-target="modal-employee" />
+                <input id="EmployeeID" name="EmployeeID" class="form-control" hidden />
                 <span asp-validation-for="EmployeeID" class="text-danger"></span>
             </div>
         </div>
@@ -33,6 +43,8 @@
             <textarea asp-for="Remark" class="form-control" rows="5"></textarea>
             <span asp-validation-for="Remark" class="text-danger"></span>
         </div>
+        <label id="total" class="font-weight-bold">Tổng tiền: </label>
+
         <div class="table-responsive">
             <table id="tb-shopgoods" class="table table-bordered table-sm table-hover table-striped">
                 <thead>
@@ -55,7 +67,7 @@
         <button id="btn-addshopgoods" type="button" class="btn btn-sm btn-success">Thêm hàng hoá</button>
         <div class="panel-footer text-right">
             <input id="btn-addrecepit" type="submit" value="Tạo" class="btn btn-primary" />
-            <a class="btn btn-light" asp-action="Index">Quay lại</a>
+            <a class="btn btn-outline-dark" asp-action="Index">Quay lại</a>
         </div>
     </div>
 </div>
@@ -75,10 +87,10 @@
                     </div>
                     <div class="form-group col-md-6 align-self-md-center">
                         <label class="font-weight-bold">Tìm kiếm vật phẩm:</label>
-                        <input id="search" type="text" class="form-control" placeholder="Nhập vào từ khóa cần tìm" />
+                        <input type="text" class="form-control search" data-target="tb-addshopgoods" placeholder="Nhập vào từ khóa cần tìm" />
                     </div>
                 </div>
-                <div class="table-responsive">
+                <div class="table-responsive overflow-auto" style="height:60vh;">
                     <table id="tb-addshopgoods" class="table table-bordered table-sm table-hover table-striped">
                         <thead>
                             <tr>
@@ -99,8 +111,112 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="btn-acceptshoppgoods" type="button" class="btn btn-primary">Thêm</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                <button id="btn-acceptshoppgoods" type="button" class="btn btn-primary" hidden>Thêm</button>
+                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-employee" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Danh sách nhân viên</h4>
+            </div>
+            <div class="modal-body">
+
+                <input type="text" class="form-control search mb-3" data-target="tb-add-employee" placeholder="Nhập vào từ khóa cần tìm" />
+                <div class="table-responsive overflow-auto" style="height:60vh;">
+                    <table id="tb-add-employee" class="table table-bordered table-sm table-hover table-striped" >
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap text-center align-middle">Mã nhân viên</th>
+                                <th class="text-nowrap text-center align-middle">Họ tên</th>
+                                <th></th>
+                                @*<th class="text-nowrap text-center align-middle">Nhà sản xuất</th>
+                                    <th class="text-nowrap text-center align-middle">Đơn vị tính</th>
+                                    <th class="text-nowrap text-center align-middle">Số lượng tồn</th>
+                                    <th class="text-nowrap text-center align-middle">Số lượng</th>
+                                    <th class="text-nowrap text-center align-middle">Đơn giá</th>
+                                    <th class="text-nowrap text-center align-middle">Tổng</th>
+                                    <th class="text-nowrap text-center align-middle">Lựa chọn</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var employee in employees)
+                                {
+                                    <tr>
+                                        <td>@employee.EmployeeID</td>
+                                        <td>@employee.Name</td>
+                                        <td style="width:1px;"><button class="btn btn-sm btn-success btn-accepet-employee text-nowrap">Lựa chọn</button></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<button id="btn-accept-employee" type="button" class="btn btn-primary" hidden>Lựa chọn</button>*@
+                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-customer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Danh sách khách hàng</h4>
+            </div>
+            <div class="modal-body">
+
+                <input type="text" class="form-control search mb-3" data-target="tb-add-employee" placeholder="Nhập vào từ khóa cần tìm" />
+                <div class="table-responsive overflow-auto" style="height:60vh;">
+                    <table id="tb-add-employee" class="table table-bordered table-sm table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap text-center align-middle">Mã khách hàng</th>
+                                <th class="text-nowrap text-center align-middle">Họ tên</th>
+                                <th class="text-nowrap text-center align-middle">Địa chỉ</th>
+                                <th class="text-nowrap text-center align-middle">Số điện thoại</th>
+                                <th></th>
+                                @*<th class="text-nowrap text-center align-middle">Nhà sản xuất</th>
+                                    <th class="text-nowrap text-center align-middle">Đơn vị tính</th>
+                                    <th class="text-nowrap text-center align-middle">Số lượng tồn</th>
+                                    <th class="text-nowrap text-center align-middle">Số lượng</th>
+                                    <th class="text-nowrap text-center align-middle">Đơn giá</th>
+                                    <th class="text-nowrap text-center align-middle">Tổng</th>
+                                    <th class="text-nowrap text-center align-middle">Lựa chọn</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var customer in customers)
+                                {
+                                    <tr>
+                                        <td>@customer.CustomerID</td>
+                                        <td>@customer.Name</td>
+                                        <td>@customer.Address</td>
+                                        <td>@customer.PhoneNumber</td>
+                                        <td style="width:1px;"><button class="btn btn-sm btn-success btn-accepet-customer text-nowrap">Lựa chọn</button></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<button id="btn-accept-employee" type="button" class="btn btn-primary" hidden>Lựa chọn</button>*@
+                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Đóng</button>
             </div>
         </div>
         <!-- /.modal-content -->

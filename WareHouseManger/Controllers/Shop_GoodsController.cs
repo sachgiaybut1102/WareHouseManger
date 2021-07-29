@@ -237,13 +237,27 @@ namespace WareHouseManger.Controllers
         [HttpGet]
         public async Task<JsonResult> GetAnother(string templateIDs, int categoryID)
         {
-            var templates = await _context.Shop_Goods
+            List<Shop_Good> templates = new List<Shop_Good>();
+
+            if (categoryID != -1)
+            {
+                templates = await _context.Shop_Goods
                 .Where(t => !templateIDs.Contains(t.TemplateID) && t.CategoryID == categoryID)
                 .Include(t => t.Category)
                 .Include(t => t.Unit)
                 .Include(t => t.Producer)
-                .ToArrayAsync();
-
+                .ToListAsync();
+            }
+            else
+            {
+                templates = await _context.Shop_Goods
+                .Where(t => !templateIDs.Contains(t.TemplateID))
+                .Include(t => t.Category)
+                .Include(t => t.Unit)
+                .Include(t => t.Producer)
+                .ToListAsync();
+            }
+            
             return Json(new
             {
                 data = templates.Select(t => new

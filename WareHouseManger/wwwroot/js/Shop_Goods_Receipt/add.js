@@ -1,4 +1,40 @@
 ﻿$(document).ready(function () {
+    checkCreateButton();
+
+    $('.open-dialog').click(function () {
+        var target = $(this).data('target');
+
+        $('#' + target).modal('toggle');
+    });
+
+    $('.btn-accepet-employee').click(function () {
+        $('.btn-accepet-employee').removeAttr('hidden');
+
+        var tds = $($(this).parent().parent()).find('td');
+        $('#employeeID').val($(tds[0]).text() + ' - ' + $(tds[1]).text());
+        $('#EmployeeID').val($(tds[0]).text());
+
+        $(this).attr('hidden', 'hidden');
+
+        $('#modal-employee').modal('toggle');
+
+        checkCreateButton();
+    });
+
+    $('.btn-accepet-customer').click(function () {
+        $('.btn-accepet-customer').removeAttr('hidden');
+
+        var tds = $($(this).parent().parent()).find('td');
+        $('#supplierID').val($(tds[0]).text() + ' - ' + $(tds[1]).text());
+        $('#SupplierID').val($(tds[0]).text());
+
+        $(this).attr('hidden', 'hidden');
+
+        $('#modal-supplier').modal('toggle');
+
+        checkCreateButton();
+    });
+
     $('#btn-addshopgoods').click(function () {
         getShopGoods(getIds(), $('#select-category').val());
 
@@ -39,6 +75,8 @@
 
     $('body').on('click', '.btn-remove', function () {
         $($(this).parent().parent()).remove();
+
+        checkCreateButton();
     });
 
     $('body').on('keyup', '.number', function () {
@@ -49,6 +87,8 @@
         var value = parseInt(formatString($(tds[tds.length - 3]).children(0).val())) * parseInt(formatString($(tds[tds.length - 4]).children(0).val()))
 
         $(tds[tds.length - 2]).children(0).val(formatNumber(value));
+
+        updateTotal();
     });
 
     class ShopGoodsViewModel {
@@ -116,6 +156,24 @@
         window.onafterprint = afterPrint;
 
     }());
+
+    $('body').on('click', '.btn-add', function () {
+        var tds = $($(this).parent().parent()).find('td');
+        var html = '<tr>' +
+            '<td>' + $(tds[0]).text() + '</td>' +
+            '<td>' + $(tds[1]).text() + '</td>' +
+            '<td>' + $('#select-category').text() + '</td>' +
+            '<td>' + $(tds[2]).text() + '</td>' +
+            '<td>' + $(tds[3]).text() + '</td>' +
+            '<td style="width:140px;"><input class="form-control text-right number" min="1" value="0" /></td>' +
+            '<td style="width:160px;"><input class="form-control text-right number" min="1" value="0" /></td>' +
+            '<td style="width:180px;"><input class="form-control text-right number" min="1" value="0" /></td>' +
+            '<td class="align-middle" style="width:1px;"><button class="btn btn-sm btn-danger btn-remove">Xóa</button></td>' +
+            '</tr>';
+        $('#tb-shopgoods tbody').append(html);
+        $($($(this).parent().parent())).remove();
+        checkCreateButton();
+    })
 });
 
 function getIds() {
@@ -149,7 +207,8 @@ function getShopGoods(ids, categoryId) {
                             '<td>' + item.name + '</td>' +
                             '<td>' + item.producer + '</td>' +
                             '<td>' + item.unit + '</td>' +
-                            '<td class="text-center"><input class="cb" type="checkbox"/></td>' +
+                            //'<td class="text-center"><input class="cb" type="checkbox"/></td>' +
+                            '<td class="align-middle"><button class="btn btn-block btn-sm btn-success btn-add" >Thêm</button></td>' +
                             '</tr>';
                     });
 
@@ -179,10 +238,11 @@ function createConfirmed(info, json) {
         url: '/Shop_Goods_Receipt/CreateConfirmed/',
         success: function (result) {
             if (result.msg == 'msg') {
-                alert("Tạo phiếu nhập hàng thành công!");
                 $('#Remark').empty();
                 $('#tb-shopgoods tbody').empty();
                 printJS('/Report/Shop_Goods_Receipt/' + result.id);
+                alert("Tạo phiếu nhập hàng thành công!");
+                checkCreateButton();
             }
         }
     })
@@ -195,3 +255,42 @@ $("#search").on("keyup", function () {
     });
 });
 
+function updateTotal() {
+    var trs = $($('#tb-shopgoods tbody').find('tr'));
+
+    var total = 0;
+    $.each(trs, function (i, e) {
+        var tds = $(e).find('td');
+        total += parseInt(formatString($($(tds[tds.length - 2]).children(0)).val()));
+    });
+
+    $('#total').text('Tổng tiền: ' + formatNumber(total));
+
+}
+
+function checkCreateButton() {
+    var trs = $($('#tb-shopgoods tbody').find('tr'));
+    var length = trs.length;
+    var flag = true;
+
+    if (length == 0) {
+        flag = false;
+    }
+
+    if ($('#EmployeeID').val() == '') {
+        flag = false;
+    }
+
+
+    if ($('#SupplierID').val() == '') {
+        flag = false;
+    }
+
+    if (flag) {
+        $('#btn-addrecepit').removeAttr('disabled');
+    } else {
+        $('#btn-addrecepit').attr('disabled', 'disabled');
+    }
+
+    updateTotal();
+}

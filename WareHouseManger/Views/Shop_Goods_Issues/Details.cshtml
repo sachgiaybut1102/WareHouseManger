@@ -71,11 +71,11 @@
                                         <td>@item.Template.Unit.Name</td>
                                         <td class="text-right">@{ var count = string.Format("{0:N}", item.Count).Replace(".00", ""); }@count</td>
                                         <td class="text-right">@{ var unitPrice = string.Format("{0:N}", item.UnitPrice).Replace(".00", ""); }@unitPrice</td>
-                                        <td class="text-right">@{ var total = string.Format("{0:N}", (item.Count * item.UnitPrice)).Replace(".00", "");}@total</td>
+                                        <td class="text-right">@{ var total = string.Format("{0:N}", ((decimal)item.Count * item.UnitPrice)).Replace(".00", "");}@total</td>
                                     </tr>
                                 }
                                 <tr>
-                                    <th colspan="8" class="text-right"><span class="font-weight-bold">Tổng tiền: @{var totals = string.Format("{0:N}", shop_Goods_Issues_Details.Select(t => t.Count * t.UnitPrice).Sum()).Replace(".00", "");} @totals</span></th>
+                                    <th colspan="8" class="text-right"><span class="font-weight-bold">Tổng tiền: @{var totals = string.Format("{0:N}", shop_Goods_Issues_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum()).Replace(".00", "");} @totals</span></th>
                                 </tr>
                             }
                         </tbody>

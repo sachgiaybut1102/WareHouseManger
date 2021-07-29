@@ -80,6 +80,7 @@ namespace WareHouseManger.Controllers
             parameters.Add("paGoodsIssuesID", model.GoodsIssueID);
             parameters.Add("paCustomerID", model.CustomerID.ToString());
             parameters.Add("paEmployeeID", model.EmployeeID.ToString());
+            parameters.Add("paTotal", string.Format("{0:N}", model.Shop_Goods_Issues_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum()).Replace(".00", ""));
 
             LocalReport localReport = new LocalReport(path);
             localReport.AddDataSource("DataSet1", model.Shop_Goods_Issues_Details
@@ -120,7 +121,7 @@ namespace WareHouseManger.Controllers
                 .ThenInclude(t => t.Category)
                 .FirstOrDefaultAsync();
 
-            if(model == null)
+            if (model == null)
             {
                 return RedirectToAction("Page404", "Home");
             }
@@ -144,6 +145,7 @@ namespace WareHouseManger.Controllers
             parameters.Add("paGoodsReceiptID", model.GoodsReceiptID);
             parameters.Add("paSupplierID", model.Supplier.SupplierID.ToString());
             parameters.Add("paEmployeeID", model.EmployeeID.ToString());
+            parameters.Add("paTotal", string.Format("{0:N}", model.Shop_Goods_Receipt_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum()).Replace(".00", ""));
 
             LocalReport localReport = new LocalReport(path);
             localReport.AddDataSource("DataSet1", model.Shop_Goods_Receipt_Details

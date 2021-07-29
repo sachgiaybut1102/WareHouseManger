@@ -185,7 +185,7 @@
         </div>
         <div class="card mt-3">
             <div class="card-body">
-                <h3>Danh sách sản phẩm theo doanh thu</h3>
+                <h3>Danh sách hàng hóa có doanh thu cao nhất</h3>
                 <!-- /.panel-heading -->
 
                 <div class="table-responsive">
@@ -201,7 +201,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+                <!-- /.col-lg-8 (nested) -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h3>Danh sách hàng hóa sắp hết</h3>
+                <!-- /.panel-heading -->
+
+                <div class="table-responsive">
+                    <table id="tb-outofstock" class="table table-bordered table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Mã sản phẩm</th>
+                                <th>Tên sản phẩm</th>
+                                <th class="text-center">Loại hàng hóa</th>
+                                <th class="text-center">Đơn vị tính</th>
+                                <th class="text-right">Số lượng đã bán</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         </tbody>
                     </table>
                 </div>
@@ -212,10 +237,20 @@
         </div>
     </div>
 </div>
+
+
 @section scripts{
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
     <script src="~/js/fomatnumber.js"></script>
     <script src="~/js/plugins/morris/raphael-2.1.0.min.js"></script>
     <script src="~/js/plugins/morris/morris.js"></script>
     <script src="/vendor/chart.js/Chart.min.js"></script>
     <script src="~/js/Home/index.js"></script>
+}
+
+@section css{
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
 }

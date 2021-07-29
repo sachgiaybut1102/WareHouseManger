@@ -79,16 +79,18 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Shop_Goods_Issues_Create")]
         // GET: shop_Goods_Issue/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new Shop_Goods_Issue()
             {
                 DateCreated = DateTime.Now
             };
 
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name");
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name");
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "Name");
+            var category = await _context.Shop_Goods_Categories.ToListAsync();
+            category.Insert(0, new Shop_Goods_Category() { CategoryID = -1, Name = "Tất cả" });
+            ViewData["CategoryID"] = new SelectList(category, "CategoryID", "Name");
+            ViewData["EmployeeID"] = await _context.Employees.ToListAsync();
+            ViewData["CustomerID"] = await _context.Customers.ToListAsync(); /*new SelectList(_context.Customers, "CustomerID", "Name");*/
 
             return View(model);
         }
@@ -230,44 +232,50 @@ namespace WareHouseManger.Controllers
             string GoodsIssueID = "";
             try
             {
-                string name = "PX";
-                string maxID = await _context.Shop_Goods_Issues.MaxAsync(t => t.GoodsIssueID);
-
-                maxID = maxID == null ? "0" : maxID;
-
-                maxID = maxID.Replace(name, "").Trim();
-
-                int newID = int.Parse(maxID) + 1;
-
-                int length = 10 - 2 - newID.ToString().Length;
-
-                GoodsIssueID = name;
-
-                while (length > 0)
-                {
-                    GoodsIssueID += "0";
-                    length--;
-                }
-
-                GoodsIssueID += newID;
-
-                info.GoodsIssueID = GoodsIssueID;
-
                 List<Shop_Goods_Issues_Detail> shop_Goods_Issue_Details = JsonConvert.DeserializeObject<List<Shop_Goods_Issues_Detail>>(json);
-
-                foreach (Shop_Goods_Issues_Detail shop_Goods_Issue_Detail in shop_Goods_Issue_Details)
+                if (shop_Goods_Issue_Details.Count > 0)
                 {
-                    shop_Goods_Issue_Detail.GoodsIssueID = info.GoodsIssueID;
+                    string name = "PX";
+                    string maxID = await _context.Shop_Goods_Issues.MaxAsync(t => t.GoodsIssueID);
+
+                    maxID = maxID == null ? "0" : maxID;
+
+                    maxID = maxID.Replace(name, "").Trim();
+
+                    int newID = int.Parse(maxID) + 1;
+
+                    int length = 10 - 2 - newID.ToString().Length;
+
+                    GoodsIssueID = name;
+
+                    while (length > 0)
+                    {
+                        GoodsIssueID += "0";
+                        length--;
+                    }
+
+                    GoodsIssueID += newID;
+
+                    info.GoodsIssueID = GoodsIssueID;
+
+                    foreach (Shop_Goods_Issues_Detail shop_Goods_Issue_Detail in shop_Goods_Issue_Details)
+                    {
+                        shop_Goods_Issue_Detail.GoodsIssueID = info.GoodsIssueID;
+                    }
+
+                    info.Shop_Goods_Issues_Details = shop_Goods_Issue_Details;
+                    info.Total = info.Shop_Goods_Issues_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+
+                    await _context.Shop_Goods_Issues.AddAsync(info);
+
+                    await UpdateCount(shop_Goods_Issue_Details, -1);
+
+                    await _context.SaveChangesAsync();
                 }
-
-                info.Shop_Goods_Issues_Details = shop_Goods_Issue_Details;
-                info.Total = info.Shop_Goods_Issues_Details.Select(t => t.Count * t.UnitPrice).Sum();
-
-                await _context.Shop_Goods_Issues.AddAsync(info);
-
-                await UpdateCount(shop_Goods_Issue_Details, -1);
-
-                await _context.SaveChangesAsync();
+                else
+                {
+                    msg = "";
+                }
             }
             catch (Exception ex)
             {

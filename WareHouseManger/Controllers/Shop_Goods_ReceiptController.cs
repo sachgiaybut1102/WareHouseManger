@@ -79,16 +79,17 @@ namespace WareHouseManger.Controllers
 
         [Authorize(Roles = "Shop_Goods_Receipt_Create")]
         // GET: Shop_Goods_Receipt/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new Shop_Goods_Receipt()
             {
                 DateCreated = DateTime.Now
             };
-
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name");
-            ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name");
-            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "SupplierID", "Name");
+            var category = await _context.Shop_Goods_Categories.ToListAsync();
+            category.Insert(0, new Shop_Goods_Category() { CategoryID = -1, Name = "Tất cả" });
+            ViewData["CategoryID"] = new SelectList(category, "CategoryID", "Name");
+            ViewData["EmployeeID"] = await _context.Employees.ToListAsync();
+            ViewData["SupplierID"] = await _context.Suppliers.ToListAsync();
 
             return View(model);
         }
@@ -230,44 +231,51 @@ namespace WareHouseManger.Controllers
             string goodsReceiptID = "";
             try
             {
-                string name = "PN";
-                string maxID = await _context.Shop_Goods_Receipts.MaxAsync(t => t.GoodsReceiptID);
-
-                maxID = maxID == null ? "0" : maxID;
-
-                maxID = maxID.Replace(name, "").Trim();
-
-                int newID = int.Parse(maxID) + 1;
-
-                int length = 10 - 2 - newID.ToString().Length;
-
-                goodsReceiptID = name;
-
-                while (length > 0)
-                {
-                    goodsReceiptID += "0";
-                    length--;
-                }
-
-                goodsReceiptID += newID;
-
-                info.GoodsReceiptID = goodsReceiptID;
-
                 List<Shop_Goods_Receipt_Detail> shop_Goods_Receipt_Details = JsonConvert.DeserializeObject<List<Shop_Goods_Receipt_Detail>>(json);
-
-                foreach (Shop_Goods_Receipt_Detail shop_Goods_Receipt_Detail in shop_Goods_Receipt_Details)
+                if (shop_Goods_Receipt_Details.Count > 0)
                 {
-                    shop_Goods_Receipt_Detail.GoodsReceiptID = info.GoodsReceiptID;
+
+                    string name = "PN";
+                    string maxID = await _context.Shop_Goods_Receipts.MaxAsync(t => t.GoodsReceiptID);
+
+                    maxID = maxID == null ? "0" : maxID;
+
+                    maxID = maxID.Replace(name, "").Trim();
+
+                    int newID = int.Parse(maxID) + 1;
+
+                    int length = 10 - 2 - newID.ToString().Length;
+
+                    goodsReceiptID = name;
+
+                    while (length > 0)
+                    {
+                        goodsReceiptID += "0";
+                        length--;
+                    }
+
+                    goodsReceiptID += newID;
+
+                    info.GoodsReceiptID = goodsReceiptID;
+
+                    foreach (Shop_Goods_Receipt_Detail shop_Goods_Receipt_Detail in shop_Goods_Receipt_Details)
+                    {
+                        shop_Goods_Receipt_Detail.GoodsReceiptID = info.GoodsReceiptID;
+                    }
+
+                    info.Shop_Goods_Receipt_Details = shop_Goods_Receipt_Details;
+                    info.Total = info.Shop_Goods_Receipt_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+
+                    await _context.Shop_Goods_Receipts.AddAsync(info);
+
+                    await UpdateCount(shop_Goods_Receipt_Details, 1);
+
+                    await _context.SaveChangesAsync();
                 }
-
-                info.Shop_Goods_Receipt_Details = shop_Goods_Receipt_Details;
-                info.Total = info.Shop_Goods_Receipt_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
-
-                await _context.Shop_Goods_Receipts.AddAsync(info);
-
-                await UpdateCount(shop_Goods_Receipt_Details, 1);
-
-                await _context.SaveChangesAsync();
+                else
+                {
+                    msg = "";
+                }
             }
             catch (Exception ex)
             {

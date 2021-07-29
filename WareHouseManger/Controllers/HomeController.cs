@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,10 +18,12 @@ namespace WareHouseManger.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly Models.EF.DB_WareHouseMangerContext _context;
-        public HomeController(ILogger<HomeController> logger, Models.EF.DB_WareHouseMangerContext context)
+        private readonly IConfiguration _configuration;
+        public HomeController(ILogger<HomeController> logger, Models.EF.DB_WareHouseMangerContext context, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -112,6 +116,29 @@ namespace WareHouseManger.Controllers
             {
                 data = list
             });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetOutOfStock()
+        {
+            int count = int.Parse(_configuration["OutOfStock:Value"]);
+            var list = await _context.Shop_Goods
+                .Include(t => t.Category)
+                .Include(t => t.Unit)
+                .Where(t => t.Count <= count).ToListAsync();
+
+            return Json(new
+            {
+                data = list.Select(t => new
+                {
+                    TemplateID = t.TemplateID,
+                    Name = t.Name,
+                    Category = t.Category.Name,
+                    Unit = t.Unit.Name,
+                    Count = t.Count,
+                }).AsEnumerable()
+            }); ;
         }
 
         public IActionResult Page404()

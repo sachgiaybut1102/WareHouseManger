@@ -35,7 +35,7 @@ $(function () {
     getDetails();
     getRankTemplate();
     getChart();
-
+    getOutOfStock();
     $('#btn-submit0').click(function () {
         getDetails();
     });
@@ -150,6 +150,63 @@ function getChart() {
             myLineChart.data.datasets[1].data = sumIssues;
             myLineChart.data.datasets[2].data = profits;
             myLineChart.update();
+        }
+    })
+}
+
+function getOutOfStock() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        url: '/Home/GetOutOfStock',
+        success: function (result) {
+            console.log(result);
+
+            var html = '';
+
+            $.each(result.data, function (i, e) {
+                html += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + e.templateID + '</td>' +
+                    '<td>' + e.name + '</td>' +
+                    '<td class="text-center">' + e.category + '</td>' +
+                    '<td class="text-center">' + e.unit + '</td>' +
+                    '<td class="text-right">' + formatNumber(e.count) + '</td>' +
+                    '</tr>';
+            });
+
+            $('#tb-outofstock tbody').empty().append(html);
+            //$('#tb-outofstock').DataTable({
+            //    "language": {
+            //        "lengthMenu": "Hiển thị _MENU_ bản ghi / trang",
+            //        "zeroRecords": "Không tìm thấy kết quả nào cả!",
+            //        "info": "Trang _PAGE_ / _PAGES_",
+            //        "infoEmpty": "Không tìm thấy dữ liệu!",
+            //        "infoFiltered": "(Tìm kiếm từ _MAX_ bản ghi)",
+            //        "search": "Nhập từ khóa cần tìm:",
+            //        "paginate": {
+            //            "first": "Đầu tiên",
+            //            "last": "Cuối cùng",
+            //            "next": "Sau",
+            //            "previous": "Trước"
+            //        },
+
+            //    },
+            //    responsive: true,
+            //    scrollY: '50vh',
+            //    scrollCollapse: true,
+            //    //fixedColumns: {
+            //    //    leftColumns: 2,
+            //    //    rightColumns: 0
+            //    //},
+            //});
+            //var data = [];
+            //var dt = $('#tb-outofstock').DataTable();
+
+            //$.each(result.data, function (i, e) {
+            //    dt.row.add([e.templateID, e.name, e.category, e.unit, formatNumber(e.count)]).draw(true);
+            //});
+     
         }
     })
 }
