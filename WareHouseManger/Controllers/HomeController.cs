@@ -113,5 +113,10 @@ namespace WareHouseManger.Controllers
                 data = list
             });
         }
+
+        public IActionResult Page404()
+        {
+            return View();
+        }
     }
 }

@@ -6,7 +6,12 @@
 
 <div class="card shadow">
     <div class="card-body">
-        <h1>Chi tiết</h1>
+        <div class="d-flex justify-content-between">
+            <h1>Chi tiết</h1>
+            <div>
+                <button data-target="/Report/Shop_Goods_Receipt/@Model.GoodsReceiptID" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm btn-export"><i class="fas fa-download fa-sm text-white-50"></i> Xuất phiếu nhập</button>
+            </div>
+        </div>
         <h4>Phiếu nhập - @Model.GoodsReceiptID</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -76,12 +81,17 @@
             </div>
         </div>
         <div class="panel-footer mt-3 text-right">
-            <a class="btn btn-light" asp-action="Index">Quay lại</a>
+            <a class="btn btn-secondary" asp-action="Index">Quay lại</a>
         </div>
     </div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    @*<script src="~/js/Shop_Goods_Receipt/add.js"></script>*@
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script src="/js/site.js"></script>
+}
+
+@section css{
+    <link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet" />
 }

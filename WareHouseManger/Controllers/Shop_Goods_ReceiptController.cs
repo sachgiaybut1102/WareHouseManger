@@ -227,7 +227,7 @@ namespace WareHouseManger.Controllers
         public async Task<JsonResult> CreateConfirmed(Shop_Goods_Receipt info, string json)
         {
             string msg = "msg";
-
+            string goodsReceiptID = "";
             try
             {
                 string name = "PN";
@@ -241,7 +241,7 @@ namespace WareHouseManger.Controllers
 
                 int length = 10 - 2 - newID.ToString().Length;
 
-                string goodsReceiptID = name;
+                goodsReceiptID = name;
 
                 while (length > 0)
                 {
@@ -274,7 +274,7 @@ namespace WareHouseManger.Controllers
                 msg = "";
             }
 
-            return Json(new { msg = msg });
+            return Json(new { msg = msg, id = goodsReceiptID });
         }
 
         private async Task UpdateCount(List<Shop_Goods_Receipt_Detail> shop_Goods_Receipt_Details, int num)

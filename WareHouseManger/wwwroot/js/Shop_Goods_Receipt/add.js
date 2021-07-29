@@ -88,6 +88,34 @@
 
         createConfirmed(recepit, recepitDetails);
     });
+
+    (function () {
+
+        var beforePrint = function () {
+            alert('Functionality to run before printing.');
+        };
+
+        var afterPrint = function () {
+            alert('Functionality to run after printing');
+        };
+
+        if (window.matchMedia) {
+            var mediaQueryList = window.matchMedia('print');
+
+            mediaQueryList.addListener(function (mql) {
+                //alert($(mediaQueryList).html());
+                if (mql.matches) {
+                    beforePrint();
+                } else {
+                    afterPrint();
+                }
+            });
+        }
+
+        window.onbeforeprint = beforePrint;
+        window.onafterprint = afterPrint;
+
+    }());
 });
 
 function getIds() {
@@ -151,7 +179,10 @@ function createConfirmed(info, json) {
         url: '/Shop_Goods_Receipt/CreateConfirmed/',
         success: function (result) {
             if (result.msg == 'msg') {
-                window.location = "/Shop_Goods_Receipt";
+                alert("Tạo phiếu nhập hàng thành công!");
+                $('#Remark').empty();
+                $('#tb-shopgoods tbody').empty();
+                printJS('/Report/Shop_Goods_Receipt/' + result.id);
             }
         }
     })
@@ -163,3 +194,4 @@ $("#search").on("keyup", function () {
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
 });
+

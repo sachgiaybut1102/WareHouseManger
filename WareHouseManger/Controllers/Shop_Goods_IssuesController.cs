@@ -227,10 +227,10 @@ namespace WareHouseManger.Controllers
         public async Task<JsonResult> CreateConfirmed(Shop_Goods_Issue info, string json)
         {
             string msg = "msg";
-
+            string GoodsIssueID = "";
             try
             {
-                string name = "PN";
+                string name = "PX";
                 string maxID = await _context.Shop_Goods_Issues.MaxAsync(t => t.GoodsIssueID);
 
                 maxID = maxID == null ? "0" : maxID;
@@ -241,7 +241,7 @@ namespace WareHouseManger.Controllers
 
                 int length = 10 - 2 - newID.ToString().Length;
 
-                string GoodsIssueID = name;
+                GoodsIssueID = name;
 
                 while (length > 0)
                 {
@@ -274,7 +274,7 @@ namespace WareHouseManger.Controllers
                 msg = "";
             }
 
-            return Json(new { msg = msg });
+            return Json(new { msg = msg, id = GoodsIssueID });
         }
 
         private async Task UpdateCount(List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details, int num)

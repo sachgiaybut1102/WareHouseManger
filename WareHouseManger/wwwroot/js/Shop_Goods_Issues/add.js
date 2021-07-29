@@ -170,7 +170,9 @@ function createConfirmed(info, json) {
         url: '/Shop_Goods_Issues/CreateConfirmed/',
         success: function (result) {
             if (result.msg == 'msg') {
-                window.location = "/Shop_Goods_Issues";
+                $('#Remark').empty();
+                $('#tb-shopgoods tbody').empty();
+                printJS('/Report/Shop_Goods_Receipt/' + result.id);
             }
 
         }

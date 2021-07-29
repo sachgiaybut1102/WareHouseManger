@@ -7,6 +7,13 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\js\FinalSettlement_Suplier\index.js" />
+    <Content Remove="wwwroot\report\rptShop_Goods_Issues.rdlc" />
+    <Content Remove="wwwroot\report\rptShop_Goods_Receipt.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\report\rptShop_Goods_Issues.rdlc" />
+    <EmbeddedResource Include="wwwroot\report\rptShop_Goods_Receipt.rdlc" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7">
@@ -57,10 +65,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="Spire.Doc" Version="9.7.3" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DocFile\" />
   </ItemGroup>
 
 </Project>
