@@ -119,7 +119,7 @@ namespace WareHouseManger.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Account_Edit")]
         [HttpGet]
         public async Task<JsonResult> UpdateRole(int roleId)
         {
@@ -148,6 +148,127 @@ namespace WareHouseManger.Controllers
             }
 
             return Json(new { msg = msg });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> ChangePassword(int id, string username, string str0, string str1, string str2)
+        {
+            bool flag = true;
+            string msg = "Thay đổi thành công!";
+
+            str0 = Common.MD5.CreateHash(str0.Trim());
+            str1 = Common.MD5.CreateHash(str1.Trim());
+            str2 = Common.MD5.CreateHash(str2.Trim());
+
+            var employee = await _context.Employees.Include(t => t.Accounts).Where(t => t.EmployeeID == id).FirstOrDefaultAsync();
+
+            if (employee != null)
+            {
+                Account account = employee.Accounts.FirstOrDefault();
+
+                if (account != null)
+                {
+                    if (account.UserName.Trim() == username.Trim())
+                    {
+                        if (account.Password.Trim() == str0.Trim())
+                        {
+                            if (str0.Trim() != str1.Trim())
+                            {
+                                if (str1.Trim() == str2.Trim())
+                                {
+                                    account.Password = str1;
+
+                                    await _context.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    flag = false;
+                                    msg = "Nhập lại mật khẩu không khớp với mật khẩu mới!";
+                                }
+                            }
+                            else
+                            {
+                                flag = false;
+                                msg = "Mật khẩu mới không được trùng với mật khẩu hiện tại!";
+                            }
+                        }
+                        else
+                        {
+                            flag = false;
+                            msg = "Mật khẩu hiển tại không đúng!";
+                        }
+                    }
+                    else
+                    {
+                        flag = false;
+                        msg = "Tài khoản không đúng!";
+                    }
+                }
+                else
+                {
+                    flag = false;
+                    msg = "Nhân viên chưa được tạo tài khoản!";
+                }
+            }
+            else
+            {
+                flag = false;
+                msg = "Nhân viên không tồn tại!";
+            }
+
+
+            return Json(new { msg = msg, flag = flag });
+        }
+
+        [Authorize(Roles = "Account_Edit")]
+        [HttpPost]
+        public async Task<JsonResult> ForgotPassword(int id, string username, string str1,string str2)
+        {
+            bool flag = true;
+            string msg = "Thay đổi thành công!";
+
+            var employee = await _context.Employees.Include(t => t.Accounts).Where(t => t.EmployeeID == id).FirstOrDefaultAsync();
+
+            if (employee != null)
+            {
+                Account account = employee.Accounts.FirstOrDefault();
+
+                if (account != null)
+                {
+                    if (account.UserName.Trim() == username.Trim())
+                    {
+                        if (str1.Trim() == str2.Trim())
+                        {
+                            account.Password = Common.MD5.CreateHash(str1.Trim());
+
+                            await _context.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            flag = false;
+                            msg = "Nhập lại mật khẩu không khớp với mật khẩu mới!";
+                        }
+                    }
+                    else
+                    {
+                        flag = false;
+                        msg = "Tài khoản không đúng!";
+                    }
+                }
+                else
+                {
+                    flag = false;
+                    msg = "Nhân viên chưa được tạo tài khoản!";
+                }
+            }
+            else
+            {
+                flag = false;
+                msg = "Nhân viên không tồn tại!";
+            }
+
+            return Json(new { msg = msg, flag = flag });
         }
     }
 }

@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Details";
+    var roles = string.Join(",", User.Claims.Where(t => t.Type == System.Security.Claims.ClaimTypes.Role).Select(t => t.Value).ToList());
+
+    bool isEdit = roles.Contains("Account_Edit");
+    bool isSingle = bool.Parse(ViewData["isSingle"].ToString());
 }
 
 <div class="card shadow container col-6">
@@ -10,6 +14,7 @@
         <h4>Nhân viên</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="EmployeeID" hidden />
         <div class="form-group">
             <label asp-for="Name" class="control-label">Tên nhân viên</label>
             <input asp-for="Name" class="form-control" readonly />
@@ -41,24 +46,120 @@
         {
             var account = Model.Accounts.FirstOrDefault();
 
-            <div class="form-group form-inline">
-                <label asp-for="@account.UserName" class="control-label">Tên tài khoản:</label>
-                <label asp-for="@account.UserName" class="control-label">&nbsp; @account.UserName</label>
+            <div class="row">
+                <div class="form-group form-inline col-6">
+                    <label asp-for="@account.UserName" class="control-label font-weight-bold">Tên tài khoản:</label>
+                    &nbsp;
+                    <label id="account_UserName" asp-for="@account.UserName" class="control-label">@account.UserName</label>
 
-                <span asp-validation-for="@account.UserName" class="text-danger"></span>
+                    <span asp-validation-for="@account.UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group form-inline col-6">
+                    <label asp-for="@account.DateCreated" class="control-label font-weight-bold">Ngày tạo:</label>
+                    &nbsp;
+                    <label asp-for="@account.DateCreated" class="control-label">@account.DateCreated.Value.ToString("dd/MM/yyyy")</label>
+
+                    <span asp-validation-for="@account.UserName" class="text-danger"></span>
+                </div>
             </div>
             <div>
-                <a asp-action="ChangePassword" asp-route-id="@Model.EmployeeID" class="btn btn-sm btn-dark"><i class="fa fa-user-edit"> Đổi mật khẩu</i></a>
-                <a class="btn btn-sm btn-primary" href="/Employee/Role/1"><i class="fa fa-user"> Phân quyền</i></a>
+                @if (Model.Accounts.Count > 0)
+                {
+                    if (isEdit)
+                    {
+                        <button class="btn btn-sm btn-google open-dialog" data-target="modal-forgotpassword"><i class="fa fa-key"> Đặt lại mật khẩu</i></button>
+                        <a class="btn btn-sm btn-info " asp-action="Role" asp-route-id="@Model.EmployeeID"><i class="fa fa-user"> Phân quyền</i></a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-primary open-dialog" data-target="modal-changepassword"><i class="fa fa-user-edit"> Đổi mật khẩu</i></button>
+                    }
+                }
             </div>
         }
         else
         {
-            <a asp-action="ActiveAcountConfirmed" asp-route-id="@Model.EmployeeID" class="btn btn-sm btn-success"><i class="fa fa-user-edit"> Kích hoạt tài khoản</i></a>
+            <a asp-action="ActiveAcountConfirmed" asp-route-id="@Model.EmployeeID" class="btn btn-sm btn-success"><i class="fa fa-act"> Kích hoạt tài khoản</i></a>
         }
         <div class="panel-footer text-right">
-            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.EmployeeID">Chỉnh sửa</a>
-            <a class="btn btn-default" asp-action="Index">Quay lại</a>
+
+
+            @if (isSingle)
+            {
+                <a class="btn btn-warning" asp-action="Edit">Chỉnh sửa</a>
+                <a class="btn btn-light border" href="/Home/index">Quay lại</a>
+            }
+            else
+            {
+                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.EmployeeID">Chỉnh sửa</a>
+                <a class="btn btn-light border" asp-action="Index">Quay lại</a>
+            }
         </div>
     </div>
 </div>
+
+@if (isEdit)
+{
+    <div class="modal fade" id="modal-forgotpassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Đặt lại mật khẩu</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="msg-changepass1" class="alert font-weight-bold" hidden>ádasd</div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Mật khẩu mới</label>
+                        <input type="password" id="newPassword3" class="form-control" placeholder="Nhập vào mật khẩu mới" />
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Nhập lại mật khẩu hiện tại</label>
+                        <input type="password" id="newPassword4" class="form-control" placeholder="Nhập vào mật khẩu mới" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-accept-forgotpassword" type="button" class="btn btn-primary">Thay đổi</button>
+                    <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+}
+else
+{
+    <div class="modal fade" id="modal-changepassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Thay đổi mật khẩu</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="msg-forgotpassword" class="alert font-weight-bold" hidden>ádasd</div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Mật khẩu hiện tại</label>
+                        <input type="password" id="currentPassword" class="form-control" placeholder="Nhập vào mật khẩu hiện tại" autofocus />
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Mật khẩu mới</label>
+                        <input type="password" id="newPassword" class="form-control" placeholder="Nhập vào mật khẩu mới" />
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Nhập lại mật khẩu hiện tại</label>
+                        <input type="password" id="newPassword2" class="form-control" placeholder="Nhập vào mật khẩu mới" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-accept" type="button" class="btn btn-primary">Thay đổi</button>
+                    <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+}
+@section scripts{
+    <script src="~/js/Employee/details.js"></script>
+}

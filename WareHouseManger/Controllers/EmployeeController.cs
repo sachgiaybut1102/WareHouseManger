@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using WareHouseManger.Common;
 using WareHouseManger.Models.EF;
 using X.PagedList;
@@ -15,10 +16,12 @@ namespace WareHouseManger.Controllers
     public class EmployeeController : Controller
     {
         private readonly DB_WareHouseMangerContext _context;
+        private readonly IConfiguration _configuration;
 
-        public EmployeeController(DB_WareHouseMangerContext context)
+        public EmployeeController(DB_WareHouseMangerContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [Authorize(Roles = "Employee_Index")]
@@ -43,23 +46,41 @@ namespace WareHouseManger.Controllers
         }
 
 
-        [Authorize(Roles = "Employee_Details")]
+        [Authorize/*(Roles = "Employee_Details")*/]
         // GET: Employee/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            bool isSingle = false;
+
             if (id == null)
             {
-                return NotFound();
+                string value = User.Claims.Where(t => t.Type == "AccountID").Select(t => t.Value).FirstOrDefault();
+
+                Account account = await _context.Accounts.FindAsync(int.Parse(value));
+
+                if (account != null)
+                {
+                    id = account.EmployeeID;
+                    isSingle = true;
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
 
             var employee = await _context.Employees
-                .Include(t=>t.Accounts)
+                .Include(t => t.Accounts)
                 .Include(t => t.Position)
                 .FirstOrDefaultAsync(m => m.EmployeeID == id);
+
+
             if (employee == null)
             {
                 return NotFound();
             }
+
+            ViewData["IsSingle"] = isSingle;
 
             return View(employee);
         }
@@ -96,9 +117,23 @@ namespace WareHouseManger.Controllers
         // GET: Employee/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            bool isSingle = false;
+
             if (id == null)
             {
-                return NotFound();
+                string value = User.Claims.Where(t => t.Type == "AccountID").Select(t => t.Value).FirstOrDefault();
+
+                Account account = await _context.Accounts.FindAsync(int.Parse(value));
+
+                if (account != null)
+                {
+                    id = account.EmployeeID;
+                    isSingle = true;
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
 
             var employee = await _context.Employees.FindAsync(id);
@@ -108,6 +143,7 @@ namespace WareHouseManger.Controllers
             }
 
             ViewBag.Position = new SelectList(await _context.Positions.ToListAsync(), "PositionID", "Name", employee.PositionID);
+            ViewData["IsSingle"] = isSingle;
             return View(employee);
         }
 
@@ -119,6 +155,8 @@ namespace WareHouseManger.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EmployeeID,Name,PhoneNumber,Address,EMail,PositionID")] Employee employee)
         {
+            bool isSingle = false;
+
             if (id != employee.EmployeeID)
             {
                 return NotFound();
@@ -142,10 +180,30 @@ namespace WareHouseManger.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+                string value = User.Claims.Where(t => t.Type == "AccountID").Select(t => t.Value).FirstOrDefault();
+
+                Account account = await _context.Accounts.FindAsync(int.Parse(value));
+
+                if (account != null)
+                {
+                    id = (int)account.EmployeeID;
+                    isSingle = true;
+                }
+
+                if (isSingle)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index), "Home");
+                }
             }
 
             ViewBag.Position = new SelectList(await _context.Positions.ToListAsync(), "PositionID", "Name", employee.PositionID);
+            ViewData["IsSingle"] = isSingle;
+
             return View(employee);
         }
 
@@ -228,7 +286,7 @@ namespace WareHouseManger.Controllers
                 userName += newID;
 
                 account.UserName = userName;
-                account.Password = MD5.CreateHash("123456");
+                account.Password = MD5.CreateHash(_configuration["DefaultPasswod:Value"]);
                 account.StatusID = 1;
                 account.DateCreated = DateTime.Now;
                 account.EmployeeID = employee.EmployeeID;
@@ -251,6 +309,7 @@ namespace WareHouseManger.Controllers
                     .ToArrayAsync();
 
             ViewData["Roles"] = roles;
+            ViewData["EmployeeID"] = id;
 
             var roleGroups = await _context.RoleGroups.Include(t => t.Roles).ToArrayAsync();
 

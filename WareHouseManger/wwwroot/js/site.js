@@ -7,4 +7,10 @@ $(document).ready(function () {
         console.log('ádasd');
         printJS($(this).data('target'));
     });
+
+    $('.open-dialog').click(function () {
+        var target = $(this).data('target');
+
+        $('#' + target).modal('toggle');
+    });
 });

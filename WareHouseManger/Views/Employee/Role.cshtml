@@ -6,39 +6,46 @@
     var roles = ViewBag.Roles as string[];
 }
 
-<h1>Role</h1>
 
-@foreach (var roleGroup in Model)
-{
-    <div class="form-group">
-        <h3>@roleGroup.Name</h3>
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    @foreach (var role in roleGroup.Roles)
-                    {
-                        <th>@role.Name</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    @foreach (var role in roleGroup.Roles)
-                    {
+<div class="card shadow">
+    <div class="card-body">
+        <h1>Phân quyền</h1>
 
-                        string check = roles.Contains(role.Name) ? "checked" : "";
+        @foreach (var roleGroup in Model)
+        {
+            <div class="form-group">
+                <h3 class="font-weight-bold">@roleGroup.Name</h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            @foreach (var role in roleGroup.Roles)
+                            {
+                                <th>@role.Name</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @foreach (var role in roleGroup.Roles)
+                            {
 
-                        <td>
-                            <input type="checkbox" @check class="role" data-id="@role.RoleID" data-toggle="toggle" data-on="Đã kích hoạt" data-off="Chưa kích hoạt" data-onstyle="success" data-offstyle="danger">
-                        </td>
-                    }
-                </tr>
-            </tbody>
-        </table>
+                                string check = roles.Contains(role.Name) ? "checked" : "";
 
+                                <td>
+                                    <input type="checkbox" @check class="role" data-id="@role.RoleID" data-toggle="toggle" data-on="Đã kích hoạt" data-off="Chưa kích hoạt" data-onstyle="success" data-offstyle="danger">
+                                </td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        }
     </div>
-}
-
+    <div class="card-footer text-right">
+        <a class="btn btn-sm btn-light border" asp-action="Details" asp-route-id="@ViewData["EmployeeID"]">Quay lại</a>
+    </div>
+</div>
 @section scripts{
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <script src="~/js/Account/Role/edit.js"></script>

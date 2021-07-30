@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Edit";
+    bool isSingle = bool.Parse(ViewData["isSingle"].ToString());
+
 }
 
 <div class="card shadow container col-6">
@@ -45,7 +47,14 @@
 
             <div class="panel-footer text-right">
                 <input type="submit" value="Lưu" class="btn btn-primary" />
-                <a class="btn btn-default" asp-action="Index">Quay lại</a>
+                @if (isSingle)
+                {
+                    <a class="btn btn-light border" href="/Home">Quay lại</a>
+                }
+                else
+                {
+                    <a class="btn btn-light border" asp-action="Index">Quay lại</a>
+                }
             </div>
         </form>
     </div>

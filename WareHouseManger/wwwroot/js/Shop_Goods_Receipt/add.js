@@ -1,12 +1,6 @@
 ﻿$(document).ready(function () {
     checkCreateButton();
 
-    $('.open-dialog').click(function () {
-        var target = $(this).data('target');
-
-        $('#' + target).modal('toggle');
-    });
-
     $('.btn-accepet-employee').click(function () {
         $('.btn-accepet-employee').removeAttr('hidden');
 
