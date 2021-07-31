@@ -47,7 +47,42 @@
     <div class="card">
         <div class="card-body">
             <h3>Danh sách chi tiết hàng hóa</h3>
-            <label id="total" class="font-weight-bold">Tổng tiền: </label>
+            <div class="form-inline mb-3">
+                <label @*id="total"*@ class="font-weight-bold">Tổng tiền: </label>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input id="total" class="form-control text-right" value="0" readonly />
+                &nbsp;
+                <label class="font-weight-bold">VNĐ</label>
+            </div>
+            <div class="form-inline mb-3">
+                <label class="font-weight-bold">Trả trước:</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input id="prepay" class="form-control text-right number" value="0" />
+                &nbsp;
+                <label class="font-weight-bold">VNĐ</label>
+            </div>
+            <div class="form-inline mb-3">
+                <label class="font-weight-bold">Thanh toán tiền mặt:</label>
+                &nbsp;
+                <input id="cash" class="form-control text-right number" value="0" />
+                &nbsp;
+                <label class="font-weight-bold">VNĐ</label>
+            </div>
+            <div class="form-inline mb-3">
+                <label class="font-weight-bold">Chuyển khoản:</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input asp-for="@Model.TransferMoney" class="form-control text-right number" value="0" readonly/>
+                &nbsp;
+                <label class="font-weight-bold">VNĐ</label>
+            </div>
+            <div class="form-inline mb-3">
+                <label class="font-weight-bold">Còn lại:</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input id="remain" class="form-control text-right number" value="0" readonly/>
+                &nbsp;
+                <label class="font-weight-bold">VNĐ</label>
+            </div>
             <div class="table-responsive">
                 <table id="tb-shopgoods" class="table table-bordered table-sm table-hover table-striped">
                     <thead>

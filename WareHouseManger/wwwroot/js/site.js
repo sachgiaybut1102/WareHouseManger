@@ -13,4 +13,11 @@ $(document).ready(function () {
 
         $('#' + target).modal('toggle');
     });
+
+    //$("input[type=date]").datepicker({
+    //    dateFormat: 'yy-mm-dd',
+    //    onSelect: function (dateText, inst) {
+    //        $(inst).val(dateText); // Write the value in the input
+    //    }
+    //});
 });

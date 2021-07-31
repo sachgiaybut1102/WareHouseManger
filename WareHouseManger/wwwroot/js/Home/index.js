@@ -60,29 +60,15 @@ $(function () {
 });
 
 function getDetails() {
-    //$.ajax({
-    //    type: 'POST',
-    //    datatype: 'JSON',
-    //    data: {
-    //        startDate: $('#date-start').val(),
-    //        endDate: $('#date-end').val()
-    //    },
-    //    url: '/Home/GetDetails',
-    //    success: function (result) {
-    //        var data = result.data;
-    //        $('#countReceipt').text(formatNumber(data.countReceipt) + " đơn hàng");
-    //        $('#countIssues').text(formatNumber(data.countIssues) + " đơn hàng");
-    //        $('#revenue').text(formatNumber(data.revenue) + " VNĐ");
-    //        $('#cost').text(formatNumber(data.cost) + " VNĐ");
-    //        $('#profit').text(formatNumber(data.revenue - data.cost) + " VNĐ");
-    //    }
-    //})
     getCountShop_Goods_Receipt();
     getCountShop_Goods_Issues();
     getCountShop_Goods_Revenue();
     getCountShop_Goods_Cost();
     getCountShop_Goods_RealRevenue();
     // getCountShop_Goods_RealCost();
+    getRevenueGroupByEmployee();
+    getRevenueGroupByCustomer();
+    getCostGroupBySuplier();
 }
 
 function getCountShop_Goods_Receipt() {
@@ -186,6 +172,102 @@ function getCountShop_Goods_RealCost() {
     })
 }
 
+function getRevenueGroupByEmployee() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            startDate: $('#date-start').val(),
+            endDate: $('#date-end').val()
+        },
+        url: '/Home/GetRevenueGroupByEmployee',
+        success: function (result) {
+            var data = result.data;
+            var html = '';
+
+            $.each(data, function (i, e) {
+                html += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + e.id + '</td>' +
+                    '<td>' + e.name + '</td>' +
+                    '<td class="text-right">' + formatNumber(e.totalBill) + '</td>' +
+                    '<td class="text-right">' + formatNumber(e.price) + '</td>' +
+                    '</tr>';
+            });
+
+            if (html == '') {
+                html += '<tr  class="font-italic"><td colspan="5">Không tìm thấy kết quả nào cả!</td></tr>';
+            }
+
+            $('#tb-revenueGroupByEmployee tbody').empty().append(html);
+        }
+    })
+}
+
+function getRevenueGroupByCustomer() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            startDate: $('#date-start').val(),
+            endDate: $('#date-end').val()
+        },
+        url: '/Home/GetRevenueGroupByCustomer',
+        success: function (result) {
+            var data = result.data;
+            var html = '';
+
+            $.each(data, function (i, e) {
+                html += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + e.id + '</td>' +
+                    '<td>' + e.name + '</td>' +
+                    '<td class="text-right">' + formatNumber(e.totalBill) + '</td>' +
+                    '<td class="text-right">' + formatNumber(e.price) + '</td>' +
+                    '</tr>';
+            });
+
+            if (html == '') {
+                html += '<tr  class="font-italic"><td colspan="5">Không tìm thấy kết quả nào cả!</td></tr>';
+            }
+
+            $('#tb-revenueGroupByCustomer tbody').empty().append(html);
+        }
+    })
+}
+
+function getCostGroupBySuplier() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            startDate: $('#date-start').val(),
+            endDate: $('#date-end').val()
+        },
+        url: '/Home/GetCostGroupBySuplier',
+        success: function (result) {
+            var data = result.data;
+            var html = '';
+
+            $.each(data, function (i, e) {
+                html += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + e.id + '</td>' +
+                    '<td>' + e.name + '</td>' +
+                    '<td class="text-right">' + formatNumber(e.totalBill) + '</td>' +
+                    '<td class="text-right">' + formatNumber(e.price) + '</td>' +
+                    '</tr>';
+            });
+
+            if (html == '') {
+                html += '<tr  class="font-italic"><td colspan="5">Không tìm thấy kết quả nào cả!</td></tr>';
+            }
+
+            $('#tb-costGroupBySuplier tbody').empty().append(html);
+        }
+    })
+}
+
 function getCountShop_Goods_Profit() {
     $('#profit').text(formatNumber(realRevenue - realCost) + " VNĐ");
 }
@@ -216,6 +298,10 @@ function getRankTemplate() {
                     '<td class="text-right">' + formatNumber(e.turnover) + '</td>' +
                     '</tr>';
             });
+
+            if (html == '') {
+                html += '<tr  class="font-italic"><td colspan="6">Không tìm thấy kết quả nào cả!</td></tr>';
+            }
 
             $('#tb-rank-shopgoods tbody').empty().append(html);
         }
@@ -291,6 +377,10 @@ function getOutOfStock() {
                     '</tr>';
             });
 
+            if (html == '') {
+                html += '<tr  class="font-italic"><td colspan="6">Không tìm thấy kết quả nào cả!</td></tr>';
+            }
+
             $('#tb-outofstock tbody').empty().append(html);
         }
     })
@@ -315,6 +405,10 @@ function getSoldOutOfStock() {
                     '<td class="text-center">' + e.unit + '</td>' +
                     '</tr>';
             });
+
+            if (html == '') {
+                html += '<tr  class="font-italic"><td colspan="6">Không tìm thấy kết quả nào cả!</td></tr>';
+            }
 
             $('#tb-soldoutofstock tbody').empty().append(html);
         }

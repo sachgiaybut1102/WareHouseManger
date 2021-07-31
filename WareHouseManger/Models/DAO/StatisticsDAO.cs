@@ -182,7 +182,7 @@ namespace WareHouseManger.Models.DAO
 
         public async Task<List<StatisticsShopGoodsInfo>> GetRankShop_GoodsByMonth(int month, int year)
         {
-            List<StatisticsShopGoodsInfo> statisticsShopGoodsInfos = new ();
+            List<StatisticsShopGoodsInfo> statisticsShopGoodsInfos = new();
 
             var shop_Goods_Issues = await _context.Shop_Goods_Issues
                 .Include(t => t.Shop_Goods_Issues_Details)
@@ -220,7 +220,7 @@ namespace WareHouseManger.Models.DAO
 
         public async Task<List<StatisticsShopGoodsInfo>> GetRankShop_GoodsByYear(int year)
         {
-            List<StatisticsShopGoodsInfo> statisticsShopGoodsInfos = new ();
+            List<StatisticsShopGoodsInfo> statisticsShopGoodsInfos = new();
 
             var shop_Goods_Issues = await _context.Shop_Goods_Issues
                 .Include(t => t.Shop_Goods_Issues_Details)
@@ -230,7 +230,7 @@ namespace WareHouseManger.Models.DAO
                 .Select(t => t.Shop_Goods_Issues_Details)
                 .ToArrayAsync();
 
-            List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details = new ();
+            List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details = new();
 
             foreach (var list in shop_Goods_Issues)
             {
@@ -256,7 +256,105 @@ namespace WareHouseManger.Models.DAO
             return statisticsShopGoodsInfos.OrderByDescending(t => t.Turnover).ToList();
         }
 
-        private static DateTime EndDate(DateTime endDate)
+        public async Task<List<RankingPersonInfo>> GetRevenueGroupByEmployee(DateTime startDate, DateTime endDate)
+        {
+            endDate = EndDate(endDate);
+
+            var list = await _context.Shop_Goods_Issues
+                .Include(t => t.Employee)
+                .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
+                .ToListAsync();
+
+            List<RankingPersonInfo> rankingPersonInfos = new();
+
+            if (list.Count > 0)
+            {
+                var employees = list.GroupBy(t => t.Employee).ToList();
+
+                foreach (var employee in employees)
+                {
+                    RankingPersonInfo rankingPersonInfo = new RankingPersonInfo()
+                    {
+                        ID = employee.Key.EmployeeID,
+                        Name = employee.Key.Name,
+                        Price = (decimal)employee.Select(t => t.Total).Sum(),
+                        TotalBill = employee.Count()
+                    };
+
+                    rankingPersonInfos.Add(rankingPersonInfo);
+                }
+            }
+
+            return rankingPersonInfos.OrderByDescending(t => t.Price).ToList();
+        }
+
+        public async Task<List<RankingPersonInfo>> GetRevenueGroupByCustomer(DateTime startDate, DateTime endDate)
+        {
+            endDate = EndDate(endDate);
+
+             var list = await _context.Shop_Goods_Issues
+                .Include(t => t.Customer)
+                .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
+                
+                .ToListAsync();
+
+            List<RankingPersonInfo> rankingPersonInfos = new();
+
+            if (list.Count > 0)
+            {
+                var customers = list.GroupBy(t => t.Customer).ToList();
+
+                foreach (var customer in customers)
+                {
+                    RankingPersonInfo rankingPersonInfo = new RankingPersonInfo()
+                    {
+                        ID = customer.Key.CustomerID,
+                        Name = customer.Key.Name,
+                        Price = (decimal)customer.Select(t => t.Total).Sum(),
+                        TotalBill = customer.Count()
+                    };
+
+                    rankingPersonInfos.Add(rankingPersonInfo);
+                }
+            }
+
+            return rankingPersonInfos.OrderByDescending(t => t.Price).ToList();
+        }
+
+        public async Task<List<RankingPersonInfo>> GetCostGroupBySuplier(DateTime startDate, DateTime endDate)
+        {
+            endDate = EndDate(endDate);
+
+            var list = await _context.Shop_Goods_Receipts
+                .Include(t => t.Supplier)
+                .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
+                
+                .ToListAsync();
+
+            List<RankingPersonInfo> rankingPersonInfos = new();
+
+            if (list.Count() > 0)
+            {
+                var supliers = list.GroupBy(t => t.Supplier).ToList();
+                foreach (var suplier in supliers)
+                {
+                    RankingPersonInfo rankingPersonInfo = new RankingPersonInfo()
+                    {
+                        ID = suplier.Key.SupplierID,
+                        Name = suplier.Key.Name,
+                        Price = (decimal)suplier.Select(t => t.Total).Sum(),
+                        TotalBill = suplier.Count()
+                    };
+
+                    rankingPersonInfos.Add(rankingPersonInfo);
+                }
+            }
+            
+
+            return rankingPersonInfos.OrderByDescending(t=>t.Price).ToList();
+        }
+
+        private DateTime EndDate(DateTime endDate)
         {
             endDate.AddHours(12);
 

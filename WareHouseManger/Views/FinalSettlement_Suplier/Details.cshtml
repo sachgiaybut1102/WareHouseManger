@@ -50,9 +50,9 @@
                                 <th>Số hóa đơn</th>
                                 <th>Ngày lập</th>
                                 <th>Nhân viên lập</th>
-                                <th class="text-right">Tổng tiền</th>
-                                <th class="text-right">Đã thanh toán</th>
-                                <th class="text-right">Còn lại</th>
+                                <th class="text-right">Tổng tiền (VNĐ)</th>
+                                <th class="text-right">Đã thanh toán (VNĐ)</th>
+                                <th class="text-right">Còn lại (VNĐ)</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -65,9 +65,9 @@
                                         <td>@info.GoodsReceiptID</td>
                                         <td>@info.DateCreated.Value.ToString("dd/MM/yyyy")</td>
                                         <td>@info.Employee.Name</td>
-                                        <td class="text-right">@{ var total0 = string.Format("{0:N}", info.Total);}@total0</td>
-                                        <td class="text-right">@{ var total1 = string.Format("{0:N}", info.FinalSettlement_Supliers.Select(t => t.Payment).Sum());}@total1</td>
-                                        <td class="text-right">@{ var total2 = string.Format("{0:N}", info.Total - info.FinalSettlement_Supliers.Select(t => t.Payment).Sum());}@total2</td>
+                                        <td class="text-right">@{ var total0 = string.Format("{0:N}", info.Total).Replace(".00","");}@total0</td>
+                                        <td class="text-right">@{ var total1 = string.Format("{0:N}", info.FinalSettlement_Supliers.Select(t => t.Payment).Sum()).Replace(".00", "");}@total1</td>
+                                        <td class="text-right">@{ var total2 = string.Format("{0:N}", info.Total - info.FinalSettlement_Supliers.Select(t => t.Payment).Sum()).Replace(".00", "");}@total2</td>
                                         <td class="text-nowrap" style="width:1px;"><button class="btn btn-sm btn-info details">Chi tiết</button></td>
                                     </tr>
                                 }
@@ -94,9 +94,9 @@
                                     <th>Số hóa đơn</th>
                                     <th>Ngày lập</th>
                                     <th>Nhân viên lập</th>
-                                    <th class="text-right">Tổng tiền</th>
-                                    <th class="text-right">Đã thanh toán</th>
-                                    <th class="text-right">Còn lại</th>
+                                    <th class="text-right">Tổng tiền (VNĐ)</th>
+                                    <th class="text-right">Đã thanh toán (VNĐ)</th>
+                                    <th class="text-right">Còn lại (VNĐ)</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -172,8 +172,8 @@
                         <thead>
                             <tr>
                                 <th>Ngày quyết toán</th>
-                                <th class="text-right">Số tiền quyết toán</th>
-                                <th class="text-right">Còn lại</th>
+                                <th class="text-right">Số tiền quyết toán (VNĐ)</th>
+                                <th class="text-right">Còn lại (VNĐ)</th>
                             </tr>
                         </thead>
                         <tbody>

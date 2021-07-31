@@ -61,6 +61,8 @@ namespace WareHouseManger.Controllers
                 return RedirectToAction("Page404", "Home");
             }
 
+            var total = (decimal)model.Shop_Goods_Issues_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+
             parameters.Add("paCompanyName", _configuration["CompanyInfomation:Name"]);
             parameters.Add("paCompanyAddress", _configuration["CompanyInfomation:Address"]);
             parameters.Add("paCompanyPhoneNumber", _configuration["CompanyInfomation:PhoneNumber"]);
@@ -80,7 +82,12 @@ namespace WareHouseManger.Controllers
             parameters.Add("paGoodsIssuesID", model.GoodsIssueID);
             parameters.Add("paCustomerID", model.CustomerID.ToString());
             parameters.Add("paEmployeeID", model.EmployeeID.ToString());
-            parameters.Add("paTotal", string.Format("{0:N}", model.Shop_Goods_Issues_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum()).Replace(".00", ""));
+            parameters.Add("paTotal", string.Format("{0:N}", total).Replace(".00", ""));
+            parameters.Add("paCash", string.Format("{0:N}", model.Prepay - model.TransferMoney).Replace(".00", ""));
+            parameters.Add("paTranferMoney", string.Format("{0:N}", model.TransferMoney).Replace(".00", ""));
+            parameters.Add("paPrePay", string.Format("{0:N}", model.Prepay).Replace(".00", ""));
+            parameters.Add("paRemain", string.Format("{0:N}", total - model.Prepay).Replace(".00", ""));
+            parameters.Add("paTotalText", Common.Utils.NumberToText(total, true));
 
             LocalReport localReport = new LocalReport(path);
             localReport.AddDataSource("DataSet1", model.Shop_Goods_Issues_Details
@@ -126,6 +133,8 @@ namespace WareHouseManger.Controllers
                 return RedirectToAction("Page404", "Home");
             }
 
+            var total = (decimal)model.Shop_Goods_Receipt_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+
             parameters.Add("paCompanyName", _configuration["CompanyInfomation:Name"]);
             parameters.Add("paCompanyAddress", _configuration["CompanyInfomation:Address"]);
             parameters.Add("paCompanyPhoneNumber", _configuration["CompanyInfomation:PhoneNumber"]);
@@ -145,7 +154,12 @@ namespace WareHouseManger.Controllers
             parameters.Add("paGoodsReceiptID", model.GoodsReceiptID);
             parameters.Add("paSupplierID", model.Supplier.SupplierID.ToString());
             parameters.Add("paEmployeeID", model.EmployeeID.ToString());
-            parameters.Add("paTotal", string.Format("{0:N}", model.Shop_Goods_Receipt_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum()).Replace(".00", ""));
+            parameters.Add("paTotal", string.Format("{0:N}", total).Replace(".00", ""));
+            parameters.Add("paCash", string.Format("{0:N}", model.Prepay - model.TransferMoney).Replace(".00", ""));
+            parameters.Add("paTranferMoney", string.Format("{0:N}", model.TransferMoney).Replace(".00", ""));
+            parameters.Add("paPrePay", string.Format("{0:N}", model.Prepay).Replace(".00", ""));
+            parameters.Add("paRemain", string.Format("{0:N}", total - model.Prepay).Replace(".00", ""));
+            parameters.Add("paTotalText", Common.Utils.NumberToText(total, true));
 
             LocalReport localReport = new LocalReport(path);
             localReport.AddDataSource("DataSet1", model.Shop_Goods_Receipt_Details

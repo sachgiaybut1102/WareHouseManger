@@ -39,6 +39,7 @@ namespace WareHouseManger.Models.EF
         public virtual DbSet<Shop_Goods_StockTake_Detail> Shop_Goods_StockTake_Details { get; set; }
         public virtual DbSet<Shop_Goods_Unit> Shop_Goods_Units { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
+        public virtual DbSet<View_Shop_Goods_Issues_Detail> View_Shop_Goods_Issues_Details { get; set; }
         public virtual DbSet<WareHouse> WareHouses { get; set; }
         public virtual DbSet<WareHouse_Goods_Detail> WareHouse_Goods_Details { get; set; }
 
@@ -333,9 +334,13 @@ namespace WareHouseManger.Models.EF
 
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
+                entity.Property(e => e.Prepay).HasColumnType("decimal(18, 0)");
+
                 entity.Property(e => e.Remark).HasMaxLength(1000);
 
                 entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.TransferMoney).HasColumnType("decimal(18, 0)");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Shop_Goods_Issues)
@@ -392,9 +397,13 @@ namespace WareHouseManger.Models.EF
 
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
+                entity.Property(e => e.Prepay).HasColumnType("decimal(18, 0)");
+
                 entity.Property(e => e.Remark).HasMaxLength(1000);
 
                 entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.TransferMoney).HasColumnType("decimal(18, 0)");
 
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.Shop_Goods_Receipts)
@@ -518,6 +527,31 @@ namespace WareHouseManger.Models.EF
                     .HasMaxLength(15)
                     .IsUnicode(false)
                     .IsFixedLength(true);
+            });
+
+            modelBuilder.Entity<View_Shop_Goods_Issues_Detail>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("View_Shop_Goods_Issues_Detail");
+
+                entity.Property(e => e.CategoryName).HasMaxLength(50);
+
+                entity.Property(e => e.GoodsIssueID)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Name).HasMaxLength(50);
+
+                entity.Property(e => e.TemplateID)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.UnitName).HasMaxLength(50);
             });
 
             modelBuilder.Entity<WareHouse>(entity =>

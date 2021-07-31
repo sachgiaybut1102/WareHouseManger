@@ -73,6 +73,9 @@
     });
 
     $('body').on('keyup', '.number', function () {
+        $(this).val(formatNumber(formatString($(this).val())));
+
+        var tds = $($(this).parent().parent()).find('td');
 
         $(this).val(formatNumber(formatString($(this).val())));
 
@@ -94,7 +97,9 @@
             DateCreated: $('#DateCreated').val(),
             CustomerID: $('#CustomerID').val(),
             EmployeeID: $('#EmployeeID').val(),
-            Remark: $('#Remark').val()
+            Remark: $('#Remark').val(),
+            Prepay: formatString($('#prepay').val()),
+            TransferMoney: formatString($('#TransferMoney').val())
         };
 
         var recepitDetails = [];
@@ -150,16 +155,65 @@
             '<td>' + $('#select-category').text() + '</td>' +
             '<td>' + $(tds[2]).text() + '</td>' +
             '<td>' + $(tds[3]).text() + '</td>' +
-            '<td style="width:120px;"><input class="form-control text-right number" min="1" value="' + $($(tds[5]).children(0)).val() + '" readonly/></td>' +
-            '<td style="width:140px;"><input class="form-control text-right number" min="1" value="' + $($(tds[6]).children(0)).val() + '" readonly/></td>' +
-            '<td style="width:160px;"><input class="form-control text-right number" min="1" value="' + $($(tds[7]).children(0)).val() + '" readonly/></td>' +
+            '<td style="width:120px;"><input class="form-control text-right number number-input" min="1" value="' + $($(tds[5]).children(0)).val() + '" readonly/></td>' +
+            '<td style="width:140px;"><input class="form-control text-right number number-input" min="1" value="' + $($(tds[6]).children(0)).val() + '" readonly/></td>' +
+            '<td style="width:160px;"><input class="form-control text-right number number-input" min="1" value="' + $($(tds[7]).children(0)).val() + '" readonly/></td>' +
             '<td class="align-middle" style="width:1px;"><button class="btn btn-sm btn-danger btn-remove">Xóa</button></td>' +
             '</tr>';
         $('#tb-shopgoods tbody').append(html);
+        updateTotal();
         $($($(this).parent().parent())).remove();
         checkCreateButton();
-    })
+    });
+
+    $('#prepay').keyup(function () {
+        prepay_KeyUp();
+    });
+
+    $('#cash').keyup(function () {
+        cash_KeyUp();
+    });
 });
+
+
+function prepay_KeyUp() {
+    var total = parseInt(formatString($('#total').val()));
+
+    var prepay = parseInt(formatString($('#prepay').val()));
+
+    if (prepay <= 0) {
+        $('#prepay').val(0);
+    } else if (prepay >= total) {
+        $('#prepay').val($('#total').val());
+
+        prepay = total;
+    }
+
+    $('#cash').val(formatNumber(prepay));
+
+    $('#TransferMoney').val(0);
+
+    $('#remain').val(formatNumber(total - prepay));
+}
+
+function cash_KeyUp() {
+    var prepay = parseInt(formatString($('#prepay').val()));
+
+    var cash = parseInt(formatString($('#cash').val()));
+
+
+    if (cash <= 0) {
+        $('#cash').val(0);
+    } else if (cash >= prepay) {
+        $('#cash').val($('#prepay').val());
+        prepay = cash;
+    }
+    //else {
+    //    $('#cash').val(formatNumber(cash));
+    //}
+
+    $('#TransferMoney').val(formatNumber(prepay - cash));
+}
 
 function getIds() {
     var trs = $('#tb-shopgoods tbody').find('tr');
@@ -230,6 +284,7 @@ function createConfirmed(info, json) {
             if (result.msg == 'msg') {
                 $('#Remark').empty();
                 $('#tb-shopgoods tbody').empty();
+                updateTotal();
                 printJS('/Report/Shop_Goods_Issues/' + result.id);
                 alert("Tạo phiếu nhập hàng thành công!");
                 checkCreateButton();
@@ -256,7 +311,15 @@ function updateTotal() {
         total += parseInt(formatString($($(tds[tds.length - 2]).children(0)).val()));
     });
 
-    $('#total').text('Tổng tiền: ' + formatNumber(total));
+    $('#total').val(formatNumber(total));
+
+    $('#prepay').val(0);
+
+    $('#cash').val(0);
+
+    $('#TransferMoney').val(0);
+
+    $('#remain').val($('#total').val());
 
 }
 

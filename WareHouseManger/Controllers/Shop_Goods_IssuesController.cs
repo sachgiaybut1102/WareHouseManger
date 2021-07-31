@@ -204,8 +204,10 @@ namespace WareHouseManger.Controllers
 
                 var shop_Goods_Issue_Details = await _context.Shop_Goods_Issues_Details.Where(t => t.GoodsIssueID == id).ToListAsync();
 
-                _context.Shop_Goods_Issues_Details.RemoveRange(shop_Goods_Issue_Details);
+                var finalSettlement_Customers = await _context.FinalSettlement_Customers.Where(t => t.GoodsIssuesID == id).ToListAsync();
 
+                _context.Shop_Goods_Issues_Details.RemoveRange(shop_Goods_Issue_Details);
+                _context.FinalSettlement_Customers.RemoveRange(finalSettlement_Customers);
                 _context.Shop_Goods_Issues.Remove(shop_Goods_Issue);
 
                 await UpdateCount(shop_Goods_Issue_Details, 1);
@@ -265,6 +267,17 @@ namespace WareHouseManger.Controllers
 
                     info.Shop_Goods_Issues_Details = shop_Goods_Issue_Details;
                     info.Total = info.Shop_Goods_Issues_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+
+                    FinalSettlement_Customer finalSettlement_Customer = new FinalSettlement_Customer()
+                    {
+                        GoodsIssuesID = info.GoodsIssueID,
+                        CustomerID = info.CustomerID,
+                        Payment = info.Prepay,
+                        Remainder = info.Total - info.Prepay,
+                        DateCreated = info.DateCreated
+                    };
+
+                    info.FinalSettlement_Customers.Add(finalSettlement_Customer);
 
                     await _context.Shop_Goods_Issues.AddAsync(info);
 

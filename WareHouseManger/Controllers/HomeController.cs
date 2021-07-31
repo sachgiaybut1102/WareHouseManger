@@ -10,16 +10,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using WareHouseManger.Models;
 using WareHouseManger.Models.EF;
-
 namespace WareHouseManger.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly Models.EF.DB_WareHouseMangerContext _context;
+        private readonly DB_WareHouseMangerContext _context;
         private readonly IConfiguration _configuration;
-        public HomeController(ILogger<HomeController> logger, Models.EF.DB_WareHouseMangerContext context, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, DB_WareHouseMangerContext context, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
@@ -150,6 +149,47 @@ namespace WareHouseManger.Controllers
             return Json(new
             {
                 value = realCost
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetRevenueGroupByEmployee(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var data = await statisticsDAO.GetRevenueGroupByEmployee(startDate, endDate);
+
+            return Json(new
+            {
+                data = data
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetRevenueGroupByCustomer(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var data = await statisticsDAO.GetRevenueGroupByCustomer(startDate, endDate);
+
+            return Json(new
+            {
+                data = data
+            });
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCostGroupBySuplier(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var data = await statisticsDAO.GetCostGroupBySuplier(startDate, endDate);
+
+            return Json(new
+            {
+                data = data
             });
         }
 

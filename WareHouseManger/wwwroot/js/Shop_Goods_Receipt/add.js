@@ -81,9 +81,13 @@
         var value = parseInt(formatString($(tds[tds.length - 3]).children(0).val())) * parseInt(formatString($(tds[tds.length - 4]).children(0).val()))
 
         $(tds[tds.length - 2]).children(0).val(formatNumber(value));
+    });
 
+    $('body').on('keyup', '.number-input', function () {
         updateTotal();
     });
+
+   
 
     class ShopGoodsViewModel {
         constructor(TemplateID, Count, UnitPrice) {
@@ -98,7 +102,9 @@
             DateCreated: $('#DateCreated').val(),
             SupplierID: $('#SupplierID').val(),
             EmployeeID: $('#EmployeeID').val(),
-            Remark: $('#Remark').val()
+            Remark: $('#Remark').val(),
+            Prepay: formatString($('#prepay').val()),
+            TransferMoney: formatString($('#TransferMoney').val())
         };
 
         var recepitDetails = [];
@@ -159,16 +165,64 @@
             '<td>' + $('#select-category').text() + '</td>' +
             '<td>' + $(tds[2]).text() + '</td>' +
             '<td>' + $(tds[3]).text() + '</td>' +
-            '<td style="width:140px;"><input class="form-control text-right number" min="1" value="0" /></td>' +
-            '<td style="width:160px;"><input class="form-control text-right number" min="1" value="0" /></td>' +
-            '<td style="width:180px;"><input class="form-control text-right number" min="1" value="0" /></td>' +
+            '<td style="width:140px;"><input class="form-control text-right number number-input" min="1" value="0" /></td>' +
+            '<td style="width:160px;"><input class="form-control text-right number number-input" min="1" value="0" /></td>' +
+            '<td style="width:180px;"><input class="form-control text-right number number-input" min="1" value="0" /></td>' +
             '<td class="align-middle" style="width:1px;"><button class="btn btn-sm btn-danger btn-remove">Xóa</button></td>' +
             '</tr>';
         $('#tb-shopgoods tbody').append(html);
         $($($(this).parent().parent())).remove();
         checkCreateButton();
-    })
+    });
+
+    $('#prepay').keyup(function () {
+        prepay_KeyUp();
+    });
+
+    $('#cash').keyup(function () {
+        cash_KeyUp();
+    });
 });
+
+
+function prepay_KeyUp() {
+    var total = parseInt(formatString($('#total').val()));
+
+    var prepay = parseInt(formatString($('#prepay').val()));
+
+    if (prepay <= 0) {
+        $('#prepay').val(0);
+    } else if (prepay >= total) {
+        $('#prepay').val($('#total').val());
+
+        prepay = total;
+    }
+
+    $('#cash').val(formatNumber(prepay));
+
+    $('#TransferMoney').val(0);
+
+    $('#remain').val(formatNumber(total - prepay));
+}
+
+function cash_KeyUp() {
+    var prepay = parseInt(formatString($('#prepay').val()));
+
+    var cash = parseInt(formatString($('#cash').val()));
+
+
+    if (cash <= 0) {
+        $('#cash').val(0);
+    } else if (cash >= prepay) {
+        $('#cash').val($('#prepay').val());
+        prepay = cash;
+    }
+    //else {
+    //    $('#cash').val(formatNumber(cash));
+    //}
+
+    $('#TransferMoney').val(formatNumber(prepay - cash));
+}
 
 function getIds() {
     var trs = $('#tb-shopgoods tbody').find('tr');
@@ -258,7 +312,15 @@ function updateTotal() {
         total += parseInt(formatString($($(tds[tds.length - 2]).children(0)).val()));
     });
 
-    $('#total').text('Tổng tiền: ' + formatNumber(total));
+    $('#total').val(formatNumber(total));
+
+    $('#prepay').val(0);
+
+    $('#cash').val(0);
+
+    $('#TransferMoney').val(0);
+
+    $('#remain').val($('#total').val());
 
 }
 

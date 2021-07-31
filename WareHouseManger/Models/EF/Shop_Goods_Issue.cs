@@ -18,6 +18,8 @@ namespace WareHouseManger.Models.EF
         public int? CustomerID { get; set; }
         public string Remark { get; set; }
         public decimal? Total { get; set; }
+        public decimal? Prepay { get; set; }
+        public decimal? TransferMoney { get; set; }
         public int? EmployeeID { get; set; }
 
         public virtual Customer Customer { get; set; }

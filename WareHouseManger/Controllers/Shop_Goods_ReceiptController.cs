@@ -203,7 +203,10 @@ namespace WareHouseManger.Controllers
 
                 var shop_Goods_Receipt_Details = await _context.Shop_Goods_Receipt_Details.Where(t => t.GoodsReceiptID == id).ToListAsync();
 
+                var finalSettlement_Supliers = await _context.FinalSettlement_Supliers.Where(t => t.GoodsReceiptID == id).ToListAsync();
+
                 _context.Shop_Goods_Receipt_Details.RemoveRange(shop_Goods_Receipt_Details);
+                _context.FinalSettlement_Supliers.RemoveRange(finalSettlement_Supliers);
                 _context.Shop_Goods_Receipts.Remove(shop_Goods_Receipt);
 
                 await UpdateCount(shop_Goods_Receipt_Details, -1);
@@ -266,11 +269,22 @@ namespace WareHouseManger.Controllers
                     info.Shop_Goods_Receipt_Details = shop_Goods_Receipt_Details;
                     info.Total = info.Shop_Goods_Receipt_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
 
+                    FinalSettlement_Suplier finalSettlement_Suplier = new FinalSettlement_Suplier()
+                    {
+                        GoodsReceiptID = info.GoodsReceiptID,
+                        SupplierID = info.SupplierID,
+                        Payment = info.Prepay,
+                        Remainder = info.Total - info.Prepay,
+                        DateCreated = info.DateCreated
+                    };
+
+                    info.FinalSettlement_Supliers.Add(finalSettlement_Suplier);
+
                     await _context.Shop_Goods_Receipts.AddAsync(info);
 
                     await UpdateCount(shop_Goods_Receipt_Details, 1);
 
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();               
                 }
                 else
                 {
