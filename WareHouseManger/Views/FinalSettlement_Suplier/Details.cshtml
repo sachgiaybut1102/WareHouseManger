@@ -131,49 +131,53 @@
     </div>
 </div>
 <div class="modal fade" id="modal-addFinalSettlement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel">Thêm quyết toán</h4>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label class="font-weight-bold">Số hóa đơn:</label>
-                        <input id="id" class="form-control" readonly />
+                <div class="row mb-0">
+                    <div class="form-group col-6">
+                        <div class="form-group ">
+                            <label class="font-weight-bold">Số hóa đơn:</label>
+                            <input id="id" class="form-control" readonly />
+                        </div>
+                        <div class="form-group ">
+                            <label class="font-weight-bold">Ngày quyết toán:</label>
+                            <input id="date-created" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Ghi chú</label>
+                            <textarea id="remark" class="form-control" rows="1"></textarea>
+                        </div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label class="font-weight-bold">Ngày quyết toán:</label>
-                        <input id="date-created" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-3">
-                        <label class="font-weight-bold">Số tiền cần thanh toán:</label>
-                        <input id="remain" class="form-control text-right" readonly />
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label class="font-weight-bold">Số tiền thanh toán:</label>
-                        <input id="num0" class="form-control text-right num" />
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label class="font-weight-bold">Còn lại:</label>
-                        <input id="num1" class="form-control text-right num" />
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label class="font-weight-bold">Xác nhận</label>
-                        <div>
-                            <button id="btn-acceptFinalSettlement" type="button" class="btn btn-primary">Quyết toán</button>
+                    <div class="form-group col-6">
+                        <div class="form-group ">
+                            <label class="font-weight-bold">Số tiền cần thanh toán:</label>
+                            <input id="remain" class="form-control text-right" readonly />
+                        </div>
+                        <div class="form-group ">
+                            <label class="font-weight-bold">Số tiền thanh toán:</label>
+                            <input id="num0" class="form-control text-right num" />
+                        </div>
+                        <div class="form-group ">
+                            <label class="font-weight-bold">Còn lại:</label>
+                            <input id="num1" class="form-control text-right num" />
                         </div>
                     </div>
                 </div>
+                <div class="form-group text-right">
+                    <button id="btn-acceptFinalSettlement" type="button" class="btn btn-primary">Quyết toán</button>
+                </div>
                 <div>
-                    <table id="tb-history-finalsettlement" class="table table-sm table-hover table-striped">
+                    <table id="tb-history-finalsettlement" class="table table-bordered table-sm table-hover table-striped">
                         <thead>
                             <tr>
                                 <th>Ngày quyết toán</th>
                                 <th class="text-right">Số tiền quyết toán (VNĐ)</th>
                                 <th class="text-right">Còn lại (VNĐ)</th>
+                                <th>Ghi chú</th>
                             </tr>
                         </thead>
                         <tbody>
