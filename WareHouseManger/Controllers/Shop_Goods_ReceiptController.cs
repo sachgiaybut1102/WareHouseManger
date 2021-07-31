@@ -281,6 +281,7 @@ namespace WareHouseManger.Controllers
             {
                 msg = "";
             }
+            
 
             return Json(new { msg = msg, id = goodsReceiptID });
         }

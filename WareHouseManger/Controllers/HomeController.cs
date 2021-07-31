@@ -44,14 +44,16 @@ namespace WareHouseManger.Controllers
 
         [Authorize]
         [HttpPost]
-        public JsonResult GetDetails(DateTime startDate, DateTime endDate)
+        public async Task<JsonResult> GetDetails(DateTime startDate, DateTime endDate)
         {
             Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
 
-            var countReceipt = statisticsDAO.GetCountShop_Goods_Receipt(startDate, endDate);
-            var countIssues = statisticsDAO.GetCountShop_Goods_Issues(startDate, endDate);
-            var revenue = statisticsDAO.GetCountShop_Goods_Revenue(startDate, endDate);
-            var cost = statisticsDAO.GetCountShop_Goods_Cost(startDate, endDate);
+            var countReceipt = await statisticsDAO.GetCountShop_Goods_Receipt(startDate, endDate);
+            var countIssues = await statisticsDAO.GetCountShop_Goods_Issues(startDate, endDate);
+            var revenue = await statisticsDAO.GetCountShop_Goods_Revenue(startDate, endDate);
+            var cost = await statisticsDAO.GetCountShop_Goods_Cost(startDate, endDate);
+            var realRevenue = await statisticsDAO.GetCountShop_Goods_RealRevenue(startDate, endDate);
+            var realCost = await statisticsDAO.GetCountShop_Goods_RealCost(startDate, endDate);
 
             return Json(new
             {
@@ -60,8 +62,94 @@ namespace WareHouseManger.Controllers
                     countReceipt = countReceipt,
                     countIssues = countIssues,
                     revenue = revenue,
-                    cost = cost
+                    cost = cost,
+                    realRevenue = realRevenue,
+                    realCost = realCost
                 }
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountShop_Goods_Receipt(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var countReceipt = await statisticsDAO.GetCountShop_Goods_Receipt(startDate, endDate);
+
+            return Json(new
+            {
+                value = countReceipt
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountShop_Goods_Issues(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var countIssues = await statisticsDAO.GetCountShop_Goods_Issues(startDate, endDate);
+
+            return Json(new
+            {
+                value = countIssues
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountShop_Goods_Revenue(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var revenue = await statisticsDAO.GetCountShop_Goods_Revenue(startDate, endDate);
+
+            return Json(new
+            {
+                value = revenue
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountShop_Goods_Cost(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var cost = await statisticsDAO.GetCountShop_Goods_Cost(startDate, endDate);
+
+            return Json(new
+            {
+                value = cost
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountShop_Goods_RealRevenue(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var realRevenue = await statisticsDAO.GetCountShop_Goods_RealRevenue(startDate, endDate);
+
+            return Json(new
+            {
+                value = realRevenue
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountShop_Goods_RealCost(DateTime startDate, DateTime endDate)
+        {
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var realCost = await statisticsDAO.GetCountShop_Goods_RealCost(startDate, endDate);
+
+            return Json(new
+            {
+                value = realCost
             });
         }
 
@@ -126,7 +214,30 @@ namespace WareHouseManger.Controllers
             var list = await _context.Shop_Goods
                 .Include(t => t.Category)
                 .Include(t => t.Unit)
-                .Where(t => t.Count <= count).ToListAsync();
+                .Where(t => t.Count <= count && t.Count > 0).ToListAsync();
+
+            return Json(new
+            {
+                data = list.Select(t => new
+                {
+                    TemplateID = t.TemplateID,
+                    Name = t.Name,
+                    Category = t.Category.Name,
+                    Unit = t.Unit.Name,
+                    Count = t.Count,
+                }).AsEnumerable()
+            }); ;
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetSoldOutOfStock()
+        {
+            int count = 0;
+            var list = await _context.Shop_Goods
+                .Include(t => t.Category)
+                .Include(t => t.Unit)
+                .Where(t => t.Count == count).ToListAsync();
 
             return Json(new
             {

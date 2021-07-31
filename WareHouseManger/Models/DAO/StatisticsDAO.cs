@@ -16,22 +16,22 @@ namespace WareHouseManger.Models.DAO
             _context = context;
         }
 
-        public int GetCountShop_Goods_Receipt(DateTime startDate, DateTime endDate)
+        public async Task<int> GetCountShop_Goods_Receipt(DateTime startDate, DateTime endDate)
         {
             endDate = EndDate(endDate);
 
             int count = 0;
 
-            count = _context.Shop_Goods_Receipts.Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate).Count();
+            count = await _context.Shop_Goods_Receipts.Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate).CountAsync();
 
             return count;
         }
 
         public async Task<List<StatisticsInfo>> GetCountShop_Goods_ReceiptByMonth(int month, int year)
         {
-            List<StatisticsInfo> statisticsInfos = new List<StatisticsInfo>();
+            List<StatisticsInfo> statisticsInfos = new();
 
-            var shop_Goods_Receipts = await _context.Shop_Goods_Receipts
+            var shop_Goods_Receipts = await _context.FinalSettlement_Supliers
                 .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year)
                 .ToArrayAsync();
 
@@ -42,7 +42,7 @@ namespace WareHouseManger.Models.DAO
                 statisticsInfos.Add(new StatisticsInfo()
                 {
                     Index = i,
-                    Value = (decimal)shop_Goods_Receipts.Where(t => t.DateCreated.Value.Day == i).Select(t => t.Total).Sum()
+                    Value = (decimal)shop_Goods_Receipts.Where(t => t.DateCreated.Value.Day == i).Select(t => t.Payment).Sum()
                 });
             }
 
@@ -51,9 +51,9 @@ namespace WareHouseManger.Models.DAO
 
         public async Task<List<StatisticsInfo>> GetCountShop_Goods_ReceiptByYear(int year)
         {
-            List<StatisticsInfo> statisticsInfos = new List<StatisticsInfo>();
+            List<StatisticsInfo> statisticsInfos = new();
 
-            var shop_Goods_Receipts = await _context.Shop_Goods_Receipts
+            var shop_Goods_Receipts = await _context.FinalSettlement_Supliers
                 .Where(t => t.DateCreated.Value.Year == year)
                 .ToArrayAsync();
 
@@ -63,29 +63,29 @@ namespace WareHouseManger.Models.DAO
                 statisticsInfos.Add(new StatisticsInfo()
                 {
                     Index = i,
-                    Value = (decimal)shop_Goods_Receipts.Where(t => t.DateCreated.Value.Month == i).Select(t => t.Total).Sum()
+                    Value = (decimal)shop_Goods_Receipts.Where(t => t.DateCreated.Value.Month == i).Select(t => t.Payment).Sum()
                 });
             }
 
             return statisticsInfos;
         }
 
-        public int GetCountShop_Goods_Issues(DateTime startDate, DateTime endDate)
+        public async Task<int> GetCountShop_Goods_Issues(DateTime startDate, DateTime endDate)
         {
             endDate = EndDate(endDate);
 
             int count = 0;
 
-            count = _context.Shop_Goods_Issues.Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate).Count();
+            count = await _context.Shop_Goods_Issues.Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate).CountAsync();
 
             return count;
         }
 
         public async Task<List<StatisticsInfo>> GetCountShop_Goods_IssuesByMonth(int month, int year)
         {
-            List<StatisticsInfo> statisticsInfos = new List<StatisticsInfo>();
+            List<StatisticsInfo> statisticsInfos = new();
 
-            var shop_Goods_Issues = await _context.Shop_Goods_Issues
+            var shop_Goods_Issues = await _context.FinalSettlement_Customers
                 .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year)
                 .ToArrayAsync();
 
@@ -96,7 +96,7 @@ namespace WareHouseManger.Models.DAO
                 statisticsInfos.Add(new StatisticsInfo()
                 {
                     Index = i,
-                    Value = (decimal)shop_Goods_Issues.Where(t => t.DateCreated.Value.Day == i).Select(t => t.Total).Sum()
+                    Value = (decimal)shop_Goods_Issues.Where(t => t.DateCreated.Value.Day == i).Select(t => t.Payment).Sum()
                 });
             }
 
@@ -105,9 +105,9 @@ namespace WareHouseManger.Models.DAO
 
         public async Task<List<StatisticsInfo>> GetCountShop_Goods_IssuesByYear(int year)
         {
-            List<StatisticsInfo> statisticsInfos = new List<StatisticsInfo>();
+            List<StatisticsInfo> statisticsInfos = new();
 
-            var shop_Goods_Issues = await _context.Shop_Goods_Issues
+            var shop_Goods_Issues = await _context.FinalSettlement_Customers
                 .Where(t => t.DateCreated.Value.Year == year)
                 .ToArrayAsync();
 
@@ -117,44 +117,72 @@ namespace WareHouseManger.Models.DAO
                 statisticsInfos.Add(new StatisticsInfo()
                 {
                     Index = i,
-                    Value = (decimal)shop_Goods_Issues.Where(t => t.DateCreated.Value.Month == i).Select(t => t.Total).Sum()
+                    Value = (decimal)shop_Goods_Issues.Where(t => t.DateCreated.Value.Month == i).Select(t => t.Payment).Sum()
                 });
             }
 
             return statisticsInfos;
         }
 
-        public decimal GetCountShop_Goods_Revenue(DateTime startDate, DateTime endDate)
+        public async Task<decimal> GetCountShop_Goods_Revenue(DateTime startDate, DateTime endDate)
         {
             endDate = EndDate(endDate);
 
             decimal count = 0;
 
-            count = (decimal)_context.Shop_Goods_Issues
+            count = (decimal)await _context.Shop_Goods_Issues
                 .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
                 .Select(t => t.Total)
-                .Sum();
+                .SumAsync();
 
             return count;
         }
 
-        public decimal GetCountShop_Goods_Cost(DateTime startDate, DateTime endDate)
+        public async Task<decimal> GetCountShop_Goods_Cost(DateTime startDate, DateTime endDate)
         {
             endDate = EndDate(endDate);
 
             decimal count = 0;
 
-            count = (decimal)_context.Shop_Goods_Receipts
+            count = (decimal)await _context.Shop_Goods_Receipts
                 .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
                 .Select(t => t.Total)
-                .Sum();
+                .SumAsync();
+
+            return count;
+        }
+
+        public async Task<decimal> GetCountShop_Goods_RealRevenue(DateTime startDate, DateTime endDate)
+        {
+            endDate = EndDate(endDate);
+
+            decimal count = 0;
+
+            count = (decimal)await _context.FinalSettlement_Customers
+                .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
+                .Select(t => t.Payment)
+                .SumAsync();
+
+            return count;
+        }
+
+        public async Task<decimal> GetCountShop_Goods_RealCost(DateTime startDate, DateTime endDate)
+        {
+            endDate = EndDate(endDate);
+
+            decimal count = 0;
+
+            count = (decimal)await _context.FinalSettlement_Supliers
+                .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
+                .Select(t => t.Payment)
+                .SumAsync();
 
             return count;
         }
 
         public async Task<List<StatisticsShopGoodsInfo>> GetRankShop_GoodsByMonth(int month, int year)
         {
-            List<StatisticsShopGoodsInfo> statisticsShopGoodsInfos = new List<StatisticsShopGoodsInfo>();
+            List<StatisticsShopGoodsInfo> statisticsShopGoodsInfos = new ();
 
             var shop_Goods_Issues = await _context.Shop_Goods_Issues
                 .Include(t => t.Shop_Goods_Issues_Details)
@@ -164,7 +192,7 @@ namespace WareHouseManger.Models.DAO
                 .Select(t => t.Shop_Goods_Issues_Details)
                 .ToArrayAsync();
 
-            List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details = new List<Shop_Goods_Issues_Detail>();
+            List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details = new();
 
             foreach (var list in shop_Goods_Issues)
             {
@@ -192,17 +220,17 @@ namespace WareHouseManger.Models.DAO
 
         public async Task<List<StatisticsShopGoodsInfo>> GetRankShop_GoodsByYear(int year)
         {
-            List<StatisticsShopGoodsInfo> statisticsShopGoodsInfos = new List<StatisticsShopGoodsInfo>();
+            List<StatisticsShopGoodsInfo> statisticsShopGoodsInfos = new ();
 
             var shop_Goods_Issues = await _context.Shop_Goods_Issues
                 .Include(t => t.Shop_Goods_Issues_Details)
                 .ThenInclude(t => t.Template)
-                .ThenInclude(t=>t.Unit)
+                .ThenInclude(t => t.Unit)
                 .Where(t => t.DateCreated.Value.Year == year)
                 .Select(t => t.Shop_Goods_Issues_Details)
                 .ToArrayAsync();
 
-            List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details = new List<Shop_Goods_Issues_Detail>();
+            List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details = new ();
 
             foreach (var list in shop_Goods_Issues)
             {
@@ -228,7 +256,7 @@ namespace WareHouseManger.Models.DAO
             return statisticsShopGoodsInfos.OrderByDescending(t => t.Turnover).ToList();
         }
 
-        private DateTime EndDate(DateTime endDate)
+        private static DateTime EndDate(DateTime endDate)
         {
             endDate.AddHours(12);
 

@@ -2,6 +2,9 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
+var realRevenue = 0;
+var realCost = 0;
+
 function number_format(number, decimals, dec_point, thousands_sep) {
     // *     example: number_format(1234.56, 2, ',', ' ');
     // *     return: '1 234,56'
@@ -36,6 +39,8 @@ $(function () {
     getRankTemplate();
     getChart();
     getOutOfStock();
+    getSoldOutOfStock();
+
     $('#btn-submit0').click(function () {
         getDetails();
     });
@@ -55,6 +60,32 @@ $(function () {
 });
 
 function getDetails() {
+    //$.ajax({
+    //    type: 'POST',
+    //    datatype: 'JSON',
+    //    data: {
+    //        startDate: $('#date-start').val(),
+    //        endDate: $('#date-end').val()
+    //    },
+    //    url: '/Home/GetDetails',
+    //    success: function (result) {
+    //        var data = result.data;
+    //        $('#countReceipt').text(formatNumber(data.countReceipt) + " đơn hàng");
+    //        $('#countIssues').text(formatNumber(data.countIssues) + " đơn hàng");
+    //        $('#revenue').text(formatNumber(data.revenue) + " VNĐ");
+    //        $('#cost').text(formatNumber(data.cost) + " VNĐ");
+    //        $('#profit').text(formatNumber(data.revenue - data.cost) + " VNĐ");
+    //    }
+    //})
+    getCountShop_Goods_Receipt();
+    getCountShop_Goods_Issues();
+    getCountShop_Goods_Revenue();
+    getCountShop_Goods_Cost();
+    getCountShop_Goods_RealRevenue();
+    // getCountShop_Goods_RealCost();
+}
+
+function getCountShop_Goods_Receipt() {
     $.ajax({
         type: 'POST',
         datatype: 'JSON',
@@ -62,16 +93,101 @@ function getDetails() {
             startDate: $('#date-start').val(),
             endDate: $('#date-end').val()
         },
-        url: '/Home/GetDetails',
+        url: '/Home/GetCountShop_Goods_Receipt',
         success: function (result) {
-            var data = result.data;
-            $('#countReceipt').text(formatNumber(data.countReceipt) + " đơn hàng");
-            $('#countIssues').text(formatNumber(data.countIssues) + " đơn hàng");
-            $('#revenue').text(formatNumber(data.revenue) + " VNĐ");
-            $('#cost').text(formatNumber(data.cost) + " VNĐ");
-            $('#profit').text(formatNumber(data.revenue - data.cost) + " VNĐ");
+            $('#countReceipt').text(formatNumber(result.value) + " đơn hàng");
+            //$('#countIssues').text(formatNumber(data.countIssues) + " đơn hàng");
+            //$('#revenue').text(formatNumber(data.revenue) + " VNĐ");
+            //$('#cost').text(formatNumber(data.cost) + " VNĐ");
+            //$('#profit').text(formatNumber(data.revenue - data.cost) + " VNĐ");
         }
     })
+}
+
+function getCountShop_Goods_Issues() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            startDate: $('#date-start').val(),
+            endDate: $('#date-end').val()
+        },
+        url: '/Home/GetCountShop_Goods_Issues',
+        success: function (result) {
+            $('#countIssues').text(formatNumber(result.value) + " đơn hàng");
+        }
+    })
+}
+
+function getCountShop_Goods_Revenue() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            startDate: $('#date-start').val(),
+            endDate: $('#date-end').val()
+        },
+        url: '/Home/GetCountShop_Goods_Revenue',
+        success: function (result) {
+            $('#revenue').text(formatNumber(result.value) + " VNĐ");
+        }
+    })
+}
+
+function getCountShop_Goods_Cost() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            startDate: $('#date-start').val(),
+            endDate: $('#date-end').val()
+        },
+        url: '/Home/GetCountShop_Goods_Cost',
+        success: function (result) {
+            $('#cost').text(formatNumber(result.value) + " VNĐ");
+        }
+    })
+}
+
+function getCountShop_Goods_RealRevenue() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            startDate: $('#date-start').val(),
+            endDate: $('#date-end').val()
+        },
+        url: '/Home/GetCountShop_Goods_RealRevenue',
+        success: function (result) {
+            realRevenue = result.value;
+            $('#realrevenue').text(formatNumber(result.value) + " VNĐ");
+
+            getCountShop_Goods_RealCost();
+        }
+    })
+}
+
+function getCountShop_Goods_RealCost() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        data: {
+            startDate: $('#date-start').val(),
+            endDate: $('#date-end').val()
+        },
+        url: '/Home/GetCountShop_Goods_RealCost',
+        success: function (result) {
+            realCost = result.value;
+
+            $('#realcost').text(formatNumber(result.value) + " VNĐ");
+
+            getCountShop_Goods_Profit();
+        }
+    })
+}
+
+function getCountShop_Goods_Profit() {
+    $('#profit').text(formatNumber(realRevenue - realCost) + " VNĐ");
 }
 
 function getRankTemplate() {
@@ -176,37 +292,31 @@ function getOutOfStock() {
             });
 
             $('#tb-outofstock tbody').empty().append(html);
-            //$('#tb-outofstock').DataTable({
-            //    "language": {
-            //        "lengthMenu": "Hiển thị _MENU_ bản ghi / trang",
-            //        "zeroRecords": "Không tìm thấy kết quả nào cả!",
-            //        "info": "Trang _PAGE_ / _PAGES_",
-            //        "infoEmpty": "Không tìm thấy dữ liệu!",
-            //        "infoFiltered": "(Tìm kiếm từ _MAX_ bản ghi)",
-            //        "search": "Nhập từ khóa cần tìm:",
-            //        "paginate": {
-            //            "first": "Đầu tiên",
-            //            "last": "Cuối cùng",
-            //            "next": "Sau",
-            //            "previous": "Trước"
-            //        },
+        }
+    })
+}
 
-            //    },
-            //    responsive: true,
-            //    scrollY: '50vh',
-            //    scrollCollapse: true,
-            //    //fixedColumns: {
-            //    //    leftColumns: 2,
-            //    //    rightColumns: 0
-            //    //},
-            //});
-            //var data = [];
-            //var dt = $('#tb-outofstock').DataTable();
+function getSoldOutOfStock() {
+    $.ajax({
+        type: 'POST',
+        datatype: 'JSON',
+        url: '/Home/GetSoldOutOfStock',
+        success: function (result) {
+            console.log(result);
 
-            //$.each(result.data, function (i, e) {
-            //    dt.row.add([e.templateID, e.name, e.category, e.unit, formatNumber(e.count)]).draw(true);
-            //});
-     
+            var html = '';
+
+            $.each(result.data, function (i, e) {
+                html += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + e.templateID + '</td>' +
+                    '<td>' + e.name + '</td>' +
+                    '<td class="text-center">' + e.category + '</td>' +
+                    '<td class="text-center">' + e.unit + '</td>' +
+                    '</tr>';
+            });
+
+            $('#tb-soldoutofstock tbody').empty().append(html);
         }
     })
 }
