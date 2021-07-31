@@ -70,6 +70,7 @@ function getFinalSettlement_Suplier(goodsReceiptID) {
                     '<td>' + e.dateCreated + '</td>' +
                     '<td class="text-right">' + formatNumber(e.payment) + '</td>' +
                     '<td class="text-right">' + formatNumber(e.remainder) + '</td>' +
+                    '<td class="text-right">' + e.remark + '</td>' +
                     '</tr>';
             });
 
@@ -84,6 +85,7 @@ function add() {
         GoodsReceiptID: $('#id').val(),
         Payment: $('#num0').val(),
         DateCreated: $('#date-created').val(),
+        Remark: $('#remark').val()
     };
 
     $.ajax({

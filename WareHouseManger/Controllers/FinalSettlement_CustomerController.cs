@@ -225,7 +225,8 @@ namespace WareHouseManger.Controllers
                 {
                     DateCreated = t.DateCreated.Value.ToString("dd/MM/yyyy"),
                     Payment = t.Payment,
-                    Remainder = t.Remainder
+                    Remainder = t.Remainder,
+                    Remark = t.Remark == null ? "" : t.Remark
                 })
             });
         }

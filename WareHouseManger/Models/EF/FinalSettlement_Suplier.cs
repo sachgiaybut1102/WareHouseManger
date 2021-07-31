@@ -13,6 +13,7 @@ namespace WareHouseManger.Models.EF
         public DateTime? DateCreated { get; set; }
         public decimal? Payment { get; set; }
         public decimal? Remainder { get; set; }
+        public string Remark { get; set; }
 
         public virtual Shop_Goods_Receipt GoodsReceipt { get; set; }
         public virtual Supplier Supplier { get; set; }
