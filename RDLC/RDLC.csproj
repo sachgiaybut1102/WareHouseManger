@@ -72,6 +72,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="rptShop_Goods_Issues.rdlc" />
+    <EmbeddedResource Include="rptShop_Goods_Receipt - Copy.rdlc" />
     <EmbeddedResource Include="rptShop_Goods_Receipt.rdlc" />
     <None Include="DB_WareHouseMangerDataSet1.xsc">
       <DependentUpon>DB_WareHouseMangerDataSet1.xsd</DependentUpon>

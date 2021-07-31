@@ -420,7 +420,7 @@ var myLineChart = new Chart(ctx, {
     data: {
         labels: [],
         datasets: [{
-            label: "Nhập hàng",
+            label: "Chi phí",
             lineTension: 0.3,
             backgroundColor: "rgba(242, 38, 19, 0.05)",
             borderColor: "rgba(242, 38, 19, 1)",
@@ -450,7 +450,7 @@ var myLineChart = new Chart(ctx, {
             data: [0, 1],
         },
         {
-            label: "Lãi thực",
+            label: "Lợi nhuận",
             lineTension: 0.3,
             backgroundColor: "rgba(0, 230, 64, 0.05)",
             borderColor: "rgba(0, 230, 64, 1)",
