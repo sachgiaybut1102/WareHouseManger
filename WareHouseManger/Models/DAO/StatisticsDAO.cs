@@ -292,11 +292,11 @@ namespace WareHouseManger.Models.DAO
         {
             endDate = EndDate(endDate);
 
-             var list = await _context.Shop_Goods_Issues
-                .Include(t => t.Customer)
-                .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
-                
-                .ToListAsync();
+            var list = await _context.Shop_Goods_Issues
+               .Include(t => t.Customer)
+               .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
+
+               .ToListAsync();
 
             List<RankingPersonInfo> rankingPersonInfos = new();
 
@@ -328,7 +328,7 @@ namespace WareHouseManger.Models.DAO
             var list = await _context.Shop_Goods_Receipts
                 .Include(t => t.Supplier)
                 .Where(t => t.DateCreated >= startDate && t.DateCreated <= endDate)
-                
+
                 .ToListAsync();
 
             List<RankingPersonInfo> rankingPersonInfos = new();
@@ -349,9 +349,281 @@ namespace WareHouseManger.Models.DAO
                     rankingPersonInfos.Add(rankingPersonInfo);
                 }
             }
-            
 
-            return rankingPersonInfos.OrderByDescending(t=>t.Price).ToList();
+
+            return rankingPersonInfos.OrderByDescending(t => t.Price).ToList();
+        }
+
+        public async Task<List<object>> GetCountRecepitShopGoods(int month, int year, string templateID)
+        {
+            List<StatisticsInfo> statisticsInfos = new();
+
+            int days = DateTime.DaysInMonth(year, month);
+
+            var goodsReceiptIDs = await _context.Shop_Goods_Receipts
+                .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year)
+                .Select(t => t.GoodsReceiptID)
+                .ToArrayAsync();
+
+            var Shop_Goods_Receipt_Details = await _context.Shop_Goods_Receipt_Details
+                .Include(t => t.GoodsReceipt)
+                .Where(t => goodsReceiptIDs.Contains(t.GoodsReceiptID) && t.TemplateID == templateID)
+                .ToListAsync();
+
+            var goodsIssues = await _context.Shop_Goods_Issues
+                .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year)
+                .Select(t => t.GoodsIssueID)
+                .ToArrayAsync();
+
+            var shop_Goods_Issues_Details = await _context.Shop_Goods_Issues_Details
+                 .Include(t => t.GoodsIssue)
+                .Where(t => goodsIssues.Contains(t.GoodsIssueID) && t.TemplateID == templateID)
+                .ToListAsync();
+
+
+            List<object> data = new List<object>();
+
+            for (int i = 1; i <= days; i++)
+            {
+                var childShop_Goods_Receipt_Details = Shop_Goods_Receipt_Details.Where(t => t.GoodsReceipt.DateCreated.Value.Day == i).ToArray();
+                var childshop_Goods_Issues_Details = shop_Goods_Issues_Details.Where(t => t.GoodsIssue.DateCreated.Value.Day == i).ToArray();
+
+                var turnover = childshop_Goods_Issues_Details.Select(t => t.UnitPrice * t.Count).Sum();
+                var cost = childShop_Goods_Receipt_Details.Select(t => t.UnitPrice * t.Count).Sum();
+
+                var countIssues = (int)childshop_Goods_Issues_Details.Select(t => t.Count).Sum();
+                var countRecepit = (int)childShop_Goods_Receipt_Details.Select(t => t.Count).Sum();
+
+                data.Add(new
+                {
+                    index = i,
+                    countIssues = countIssues,
+                    countRecepit = countRecepit,
+                    turnover = turnover,
+                    cost = cost,
+                });
+            }
+
+            return data;
+        }
+
+        public async Task<List<object>> GetCountRecepitShopGoods(int year, string templateID)
+        {
+            List<StatisticsInfo> statisticsInfos = new();
+
+            var goodsReceiptIDs = await _context.Shop_Goods_Receipts
+                .Where(t => t.DateCreated.Value.Year == year)
+                .Select(t => t.GoodsReceiptID)
+                .ToArrayAsync();
+
+            var Shop_Goods_Receipt_Details = await _context.Shop_Goods_Receipt_Details
+                .Include(t => t.GoodsReceipt)
+                .Where(t => goodsReceiptIDs.Contains(t.GoodsReceiptID) && t.TemplateID == templateID)
+                .ToListAsync();
+
+            var goodsIssues = await _context.Shop_Goods_Issues
+                .Where(t => t.DateCreated.Value.Year == year)
+                .Select(t => t.GoodsIssueID)
+                .ToArrayAsync();
+
+            var shop_Goods_Issues_Details = await _context.Shop_Goods_Issues_Details
+                 .Include(t => t.GoodsIssue)
+                .Where(t => goodsIssues.Contains(t.GoodsIssueID) && t.TemplateID == templateID)
+                .ToListAsync();
+
+
+            List<object> data = new List<object>();
+
+            for (int i = 1; i <= 12; i++)
+            {
+                var childShop_Goods_Receipt_Details = Shop_Goods_Receipt_Details.Where(t => t.GoodsReceipt.DateCreated.Value.Month == i).ToArray();
+                var childshop_Goods_Issues_Details = shop_Goods_Issues_Details.Where(t => t.GoodsIssue.DateCreated.Value.Month == i).ToArray();
+
+                var turnover = childshop_Goods_Issues_Details.Select(t => t.UnitPrice * t.Count).Sum();
+                var cost = childShop_Goods_Receipt_Details.Select(t => t.UnitPrice * t.Count).Sum();
+
+                var countIssues = (int)childshop_Goods_Issues_Details.Select(t => t.Count).Sum();
+                var countRecepit = (int)childShop_Goods_Receipt_Details.Select(t => t.Count).Sum();
+
+                data.Add(new
+                {
+                    index = i,
+                    countIssues = countIssues,
+                    countRecepit = countRecepit,
+                    turnover = countIssues,
+                    cost = countRecepit,
+                });
+            }
+
+            return data;
+        }
+
+        public async Task<List<CountRecepitShopGoodsGroupByCustomer>> GetCountRecepitShopGoodsGroupByCustomer(int month, int year, string templateID)
+        {
+            List<StatisticsInfo> statisticsInfos = new();
+
+            int days = DateTime.DaysInMonth(year, month);
+
+
+            var goodsIssues = await _context.Shop_Goods_Issues
+                .Include(t => t.Customer)
+                .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year).
+                ToArrayAsync();
+
+
+            var goodsIssuesID = goodsIssues.Select(t => t.GoodsIssueID).ToArray();
+
+            var shop_Goods_Issues_Details = await _context.Shop_Goods_Issues_Details
+                 .Include(t => t.GoodsIssue)
+                .Where(t => goodsIssuesID.Contains(t.GoodsIssueID) && t.TemplateID == templateID)
+                .ToListAsync();
+
+
+            List<CountRecepitShopGoodsGroupByCustomer> data = new();
+
+            var goodsIssuesGroup = goodsIssues.GroupBy(t => t.Customer).ToArray();
+
+
+            foreach (var customer in goodsIssuesGroup)
+            {
+                int id = customer.Key.CustomerID;
+                string address = customer.Key.Address;
+                string name = customer.Key.Name;
+                string phoneNuber = customer.Key.PhoneNumber;
+
+                goodsIssuesID = customer.Select(t => t.GoodsIssueID).ToArray();
+                var list = shop_Goods_Issues_Details.Where(t => goodsIssuesID.Contains(t.GoodsIssueID)).ToArray();
+
+                var count = (int)list.Select(t => t.Count).Sum();
+                var turnover = (decimal)list.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+
+                data.Add(new CountRecepitShopGoodsGroupByCustomer()
+                {
+                    ID = id,
+                    Name = name,
+                    Address = address,
+                    PhoneNumber = phoneNuber,
+                    Count = count,
+                    Turnover = turnover,
+                });
+            }
+
+            return data;
+        }
+
+        public async Task<List<CountRecepitShopGoodsGroupByCustomer>> GetCountRecepitShopGoodsGroupByCustomer(int year, string templateID)
+        {
+            List<StatisticsInfo> statisticsInfos = new();
+
+            var goodsIssues = await _context.Shop_Goods_Issues
+                .Include(t => t.Customer)
+                .Where(t => t.DateCreated.Value.Year == year).
+                ToArrayAsync();
+
+
+            var goodsIssuesID = goodsIssues.Select(t => t.GoodsIssueID).ToArray();
+
+            var shop_Goods_Issues_Details = await _context.Shop_Goods_Issues_Details
+                 .Include(t => t.GoodsIssue)
+                .Where(t => goodsIssuesID.Contains(t.GoodsIssueID) && t.TemplateID == templateID)
+                .ToListAsync();
+
+
+            List<CountRecepitShopGoodsGroupByCustomer> data = new();
+
+            var goodsIssuesGroup = goodsIssues.GroupBy(t => t.Customer).ToArray();
+
+
+            foreach (var customer in goodsIssuesGroup)
+            {
+                int id = customer.Key.CustomerID;
+                string address = customer.Key.Address;
+                string name = customer.Key.Name;
+                string phoneNuber = customer.Key.PhoneNumber;
+
+                goodsIssuesID = customer.Select(t => t.GoodsIssueID).ToArray();
+                var list = shop_Goods_Issues_Details.Where(t => goodsIssuesID.Contains(t.GoodsIssueID)).ToArray();
+
+                var count = (int)list.Select(t => t.Count).Sum();
+                var turnover = (decimal)list.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+
+                data.Add(new CountRecepitShopGoodsGroupByCustomer()
+                {
+                    ID = id,
+                    Name = name,
+                    Address = address,
+                    PhoneNumber = phoneNuber,
+                    Count = count,
+                    Turnover = turnover,
+                });
+            }
+
+            return data.OrderByDescending(t => t.Turnover).ToList();
+        }
+
+
+        public async Task<List<object>> GetCountIssuesShopGoodsGroupByEmployee(int month, int year, int employeeID)
+        {
+            List<StatisticsInfo> statisticsInfos = new();
+
+            int days = DateTime.DaysInMonth(year, month);
+
+            //var Shop_Goods_Receipts = await _context.Shop_Goods_Receipts
+            //    .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year && t.EmployeeID == employeeID)
+            //    .ToArrayAsync();
+
+            var shop_Goods_Issues = await _context.Shop_Goods_Issues
+                .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year && t.EmployeeID == employeeID)
+                .ToArrayAsync();
+
+
+
+            List<object> data = new List<object>();
+
+            for (int i = 1; i <= days; i++)
+            {
+                //var childShop_Goods_Receipt_Details = Shop_Goods_Receipts.Where(t => t.DateCreated.Value.Day == i).ToArray();
+                var childshop_Goods_Issues_Details = shop_Goods_Issues.Where(t => t.DateCreated.Value.Day == i).ToArray();
+
+                data.Add(new
+                {
+                    index = i,
+                    value = childshop_Goods_Issues_Details.Select(t => t.Total).Sum()
+                }); ;
+            }
+
+            return data;
+        }
+
+        public async Task<List<object>> GetCountIssuesShopGoodsGroupByEmployee(int year, int employeeID)
+        {
+            List<StatisticsInfo> statisticsInfos = new();
+
+            //var Shop_Goods_Receipts = await _context.Shop_Goods_Receipts
+            //    .Where(t => t.DateCreated.Value.Month == month && t.DateCreated.Value.Year == year && t.EmployeeID == employeeID)
+            //    .ToArrayAsync();
+
+            var shop_Goods_Issues = await _context.Shop_Goods_Issues
+                .Where(t => t.DateCreated.Value.Year == year && t.EmployeeID == employeeID)
+                .ToArrayAsync();
+
+
+
+            List<object> data = new List<object>();
+
+            for (int i = 1; i <= 12; i++)
+            {
+                //var childShop_Goods_Receipt_Details = Shop_Goods_Receipts.Where(t => t.DateCreated.Value.Day == i).ToArray();
+                var childshop_Goods_Issues_Details = shop_Goods_Issues.Where(t => t.DateCreated.Value.Day == i).ToArray();
+
+                data.Add(new
+                {
+                    index = i,
+                    value = childshop_Goods_Issues_Details.Select(t => t.Total).Sum()
+                }); ;
+            }
+
+            return data;
         }
 
         private DateTime EndDate(DateTime endDate)

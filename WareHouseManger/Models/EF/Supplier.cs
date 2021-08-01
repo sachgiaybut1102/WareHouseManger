@@ -18,6 +18,7 @@ namespace WareHouseManger.Models.EF
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public string EMail { get; set; }
+        public bool? IsDelete { get; set; }
 
         public virtual ICollection<FinalSettlement_Suplier> FinalSettlement_Supliers { get; set; }
         public virtual ICollection<Shop_Goods_Receipt> Shop_Goods_Receipts { get; set; }

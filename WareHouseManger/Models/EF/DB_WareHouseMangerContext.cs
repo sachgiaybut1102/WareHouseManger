@@ -29,6 +29,7 @@ namespace WareHouseManger.Models.EF
         public virtual DbSet<Producer> Producers { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RoleGroup> RoleGroups { get; set; }
+        public virtual DbSet<ShopGoods_Image> ShopGoods_Images { get; set; }
         public virtual DbSet<Shop_Good> Shop_Goods { get; set; }
         public virtual DbSet<Shop_Goods_Category> Shop_Goods_Categories { get; set; }
         public virtual DbSet<Shop_Goods_Issue> Shop_Goods_Issues { get; set; }
@@ -279,6 +280,30 @@ namespace WareHouseManger.Models.EF
                     .IsFixedLength(true);
             });
 
+            modelBuilder.Entity<ShopGoods_Image>(entity =>
+            {
+                entity.HasKey(e => e.ImageID)
+                    .HasName("PK_ShopGoods_Image_1");
+
+                entity.ToTable("ShopGoods_Image");
+
+                entity.Property(e => e.DateUploaded).HasColumnType("date");
+
+                entity.Property(e => e.Name).HasMaxLength(255);
+
+                entity.Property(e => e.TemplateID)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.HasOne(d => d.Template)
+                    .WithMany(p => p.ShopGoods_Images)
+                    .HasForeignKey(d => d.TemplateID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ShopGoods_Image_Shop_Goods");
+            });
+
             modelBuilder.Entity<Shop_Good>(entity =>
             {
                 entity.HasKey(e => e.TemplateID);
@@ -296,6 +321,11 @@ namespace WareHouseManger.Models.EF
                     .WithMany(p => p.Shop_Goods)
                     .HasForeignKey(d => d.CategoryID)
                     .HasConstraintName("FK_Shop_Goods_Shop_Goods_Category");
+
+                entity.HasOne(d => d.Image)
+                    .WithMany(p => p.Shop_Goods)
+                    .HasForeignKey(d => d.ImageID)
+                    .HasConstraintName("FK_Shop_Goods_ShopGoods_Image");
 
                 entity.HasOne(d => d.Producer)
                     .WithMany(p => p.Shop_Goods)

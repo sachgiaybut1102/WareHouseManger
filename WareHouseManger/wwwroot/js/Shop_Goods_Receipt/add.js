@@ -40,31 +40,31 @@
     });
 
     $('#btn-acceptshoppgoods').click(function () {
-        var cbs = $('#tb-addshopgoods tbody').find('.cb');
+        //var cbs = $('#tb-addshopgoods tbody').find('.cb');
 
-        var html = '';
+        //var html = '';
 
-        for (var i = 0; i < cbs.length; i++) {
-            var e = cbs[i];
+        //for (var i = 0; i < cbs.length; i++) {
+        //    var e = cbs[i];
 
-            if ($(e).is(':checked')) {
-                var tds = $($(e).parent().parent()).find('td');
-                html += '<tr>' +
-                    '<td>' + $(tds[0]).text() + '</td>' +
-                    '<td>' + $(tds[1]).text() + '</td>' +
-                    '<td>' + $('#select-category').text() + '</td>' +
-                    '<td>' + $(tds[2]).text() + '</td>' +
-                    '<td>' + $(tds[3]).text() + '</td>' +
-                    '<td style="width:120px;"><input class="form-control text-right number" min="1" value="1"  /></td>' +
-                    '<td style="width:120px;"><input class="form-control text-right number" min="1" value="1"  /></td>' +
-                    '<td style="width:150px;"><input class="form-control bg-white text-right" min="1" value="1" readonly/></td>' +
-                    '<td class="text-center"><button class="btn btn-sm btn-danger btn-remove">Xóa</button></td>' +
-                    '</tr>';
-            }
-        }
-        $('#tb-shopgoods tbody').append(html);
+        //    if ($(e).is(':checked')) {
+        //        var tds = $($(e).parent().parent()).find('td');
+        //        html += '<tr>' +
+        //            '<td>' + $(tds[0]).text() + '</td>' +
+        //            '<td>' + $(tds[1]).text() + '</td>' +
+        //            '<td>' + $('#select-category').text() + '</td>' +
+        //            '<td>' + $(tds[2]).text() + '</td>' +
+        //            '<td>' + $(tds[3]).text() + '</td>' +
+        //            '<td style="width:120px;"><input class="form-control text-right number" min="1" value="1"  /></td>' +
+        //            '<td style="width:120px;"><input class="form-control text-right number" min="1" value="1"  /></td>' +
+        //            '<td style="width:150px;"><input class="form-control bg-white text-right" min="1" value="1" readonly/></td>' +
+        //            '<td class="text-center"><button class="btn btn-sm btn-danger btn-remove">Xóa</button></td>' +
+        //            '</tr>';
+        //    }
+        //}
+        //$('#tb-shopgoods tbody').append(html);
 
-        getShopGoods(getIds(), $('#select-category').val());
+        //getShopGoods(getIds(), $('#select-category').val());
     });
 
     $('body').on('click', '.btn-remove', function () {
@@ -87,7 +87,7 @@
         updateTotal();
     });
 
-   
+
 
     class ShopGoodsViewModel {
         constructor(TemplateID, Count, UnitPrice) {
@@ -159,15 +159,18 @@
 
     $('body').on('click', '.btn-add', function () {
         var tds = $($(this).parent().parent()).find('td');
+
+        var costprice = $(this).data('costprice');
+
         var html = '<tr>' +
             '<td>' + $(tds[0]).text() + '</td>' +
             '<td>' + $(tds[1]).text() + '</td>' +
             '<td>' + $('#select-category').text() + '</td>' +
             '<td>' + $(tds[2]).text() + '</td>' +
             '<td>' + $(tds[3]).text() + '</td>' +
-            '<td style="width:140px;"><input class="form-control text-right number number-input" min="1" value="0" /></td>' +
-            '<td style="width:160px;"><input class="form-control text-right number number-input" min="1" value="0" /></td>' +
-            '<td style="width:180px;"><input class="form-control text-right number number-input" min="1" value="0" /></td>' +
+            '<td style="width:140px;"><input class="form-control text-right number number-input" min="1" value="1" /></td>' +
+            '<td style="width:160px;"><input class="form-control text-right number number-input" min="1" value="' + formatNumber(costprice) + '" /></td>' +
+            '<td style="width:180px;"><input class="form-control text-right number number-input" min="1" value="' + formatNumber(costprice) + '" /></td>' +
             '<td class="align-middle" style="width:1px;"><button class="btn btn-sm btn-danger btn-remove">Xóa</button></td>' +
             '</tr>';
         $('#tb-shopgoods tbody').append(html);
@@ -255,8 +258,10 @@ function getShopGoods(ids, categoryId) {
                             '<td>' + item.name + '</td>' +
                             '<td>' + item.producer + '</td>' +
                             '<td>' + item.unit + '</td>' +
+                            '<td class="text-right">' + formatNumber(item.costprice) + '</td>' +
+                            '<td class="text-right">' + formatNumber(item.price) + '</td>' +
                             //'<td class="text-center"><input class="cb" type="checkbox"/></td>' +
-                            '<td class="align-middle"><button class="btn btn-block btn-sm btn-success btn-add" >Thêm</button></td>' +
+                            '<td class="align-middle"><button class="btn btn-block btn-sm btn-success btn-add" data-costprice="' + item.costprice + '">Thêm</button></td>' +
                             '</tr>';
                     });
 

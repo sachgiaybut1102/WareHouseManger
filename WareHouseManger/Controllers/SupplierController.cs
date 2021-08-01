@@ -31,7 +31,7 @@ namespace WareHouseManger.Controllers
             ViewBag.Keyword = keyword;
 
             return View(await _context.Suppliers
-                .Where(t => t.Name.Contains(keyword))
+                .Where(t => t.Name.Contains(keyword) && !(bool)t.IsDelete)
                 .OrderByDescending(t => t.SupplierID)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10));
@@ -75,7 +75,7 @@ namespace WareHouseManger.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(supplier);
-                await _context.SaveChangesAsync();
+                supplier.IsDelete = false;
                 return RedirectToAction(nameof(Index));
             }
             return View(supplier);
@@ -115,6 +115,7 @@ namespace WareHouseManger.Controllers
             {
                 try
                 {
+                    supplier.IsDelete = false;
                     _context.Update(supplier);
                     await _context.SaveChangesAsync();
                 }
@@ -162,7 +163,8 @@ namespace WareHouseManger.Controllers
             try
             {
                 var supplier = await _context.Suppliers.FindAsync(id);
-                _context.Suppliers.Remove(supplier);
+                supplier.IsDelete = true;
+                //_context.Suppliers.Remove(supplier);
                 await _context.SaveChangesAsync();
             }
             catch

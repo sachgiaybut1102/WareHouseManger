@@ -13,18 +13,18 @@
 
         <div class="row">
             <div class="form-group col-md-6">
-                <label asp-for="DateCreated" class="control-label">Ngày lập</label>
+                <label asp-for="DateCreated" class="control-label font-weight-bold">Ngày lập</label>
                 <input type="text" class="form-control bg-white" value="@Model.DateCreated.Value.ToString("dd/MM/yyyy")" readonly />
                 <span asp-validation-for="DateCreated" class="text-danger"></span>
             </div>
             <div class="form-group col-md-6">
-                <label asp-for="EmployeeID" class="control-label">Khách hàng</label>
+                <label asp-for="EmployeeID" class="control-label font-weight-bold">Khách hàng</label>
                 <input type="text" class="form-control" value="@Model.Employee.Name" readonly />
                 <span asp-validation-for="EmployeeID" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Remark" class="control-label">Ghi chú</label>
+            <label asp-for="Remark" class="control-label font-weight-bold">Ghi chú</label>
             <textarea type="text" class="form-control" rows="5" readonly></textarea>
             <span asp-validation-for="Remark" class="text-danger"></span>
         </div>

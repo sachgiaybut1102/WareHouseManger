@@ -35,7 +35,7 @@ namespace WareHouseManger.Controllers
                 .Where(t => t.CustomerID.ToString().Contains(keyword) ||
                 t.Name.Contains(keyword) ||
                 t.PhoneNumber.Contains(keyword) ||
-                t.EMail.Contains(keyword))
+                t.EMail.Contains(keyword) && !(bool)t.IsDelete)
                 .OrderByDescending(t => t.CustomerCategoryID)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10));
@@ -80,6 +80,7 @@ namespace WareHouseManger.Controllers
         {
             if (ModelState.IsValid)
             {
+                customer.IsDelete = false;
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -125,6 +126,7 @@ namespace WareHouseManger.Controllers
             {
                 try
                 {
+                    customer.IsDelete = false;
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }
@@ -177,8 +179,9 @@ namespace WareHouseManger.Controllers
                 var customer = await _context.Customers
                     .Include(t => t.CustomerCategory)
                     .FirstOrDefaultAsync(m => m.CustomerID == id);
-
-                _context.Customers.Remove(customer);
+                customer.IsDelete = true;
+                
+                //_context.Customers.Remove(customer);
                 await _context.SaveChangesAsync();              
             }
             catch

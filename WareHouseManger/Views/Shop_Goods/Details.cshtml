@@ -4,62 +4,173 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="card shadow container col-6">
+<div class="card shadow ">
     <div class="card-body">
         <h1>Chi tiết</h1>
         <h4>Vật phẩm</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="TemplateID" hidden />
         <div class="form-group">
-            <label asp-for="Name" class="control-label">Tên vật phẩm</label>
+            <label asp-for="Name" class="control-label font-weight-bold">Tên vật phẩm</label>
             <input asp-for="Name" class="form-control" readonly />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="row">
             <div class="form-group col-md-6">
-                <label asp-for="CategoryID" class="control-label">Loại vật phẩm</label>
+                <label asp-for="CategoryID" class="control-label font-weight-bold">Loại vật phẩm</label>
                 <input class="form-control" value="@Model.Category.Name" readonly />
                 <span asp-validation-for="CategoryID" class="text-danger"></span>
             </div>
             <div class="form-group col-md-6">
-                <label asp-for="UnitID" class="control-label">Đơn vị tính</label>
-                <input class="form-control" value="@Model.Unit.Name" readonly />
+                <label asp-for="UnitID" class="control-label font-weight-bold">Đơn vị tính</label>
+                <input id="UnitID" class="form-control" value="@Model.Unit.Name" readonly />
                 <span asp-validation-for="UnitID" class="text-danger"></span>
             </div>
         </div>
 
         <div class="form-group">
-            <label asp-for="ProducerID" class="control-label">Nhà sản xuất</label>
+            <label asp-for="ProducerID" class="control-label font-weight-bold">Nhà sản xuất</label>
             <input class="form-control" value="@Model.Producer.Name" readonly />
             <span asp-validation-for="ProducerID" class="text-danger"></span>
         </div>
         <div class="row">
-            <div class="form-group col-md-4">
-                <label asp-for="Price" class="control-label">Giá bán</label>
-                <input asp-for="Price" class="form-control" readonly />
+            <div class="form-group col-md-6">
+                <label asp-for="CostPrice" class="control-label font-weight-bold">Giá nhập</label>
+                <input class="form-control text-right" value="@string.Format("{0:N}",Model.CostPrice).Replace(".00","")" readonly />
+                <span asp-validation-for="CostPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Price" class="control-label font-weight-bold">Giá bán</label>
+                <input class="form-control text-right" value="@string.Format("{0:N}",Model.Price).Replace(".00","")" readonly />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+        </div>
+        <div class="row">
             <div class="form-group col-md-4">
-                <label asp-for="Count" class="control-label">Số lượng</label>
-                <input asp-for="Count" class="form-control" readonly />
-                <span asp-validation-for="Count" class="text-danger"></span>
+                <label asp-for="Shop_Goods_Receipt_Details" class="control-label font-weight-bold font-weight-bold">Số lượng nhập</label>
+                <input class="form-control text-right" value="@string.Format("{0:N}",Model.Shop_Goods_Receipt_Details.Select(t=>t.Count).Sum()).Replace(".00","")" readonly />
+                <span asp-validation-for="Shop_Goods_Receipt_Details" class="text-danger"></span>
             </div>
-
             <div class="form-group col-md-4">
-                <label asp-for="CountMin" class="control-label">Số lượng tối thiểu</label>
-                <input asp-for="CountMin" class="form-control" readonly />
-                <span asp-validation-for="CountMin" class="text-danger"></span>
+                <label asp-for="Shop_Goods_Issues_Details" class="control-label font-weight-bold font-weight-bold">Số lượng bán</label>
+                <input class="form-control text-right" value="@string.Format("{0:N}",Model.Shop_Goods_Issues_Details.Select(t=>t.Count).Sum()).Replace(".00","")" readonly />
+                <span asp-validation-for="Shop_Goods_Issues_Details" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="Count" class="control-label font-weight-bold">Số lượng tồn</label>
+                <input class="form-control text-right" value="@string.Format("{0:N}",Model.Count).Replace(".00","")" readonly />
+                <span asp-validation-for="Count" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Description" class="control-label">Chú thích</label>
+            <label asp-for="Description" class="control-label font-weight-bold">Chú thích</label>
             <textarea asp-for="Description" class="form-control" rows="5" readonly></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
-        <div class="panel-footer text-right">
-            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.TemplateID">Chỉnh sửa</a>
-            <a class="btn btn-light" asp-action="Index">Quay lại</a>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="label-primary">Thống kê</h3>
+            </div>
+            <div class="card-body">
+
+                <div class="form-row align-items-center mb-3">
+                    <div class="col-auto">
+                        <span class="font-weight-bold">Thống kê theo</span>
+                    </div>
+                    <div class="col-auto">
+                        <select id="datetype" class="form-control">
+                            <option value="month">Tháng</option>
+                            <option value="year">Năm</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <span class="font-weight-bold">Tháng</span>
+                    </div>
+                    <div class="col-auto">
+                        <select id="month" class="form-control">
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <span class="font-weight-bold">Năm</span>
+                    </div>
+                    <div class="col-auto">
+                        <select id="year" class="form-control">
+                            @for (int i = DateTime.Now.Year; i >= 1990; i--)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button id="btn-submit-chart" class="btn btn-primary">Xem thống kê</button>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Biểu đồ doanh thu</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="myAreaChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3>Biểu đồ số lượng</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <canvas id="myAreaChart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3>Danh sách khách hàng có doanh thu cao nhất</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive shadow overflow-auto" style="max-height:30vh">
+                            <table id="tb-customer" class="table table-bordered table-sm table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã khách hàng</th>
+                                        <th>Họ tên</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Số điện thoại</th>
+                                        <th class="text-right">Số lượng đã mua (@Model.Unit.Name)</th>
+                                        <th class="text-right">Doanh thu (VNĐ)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel-body -->
         </div>
+
+    </div>
+    <div class="card-footer text-right">
+        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.TemplateID">Chỉnh sửa</a>
+        <a class="btn btn-light border" asp-action="Index">Quay lại</a>
     </div>
 </div>
+
+@section scripts{
+    <script src="/js/fomatnumber.js"></script>
+    <script src="~/js/plugins/morris/raphael-2.1.0.min.js"></script>
+    <script src="~/js/plugins/morris/morris.js"></script>
+    <script src="/vendor/chart.js/Chart.min.js"></script>
+    <script src="~/js/Shop_Goods/details.js"></script>
+}
 

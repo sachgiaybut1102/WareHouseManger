@@ -19,27 +19,27 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input asp-for="@customer.CustomerID" hidden />
                 <div class="form-group">
-                    <label asp-for="@customer.Name" class="control-label">Tên khách hàng</label>
+                    <label asp-for="@customer.Name" class="control-label font-weight-bold">Tên khách hàng</label>
                     <input asp-for="@customer.Name" class="form-control" readonly />
                     <span asp-validation-for="@customer.Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@customer.CustomerCategoryID" class="control-label">Loại khách hàng</label>
+                    <label asp-for="@customer.CustomerCategoryID" class="control-label font-weight-bold">Loại khách hàng</label>
                     <input class="form-control" value="@customer.CustomerCategory.Name" readonly />
                     <span asp-validation-for="@customer.CustomerCategoryID" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@customer.PhoneNumber" class="control-label">Số điện thoại</label>
+                    <label asp-for="@customer.PhoneNumber" class="control-label font-weight-bold">Số điện thoại</label>
                     <input asp-for="@customer.PhoneNumber" class="form-control" readonly />
                     <span asp-validation-for="@customer.PhoneNumber" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@customer.Address" class="control-label">Địa chỉ</label>
+                    <label asp-for="@customer.Address" class="control-label font-weight-bold">Địa chỉ</label>
                     <input asp-for="@customer.Address" class="form-control" readonly />
                     <span asp-validation-for="@customer.Address" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@customer.EMail" class="control-label"></label>
+                    <label asp-for="@customer.EMail" class="control-label font-weight-bold"></label>
                     <input asp-for="@customer.EMail" class="form-control" readonly />
                     <span asp-validation-for="@customer.EMail" class="text-danger"></span>
                 </div>

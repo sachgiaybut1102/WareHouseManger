@@ -29,6 +29,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     }
     return s.join(dec);
 }
+
 var ctx = document.getElementById("myAreaChart");
 
 $(function () {
@@ -296,6 +297,8 @@ function getRankTemplate() {
                     '<td class="text-center">' + e.unit + '</td>' +
                     '<td class="text-right">' + formatNumber(e.count) + '</td>' +
                     '<td class="text-right">' + formatNumber(e.turnover) + '</td>' +
+                    '<td style="width:1px" class="text-nowrap"><a class="btn btn-sm btn-info" href="/Shop_Goods/Details/' + e.templateID + '">Chi tiết</a></td>'+
+
                     '</tr>';
             });
 

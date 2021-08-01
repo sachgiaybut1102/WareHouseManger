@@ -7,6 +7,6 @@
         var display = formatNumber(num);
         $(this).val(display);
 
-        $('#Price').val(num);
+        $('#' + $(this).data('target')).val(num);
     })
 });

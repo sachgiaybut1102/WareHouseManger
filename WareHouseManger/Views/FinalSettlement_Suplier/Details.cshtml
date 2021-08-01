@@ -19,22 +19,22 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input asp-for="@supplier.SupplierID" hidden />
                 <div class="form-group">
-                    <label asp-for="@supplier.Name" class="control-label">Tên nhà cung cấp</label>
+                    <label asp-for="@supplier.Name" class="control-label font-weight-bold">Tên nhà cung cấp</label>
                     <input asp-for="@supplier.Name" class="form-control" readonly />
                     <span asp-validation-for="@supplier.Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@supplier.PhoneNumber" class="control-label">Số điện thoại</label>
+                    <label asp-for="@supplier.PhoneNumber" class="control-label font-weight-bold">Số điện thoại</label>
                     <input asp-for="@supplier.PhoneNumber" class="form-control" readonly />
                     <span asp-validation-for="@supplier.PhoneNumber" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@supplier.Address" class="control-label">Địa chỉ</label>
+                    <label asp-for="@supplier.Address" class="control-label font-weight-bold">Địa chỉ</label>
                     <input asp-for="@supplier.Address" class="form-control" readonly />
                     <span asp-validation-for="@supplier.Address" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@supplier.EMail" class="control-label"></label>
+                    <label asp-for="@supplier.EMail" class="control-label font-weight-bold"></label>
                     <input asp-for="@supplier.EMail" class="form-control" readonly />
                     <span asp-validation-for="@supplier.EMail" class="text-danger"></span>
                 </div>
@@ -189,7 +189,6 @@
                 <button type="button" class="btn btn-light" data-dismiss="modal">Đóng</button>
             </div>
         </div>
-
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->

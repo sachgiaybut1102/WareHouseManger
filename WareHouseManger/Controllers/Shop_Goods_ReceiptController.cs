@@ -88,8 +88,8 @@ namespace WareHouseManger.Controllers
             var category = await _context.Shop_Goods_Categories.ToListAsync();
             category.Insert(0, new Shop_Goods_Category() { CategoryID = -1, Name = "Tất cả" });
             ViewData["CategoryID"] = new SelectList(category, "CategoryID", "Name");
-            ViewData["EmployeeID"] = await _context.Employees.ToListAsync();
-            ViewData["SupplierID"] = await _context.Suppliers.ToListAsync();
+            ViewData["EmployeeID"] = await _context.Employees.Where(t => !(bool)t.IsDelete).ToListAsync();
+            ViewData["SupplierID"] = await _context.Suppliers.Where(t => !(bool)t.IsDelete).ToListAsync();
 
             return View(model);
         }
@@ -284,7 +284,7 @@ namespace WareHouseManger.Controllers
 
                     await UpdateCount(shop_Goods_Receipt_Details, 1);
 
-                    await _context.SaveChangesAsync();               
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
@@ -295,7 +295,7 @@ namespace WareHouseManger.Controllers
             {
                 msg = "";
             }
-            
+
 
             return Json(new { msg = msg, id = goodsReceiptID });
         }

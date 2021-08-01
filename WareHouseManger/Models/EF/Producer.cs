@@ -18,6 +18,7 @@ namespace WareHouseManger.Models.EF
         public string Address { get; set; }
         public string EMail { get; set; }
         public string SortName { get; set; }
+        public bool? IsDelete { get; set; }
 
         public virtual ICollection<Shop_Good> Shop_Goods { get; set; }
     }

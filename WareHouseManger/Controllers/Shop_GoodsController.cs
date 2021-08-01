@@ -34,6 +34,8 @@ namespace WareHouseManger.Controllers
                 .Include(s => s.Category)
                 .Include(s => s.Producer)
                 .Include(s => s.Unit)
+                .Include(s => s.Shop_Goods_Issues_Details)
+                .Include(s => s.Shop_Goods_Receipt_Details)
                 .Where(t => t.TemplateID.Contains(keyword) || t.Name.Contains(keyword))
                 .OrderByDescending(t => t.TemplateID)
                 .ToList()
@@ -54,6 +56,8 @@ namespace WareHouseManger.Controllers
                 .Include(s => s.Category)
                 .Include(s => s.Producer)
                 .Include(s => s.Unit)
+                .Include(s => s.Shop_Goods_Issues_Details)
+                .Include(s => s.Shop_Goods_Receipt_Details)
                 .FirstOrDefaultAsync(m => m.TemplateID == id);
             if (shop_Good == null)
             {
@@ -79,7 +83,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TemplateID,Name,CategoryID,UnitID,Description,Price,ProducerID")] Shop_Good shop_Good)
+        public async Task<IActionResult> Create([Bind("TemplateID,Name,CategoryID,UnitID,Description,Price,CostPrice,ProducerID")] Shop_Good shop_Good)
         {
             if (ModelState.IsValid)
             {
@@ -107,7 +111,7 @@ namespace WareHouseManger.Controllers
 
                 shop_Good.TemplateID = templateID;
                 shop_Good.Count = 0;
-                shop_Good.CountMin = 1;
+                //shop_Good.CostPrice = 1;
 
                 _context.Add(shop_Good);
                 await _context.SaveChangesAsync();
@@ -145,7 +149,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("TemplateID,Name,CategoryID,UnitID,Description,Price,ProducerID")] Shop_Good shop_Good)
+        public async Task<IActionResult> Edit(string id, [Bind("TemplateID,Name,CategoryID,UnitID,Description,Price,CostPrice,ProducerID")] Shop_Good shop_Good)
         {
             if (id != shop_Good.TemplateID)
             {
@@ -163,6 +167,7 @@ namespace WareHouseManger.Controllers
                     shop_Good0.UnitID = shop_Good.UnitID;
                     shop_Good0.Description = shop_Good.Description;
                     shop_Good0.Price = shop_Good.Price;
+                    shop_Good0.CostPrice = shop_Good.CostPrice;
                     shop_Good0.ProducerID = shop_Good.ProducerID;
 
                     //_context.Update(shop_Good);
@@ -257,7 +262,7 @@ namespace WareHouseManger.Controllers
                 .Include(t => t.Producer)
                 .ToListAsync();
             }
-            
+
             return Json(new
             {
                 data = templates.Select(t => new
@@ -266,6 +271,7 @@ namespace WareHouseManger.Controllers
                     name = t.Name,
                     category = t.Category.Name,
                     price = t.Price,
+                    costprice = t.CostPrice,
                     count = t.Count,
                     unit = t.Unit.Name,
                     producer = t.Producer.Name

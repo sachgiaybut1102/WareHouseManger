@@ -8,7 +8,7 @@
     bool isSingle = bool.Parse(ViewData["isSingle"].ToString());
 }
 
-<div class="card shadow container col-6">
+<div class="card shadow">
     <div class="card-body">
         <h1>Chi tiết</h1>
         <h4>Nhân viên</h4>
@@ -16,29 +16,86 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input asp-for="EmployeeID" hidden />
         <div class="form-group">
-            <label asp-for="Name" class="control-label">Tên nhân viên</label>
+            <label asp-for="Name" class="control-label font-weight-bold">Tên nhân viên</label>
             <input asp-for="Name" class="form-control" readonly />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="PositionID" class="control-label">chức vụ</label>
+            <label asp-for="PositionID" class="control-label font-weight-bold">chức vụ</label>
             <input class="form-control" value="@Model.Position.Name" readonly />
             <span asp-validation-for="PositionID" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="PhoneNumber" class="control-label">Số điện thoại</label>
+            <label asp-for="PhoneNumber" class="control-label font-weight-bold">Số điện thoại</label>
             <input asp-for="PhoneNumber" class="form-control" readonly />
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Address" class="control-label">Địa chỉ</label>
+            <label asp-for="Address" class="control-label font-weight-bold">Địa chỉ</label>
             <input asp-for="Address" class="form-control" readonly />
             <span asp-validation-for="Address" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="EMail" class="control-label"></label>
+            <label asp-for="EMail" class="control-label font-weight-bold"></label>
             <input asp-for="EMail" class="form-control" readonly />
             <span asp-validation-for="EMail" class="text-danger"></span>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="label-primary">Thống kê</h3>
+            </div>
+            <div class="card-body">
+
+                <div class="form-row align-items-center mb-3">
+                    <div class="col-auto">
+                        <span class="font-weight-bold">Thống kê theo</span>
+                    </div>
+                    <div class="col-auto">
+                        <select id="datetype" class="form-control">
+                            <option value="month">Tháng</option>
+                            <option value="year">Năm</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <span class="font-weight-bold">Tháng</span>
+                    </div>
+                    <div class="col-auto">
+                        <select id="month" class="form-control">
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <span class="font-weight-bold">Năm</span>
+                    </div>
+                    <div class="col-auto">
+                        <select id="year" class="form-control">
+                            @for (int i = DateTime.Now.Year; i >= 1990; i--)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button id="btn-submit-chart" class="btn btn-primary">Xem thống kê</button>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3>Biểu đồ doanh thu</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <canvas id="myAreaChart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel-body -->
         </div>
         <h4>Tài khoản</h4>
         <hr />
@@ -48,16 +105,16 @@
 
             <div class="row">
                 <div class="form-group form-inline col-6">
-                    <label asp-for="@account.UserName" class="control-label font-weight-bold">Tên tài khoản:</label>
+                    <label asp-for="@account.UserName" class="control-label font-weight-bold font-weight-bold">Tên tài khoản:</label>
                     &nbsp;
-                    <label id="account_UserName" asp-for="@account.UserName" class="control-label">@account.UserName</label>
+                    <label id="account_UserName" asp-for="@account.UserName" class="control-label font-weight-bold">@account.UserName</label>
 
                     <span asp-validation-for="@account.UserName" class="text-danger"></span>
                 </div>
                 <div class="form-group form-inline col-6">
-                    <label asp-for="@account.DateCreated" class="control-label font-weight-bold">Ngày tạo:</label>
+                    <label asp-for="@account.DateCreated" class="control-label font-weight-bold font-weight-bold">Ngày tạo:</label>
                     &nbsp;
-                    <label asp-for="@account.DateCreated" class="control-label">@account.DateCreated.Value.ToString("dd/MM/yyyy")</label>
+                    <label asp-for="@account.DateCreated" class="control-label font-weight-bold">@account.DateCreated.Value.ToString("dd/MM/yyyy")</label>
 
                     <span asp-validation-for="@account.UserName" class="text-danger"></span>
                 </div>
@@ -161,5 +218,9 @@ else
     </div>
 }
 @section scripts{
+    <script src="/js/fomatnumber.js"></script>
+    <script src="~/js/plugins/morris/raphael-2.1.0.min.js"></script>
+    <script src="~/js/plugins/morris/morris.js"></script>
+    <script src="/vendor/chart.js/Chart.min.js"></script>
     <script src="~/js/Employee/details.js"></script>
 }

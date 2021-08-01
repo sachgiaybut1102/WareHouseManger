@@ -19,6 +19,7 @@ namespace WareHouseManger.Models.EF
         public string Address { get; set; }
         public string EMail { get; set; }
         public int? CustomerCategoryID { get; set; }
+        public bool? IsDelete { get; set; }
 
         public virtual Customer_Category CustomerCategory { get; set; }
         public virtual ICollection<FinalSettlement_Customer> FinalSettlement_Customers { get; set; }

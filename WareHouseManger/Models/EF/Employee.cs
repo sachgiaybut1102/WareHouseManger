@@ -21,6 +21,7 @@ namespace WareHouseManger.Models.EF
         public string Address { get; set; }
         public string EMail { get; set; }
         public int? PositionID { get; set; }
+        public bool? IsDelete { get; set; }
 
         public virtual Position Position { get; set; }
         public virtual ICollection<Account> Accounts { get; set; }

@@ -13,12 +13,12 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="row">
             <div class="form-group col-md-4">
-                <label asp-for="DateCreated" class="control-label">Ngày lập</label>
+                <label asp-for="DateCreated" class="control-label font-weight-bold">Ngày lập</label>
                 <input type="date" asp-for="DateCreated" class="form-control" value="@Model.DateCreated.Value.ToString("yyyy-MM-dd")" autofocus />
                 <span asp-validation-for="DateCreated" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
-                <label asp-for="SupplierID" class="control-label">Nhà cung cấp</label>
+                <label asp-for="SupplierID" class="control-label font-weight-bold">Nhà cung cấp</label>
                 @*<select asp-for="SupplierID" class="form-control" asp-items="@ViewBag.SupplierID"></select>*@
                 @{
                     List<WareHouseManger.Models.EF.Supplier> suppliers = ViewBag.SupplierID as List<WareHouseManger.Models.EF.Supplier>;
@@ -28,7 +28,7 @@
                 <span asp-validation-for="SupplierID" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
-                <label asp-for="EmployeeID" class="control-label">Nhân viên lập</label>
+                <label asp-for="EmployeeID" class="control-label font-weight-bold">Nhân viên lập</label>
                 @*<select asp-for="EmployeeID" class="form-control" asp-items="@ViewBag.EmployeeID"></select>*@
                 @{
                     var employees = ViewBag.EmployeeID as List<WareHouseManger.Models.EF.Employee>;
@@ -39,73 +39,75 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Remark" class="control-label">Ghi chú</label>
+            <label asp-for="Remark" class="control-label font-weight-bold">Ghi chú</label>
             <textarea asp-for="Remark" class="form-control" rows="5"></textarea>
             <span asp-validation-for="Remark" class="text-danger"></span>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <h3>Danh sách chi tiết hàng hóa</h3>
-            <div class="form-inline mb-3">
-                <label @*id="total"*@ class="font-weight-bold">Tổng tiền: </label>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input id="total" class="form-control text-right" value="0" readonly />
-                &nbsp;
-                <label class="font-weight-bold">VNĐ</label>
+        <div class="card shadow">
+            <div class="card-header">
+                <h3>Danh sách chi tiết hàng hóa</h3>
             </div>
-            <div class="form-inline mb-3">
-                <label class="font-weight-bold">Trả trước:</label>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input id="prepay" class="form-control text-right number" value="0" />
-                &nbsp;
-                <label class="font-weight-bold">VNĐ</label>
-            </div>
-            <div class="form-inline mb-3">
-                <label class="font-weight-bold">Thanh toán tiền mặt:</label>
-                &nbsp;
-                <input id="cash" class="form-control text-right number" value="0" />
-                &nbsp;
-                <label class="font-weight-bold">VNĐ</label>
-            </div>
-            <div class="form-inline mb-3">
-                <label class="font-weight-bold">Chuyển khoản:</label>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input asp-for="@Model.TransferMoney" class="form-control text-right number" value="0" readonly/>
-                &nbsp;
-                <label class="font-weight-bold">VNĐ</label>
-            </div>
-            <div class="form-inline mb-3">
-                <label class="font-weight-bold">Còn lại:</label>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input id="remain" class="form-control text-right number" value="0" readonly/>
-                &nbsp;
-                <label class="font-weight-bold">VNĐ</label>
-            </div>
-            <div class="table-responsive">
-                <table id="tb-shopgoods" class="table table-bordered table-sm table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th>Mã hàng hóa</th>
-                            <th>Tên hàng hóa</th>
-                            <th>Loại hàng hóa</th>
-                            <th>Nhà sản xuất</th>
-                            <th class="text-center">Đơn vị tính</th>
-                            <th class="text-center">Số lượng</th>
-                            <th class="text-center">Đơn giá</th>
-                            <th class="text-center">Thành tiền</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <button id="btn-addshopgoods" type="button" class="btn btn-sm btn-success">Thêm hàng hoá</button>
-            <div class="panel-footer text-right">
-                <input id="btn-addrecepit" type="submit" value="Tạo" class="btn btn-primary" />
-                <a class="btn btn-light" asp-action="Index">Quay lại</a>
+            <div class="card-body">
+                <div class="form-inline mb-3">
+                    <label @*id="total"*@ class="font-weight-bold">Tổng tiền: </label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input id="total" class="form-control text-right" value="0" readonly />
+                    &nbsp;
+                    <label class="font-weight-bold">VNĐ</label>
+                </div>
+                <div class="form-inline mb-3">
+                    <label class="font-weight-bold">Trả trước:</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input id="prepay" class="form-control text-right number" value="0" />
+                    &nbsp;
+                    <label class="font-weight-bold">VNĐ</label>
+                </div>
+                <div class="form-inline mb-3">
+                    <label class="font-weight-bold">Thanh toán tiền mặt:</label>
+                    &nbsp;
+                    <input id="cash" class="form-control text-right number" value="0" />
+                    &nbsp;
+                    <label class="font-weight-bold">VNĐ</label>
+                </div>
+                <div class="form-inline mb-3">
+                    <label class="font-weight-bold">Chuyển khoản:</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input asp-for="@Model.TransferMoney" class="form-control text-right number" value="0" readonly />
+                    &nbsp;
+                    <label class="font-weight-bold">VNĐ</label>
+                </div>
+                <div class="form-inline mb-3">
+                    <label class="font-weight-bold">Còn lại:</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input id="remain" class="form-control text-right number" value="0" readonly />
+                    &nbsp;
+                    <label class="font-weight-bold">VNĐ</label>
+                </div>
+                <div class="table-responsive">
+                    <table id="tb-shopgoods" class="table table-bordered table-sm table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Mã hàng hóa</th>
+                                <th>Tên hàng hóa</th>
+                                <th>Loại hàng hóa</th>
+                                <th>Nhà sản xuất</th>
+                                <th class="text-center">Đơn vị tính</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-center">Đơn giá</th>
+                                <th class="text-center">Thành tiền</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="btn-addshopgoods" type="button" class="btn btn-sm btn-success">Thêm hàng hoá</button>
+                <div class="panel-footer text-right">
+                    <input id="btn-addrecepit" type="submit" value="Tạo" class="btn btn-primary" />
+                    <a class="btn btn-light border" asp-action="Index">Quay lại</a>
+                </div>
             </div>
         </div>
     </div>
@@ -215,7 +217,7 @@
     <!-- /.modal-dialog -->
 </div>
 <div class="modal fade" id="modal-shopgoods" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel">Danh mục hàng hóa</h4>
@@ -239,6 +241,8 @@
                                 <th>Tên vật phẩm</th>
                                 <th>Nhà sản xuất</th>
                                 <th>Đơn vị tính</th>
+                                <th class="text-right">Giá nhập</th>
+                                <th class="text-right">Giá bán</th>
                                 <th class="text-center">Lựa chọn</th>
                             </tr>
                         </thead>

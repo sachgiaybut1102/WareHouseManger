@@ -292,6 +292,82 @@ namespace WareHouseManger.Controllers
             }); ;
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountRecepitShopGoods(string id, string type, int month, int year)
+        {
+
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+
+            return Json(new
+            {
+                data = type == "month" ? await statisticsDAO.GetCountRecepitShopGoods(DateTime.Now.Month, DateTime.Now.Year, id) : type == "year" ? await statisticsDAO.GetCountRecepitShopGoods(DateTime.Now.Year, id) : new List<object>()
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountRecepitShopGoodsInYear(string id)
+        {
+
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+
+            return Json(new
+            {
+                data = await statisticsDAO.GetCountRecepitShopGoods(DateTime.Now.Year, id)
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountRecepitShopGoodsGroupByCustomer(string id, string datatype, int month, int year)
+        {
+
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var data = new List<CountRecepitShopGoodsGroupByCustomer>();
+
+            if (datatype == "month")
+            {
+                data = await statisticsDAO.GetCountRecepitShopGoodsGroupByCustomer(month, year, id);
+            }
+            else
+            {
+                data = await statisticsDAO.GetCountRecepitShopGoodsGroupByCustomer(year, id);
+            }
+
+            return Json(new
+            {
+                data = data
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> GetCountRecepitShopGoodsGroupByEmployee(int id, string type, int month, int year)
+        {
+
+            Models.DAO.StatisticsDAO statisticsDAO = new Models.DAO.StatisticsDAO(_context);
+
+            var data = new List<object>();
+
+            if (type == "month")
+            {
+                data = await statisticsDAO.GetCountIssuesShopGoodsGroupByEmployee(month, year, id);
+            }
+            else
+            {
+                data = await statisticsDAO.GetCountIssuesShopGoodsGroupByEmployee(year, id);
+            }
+
+            return Json(new
+            {
+                data = data
+            });
+        }
+
         public IActionResult Page404()
         {
             return View();

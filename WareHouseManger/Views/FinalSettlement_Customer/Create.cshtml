@@ -11,25 +11,25 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="CustomerID" class="control-label">Khách hàng</label>
+                <label asp-for="CustomerID" class="control-label font-weight-bold">Khách hàng</label>
                 <select asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerID"></select>
             </div>
             <div class="form-group">
-                <label asp-for="GoodsIssuesID" class="control-label">Mã phiếu xuất</label>
+                <label asp-for="GoodsIssuesID" class="control-label font-weight-bold">Mã phiếu xuất</label>
                 <select asp-for="GoodsIssuesID" class="form-control" asp-items="ViewBag.GoodsIssuesID"></select>
             </div>
             <div class="form-group">
-                <label asp-for="DateCreated" class="control-label">Ngày xuất</label>
+                <label asp-for="DateCreated" class="control-label font-weight-bold">Ngày xuất</label>
                 <input type="date" asp-for="DateCreated" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                 <span asp-validation-for="DateCreated" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Payment" class="control-label">Số tiền thanh toán</label>
+                <label asp-for="Payment" class="control-label font-weight-bold">Số tiền thanh toán</label>
                 <input asp-for="Payment" class="form-control" />
                 <span asp-validation-for="Payment" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Remainder" class="control-label">Còn lại</label>
+                <label asp-for="Remainder" class="control-label font-weight-bold">Còn lại</label>
                 <input asp-for="Remainder" class="form-control" />
                 <span asp-validation-for="Remainder" class="text-danger"></span>
             </div>

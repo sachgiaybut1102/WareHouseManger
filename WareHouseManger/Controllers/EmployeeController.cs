@@ -36,10 +36,10 @@ namespace WareHouseManger.Controllers
 
             return View(await _context.Employees
                 .Include(t => t.Accounts)
-                .Where(t => t.EmployeeID.ToString().Contains(keyword) ||
+                .Where(t => (t.EmployeeID.ToString().Contains(keyword) ||
                 t.Name.Contains(keyword) ||
                 t.PhoneNumber.Contains(keyword) ||
-                t.EMail.Contains(keyword))
+                t.EMail.Contains(keyword)) && !(bool)t.IsDelete)
                 .OrderByDescending(t => t.EmployeeID)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10));
@@ -104,6 +104,7 @@ namespace WareHouseManger.Controllers
         {
             if (ModelState.IsValid)
             {
+                employee.IsDelete = false;
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -166,6 +167,7 @@ namespace WareHouseManger.Controllers
             {
                 try
                 {
+                    employee.IsDelete = false;
                     _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
@@ -239,7 +241,8 @@ namespace WareHouseManger.Controllers
                     .Include(t => t.Position)
                     .FirstOrDefaultAsync(m => m.EmployeeID == id);
 
-                _context.Employees.Remove(employee);
+                employee.IsDelete = true;
+                //_context.Employees.Remove(employee);
                 await _context.SaveChangesAsync();
             }
             catch

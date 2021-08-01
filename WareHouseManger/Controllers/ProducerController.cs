@@ -31,7 +31,7 @@ namespace WareHouseManger.Controllers
             ViewBag.Keyword = keyword;
 
             return View(await _context.Producers
-                .Where(t => t.Name.Contains(keyword))
+                .Where(t => t.Name.Contains(keyword) && !(bool)t.IsDelete)
                 .OrderByDescending(t => t.ProducerID)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10));
@@ -74,6 +74,7 @@ namespace WareHouseManger.Controllers
         {
             if (ModelState.IsValid)
             {
+                producer.IsDelete = false;
                 _context.Add(producer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -115,6 +116,7 @@ namespace WareHouseManger.Controllers
             {
                 try
                 {
+                    producer.IsDelete = false;
                     _context.Update(producer);
                     await _context.SaveChangesAsync();
                 }
@@ -162,7 +164,7 @@ namespace WareHouseManger.Controllers
             try
             {
                 var producer = await _context.Producers.FindAsync(id);
-                _context.Producers.Remove(producer);
+                producer.IsDelete = true;
                 await _context.SaveChangesAsync();
             }
             catch

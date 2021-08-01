@@ -36,13 +36,19 @@
                             Nhà sản xuất
                         </th>
                         <th class="text-center">
-                            Số lượng
+                           SL nhập
+                        </th>
+                        <th class="text-center">
+                           SL xuất
+                        </th>
+                        <th class="text-center">
+                           SL tồn
                         </th>
                         <th class="text-center">
                             ĐVT
                         </th>
                         <th class="text-center">
-                            SL tối thiểu
+                            Giá xuất
                         </th>
                         <th class="text-center">
                             Giá bán
@@ -67,17 +73,22 @@
                                 @Html.DisplayFor(modelItem => item.Producer.Name)
                             </td>
                             @*<td>
-                            @Html.DisplayFor(modelItem => item.Description)
-                        </td>*@
-
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>*@
                             <td class="text-right">
-                                @string.Format("{0:N}", item.Count).Replace(".00","")
+                                @string.Format("{0:N}", item.Shop_Goods_Receipt_Details.Select(t => t.Count).Sum()).Replace(".00", "")
+                            </td>
+                            <td class="text-right">
+                                @string.Format("{0:N}", item.Shop_Goods_Issues_Details.Select(t => t.Count).Sum()).Replace(".00", "")
+                            </td>
+                            <td class="text-right">
+                                @string.Format("{0:N}", item.Count).Replace(".00", "")
                             </td>
                             <td class="text-center">
                                 @Html.DisplayFor(modelItem => item.Unit.Name)
                             </td>
                             <td class="text-right">
-                                @string.Format("{0:N}", item.CountMin).Replace(".00", "")
+                                @string.Format("{0:N}", item.CostPrice).Replace(".00", "")
                             </td>
                             <td class="text-right">
                                 @string.Format("{0:N}", item.Price).Replace(".00", "")

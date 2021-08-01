@@ -90,7 +90,8 @@ namespace WareHouseManger.Controllers
             parameters.Add("paTotalText", Common.Utils.NumberToText(total, true));
 
             LocalReport localReport = new LocalReport(path);
-            localReport.AddDataSource("DataSet1", model.Shop_Goods_Issues_Details
+
+            var data = model.Shop_Goods_Issues_Details
                 .Select(t => new
                 {
                     GoodsIssueID = t.GoodsIssueID,
@@ -100,7 +101,8 @@ namespace WareHouseManger.Controllers
                     UnitName = t.Template.Unit.Name,
                     Count = t.Count,
                     UnitPrice = t.UnitPrice,
-                }));
+                }).ToArray();
+            localReport.AddDataSource("DataSet1",data);
 
             var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);
 
@@ -172,7 +174,7 @@ namespace WareHouseManger.Controllers
                     UnitName = t.Template.Unit.Name,
                     Count = t.Count,
                     UnitPrice = t.UnitPrice,
-                }));
+                }).ToArray());
 
             var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimtype);
 

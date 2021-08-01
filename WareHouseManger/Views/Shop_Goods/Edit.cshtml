@@ -15,49 +15,49 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="TemplateID" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label">Tên vật phẩm</label>
+                <label asp-for="Name" class="control-label font-weight-bold">Tên vật phẩm</label>
                 <input asp-for="Name" class="form-control" autofocus />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label asp-for="CategoryID" class="control-label">Loại vật phẩm</label>
+                    <label asp-for="CategoryID" class="control-label font-weight-bold">Loại vật phẩm</label>
                     <select asp-for="CategoryID" class="form-control" asp-items="ViewBag.CategoryID"></select>
                     <span asp-validation-for="CategoryID" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="UnitID" class="control-label">Đơn vị tính</label>
+                    <label asp-for="UnitID" class="control-label font-weight-bold">Đơn vị tính</label>
                     <select asp-for="UnitID" class="form-control" asp-items="ViewBag.UnitID"></select>
                     <span asp-validation-for="UnitID" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group">
-                <label asp-for="ProducerID" class="control-label">Nhà sản xuất</label>
+                <label asp-for="ProducerID" class="control-label font-weight-bold">Nhà sản xuất</label>
                 <select asp-for="ProducerID" class="form-control" asp-items="ViewBag.ProducerID"></select>
                 <span asp-validation-for="ProducerID" class="text-danger"></span>
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label asp-for="Price" class="control-label">Giá bán</label>
+                    <label asp-for="Price" class="control-label font-weight-bold">Giá bán</label>
                     <input id="price" class="form-control text-right num" />
                     <input asp-for="Price" class="form-control" hidden />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-4">
-                    <label asp-for="Count" class="control-label">Số lượng</label>
+                    <label asp-for="Count" class="control-label font-weight-bold">Số lượng</label>
                     <input asp-for="Count" class="form-control" value="@string.Format("{0:G29}",Model.Count)" readonly />
                     <span asp-validation-for="Count" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label asp-for="CountMin" class="control-label">Số lượng tối thiểu</label>
-                    <input asp-for="CountMin" class="form-control" readonly />
-                    <span asp-validation-for="CountMin" class="text-danger"></span>
+                    <label asp-for="CostPrice" class="control-label font-weight-bold">Giá nhập (mặc định)</label>
+                    <input asp-for="CostPrice" class="form-control" value="@string.Format("{0:G29}",Model.CostPrice)" />
+                    <span asp-validation-for="CostPrice" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label">Chú thích</label>
+                <label asp-for="Description" class="control-label font-weight-bold">Chú thích</label>
                 <textarea asp-for="Description" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>

@@ -15,6 +15,7 @@ namespace WareHouseManger.Models.EF
         public int PositionID { get; set; }
         public string Name { get; set; }
         public string Remark { get; set; }
+        public bool? IsDelete { get; set; }
 
         public virtual ICollection<Employee> Employees { get; set; }
     }
