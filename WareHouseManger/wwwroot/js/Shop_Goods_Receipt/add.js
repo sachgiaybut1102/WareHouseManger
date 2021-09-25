@@ -74,11 +74,11 @@
     });
 
     $('body').on('keyup', '.number', function () {
-        $(this).val(formatNumber(formatString($(this).val())));
+        $(this).val(formatNumber(formatDisplayNumberToNumber($(this).val())));
 
         var tds = $($(this).parent().parent()).find('td');
 
-        var value = parseInt(formatString($(tds[tds.length - 3]).children(0).val())) * parseInt(formatString($(tds[tds.length - 4]).children(0).val()))
+        var value = parseInt(formatDisplayNumberToNumber($(tds[tds.length - 3]).children(0).val())) * parseInt(formatDisplayNumberToNumber($(tds[tds.length - 4]).children(0).val()))
 
         $(tds[tds.length - 2]).children(0).val(formatNumber(value));
     });
@@ -103,8 +103,8 @@
             SupplierID: $('#SupplierID').val(),
             EmployeeID: $('#EmployeeID').val(),
             Remark: $('#Remark').val(),
-            Prepay: formatString($('#prepay').val()),
-            TransferMoney: formatString($('#TransferMoney').val())
+            Prepay: formatDisplayNumberToNumber($('#prepay').val()),
+            TransferMoney: formatDisplayNumberToNumber($('#TransferMoney').val())
         };
 
         var recepitDetails = [];
@@ -112,11 +112,11 @@
         $.each($('#tb-shopgoods tbody').find('tr'), function (index, item) {
             var tds = $(item).find('td');
 
-            var recepitDetail = new ShopGoodsViewModel($(tds[0]).text(), formatString($(tds[tds.length - 4]).children(0).val()), formatString($(tds[tds.length - 3]).children(0).val()));
+            var recepitDetail = new ShopGoodsViewModel($(tds[0]).text(), formatDisplayNumberToNumber($(tds[tds.length - 4]).children(0).val()), formatDisplayNumberToNumber($(tds[tds.length - 3]).children(0).val()));
             //{
             //    TemplateID: $(tds[0]).text(),
-            //    Count: formatString($(tds[tds.length - 4]).children(0).val()),
-            //    UnitPrice: formatString($(tds[tds.length - 3]).children(0).val()),
+            //    Count: formatDisplayNumberToNumber($(tds[tds.length - 4]).children(0).val()),
+            //    UnitPrice: formatDisplayNumberToNumber($(tds[tds.length - 3]).children(0).val()),
             //}
 
             recepitDetails.push(recepitDetail);
@@ -189,9 +189,9 @@
 
 
 function prepay_KeyUp() {
-    var total = parseInt(formatString($('#total').val()));
+    var total = parseInt(formatDisplayNumberToNumber($('#total').val()));
 
-    var prepay = parseInt(formatString($('#prepay').val()));
+    var prepay = parseInt(formatDisplayNumberToNumber($('#prepay').val()));
 
     if (prepay <= 0) {
         $('#prepay').val(0);
@@ -209,9 +209,9 @@ function prepay_KeyUp() {
 }
 
 function cash_KeyUp() {
-    var prepay = parseInt(formatString($('#prepay').val()));
+    var prepay = parseInt(formatDisplayNumberToNumber($('#prepay').val()));
 
-    var cash = parseInt(formatString($('#cash').val()));
+    var cash = parseInt(formatDisplayNumberToNumber($('#cash').val()));
 
 
     if (cash <= 0) {
@@ -314,7 +314,7 @@ function updateTotal() {
     var total = 0;
     $.each(trs, function (i, e) {
         var tds = $(e).find('td');
-        total += parseInt(formatString($($(tds[tds.length - 2]).children(0)).val()));
+        total += parseInt(formatDisplayNumberToNumber($($(tds[tds.length - 2]).children(0)).val()));
     });
 
     $('#total').val(formatNumber(total));

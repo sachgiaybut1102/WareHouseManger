@@ -1,15 +1,18 @@
 ﻿@using X.PagedList
 @using X.PagedList.Mvc.Core
+@using WareHouseManger.Models.EF;
 
 @model IPagedList<WareHouseManger.Models.EF.Shop_Good>
 
 @{
     ViewData["Title"] = "Index";
+    Shop_Goods_ClosingStock shop_Goods_ClosingStock = ViewBag.Shop_Goods_ClosingStock as Shop_Goods_ClosingStock;
 }
 
 <div class="card shadow">
     <div class="card-body">
         <h1>Vật phẩm</h1>
+        <h4><i><u>Ngày chốt sổ gần nhất: @ViewBag.DateClosingStock</u></i></h4>
         <div>
             <a class="btn btn-sm btn-success float-left" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
             <div class="form-inline float-right mb-3">
@@ -17,6 +20,9 @@
                     <input id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa cần tìm" value="@ViewBag.Keyword" />
                     <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"> Tìm kiếm</i></button>
                 </form>
+            </div>
+            <div>
+                <button id="btn-closing-stock" class="ml-3 btn btn-sm btn-primary"><i class="fa fa-cubes"> Chốt sổ</i></button>
             </div>
         </div>
         <div class="table-responsive">
@@ -36,13 +42,19 @@
                             Nhà sản xuất
                         </th>
                         <th class="text-center">
-                           SL nhập
+                            Tổng SL nhập
                         </th>
                         <th class="text-center">
-                           SL xuất
+                            Tổng SL xuất
                         </th>
                         <th class="text-center">
-                           SL tồn
+                            Tổng SL nhập trong kì
+                        </th>
+                        <th class="text-center">
+                            Tổng SL xuất trong kì
+                        </th>
+                        <th class="text-center">
+                            SL tồn
                         </th>
                         <th class="text-center">
                             ĐVT
@@ -73,13 +85,23 @@
                                 @Html.DisplayFor(modelItem => item.Producer.Name)
                             </td>
                             @*<td>
-                                    @Html.DisplayFor(modelItem => item.Description)
+                                @Html.DisplayFor(modelItem => item.Description)
                                 </td>*@
                             <td class="text-right">
                                 @string.Format("{0:N}", item.Shop_Goods_Receipt_Details.Select(t => t.Count).Sum()).Replace(".00", "")
                             </td>
                             <td class="text-right">
                                 @string.Format("{0:N}", item.Shop_Goods_Issues_Details.Select(t => t.Count).Sum()).Replace(".00", "")
+                            </td>
+                            <td class="text-right">
+                                @string.Format("{0:N}", item.Shop_Goods_Receipt_Details
+                            .Where(t=>t.GoodsReceipt.DateCreated > shop_Goods_ClosingStock.DateClosing)
+                            .Select(t => t.Count).Sum()).Replace(".00", "")
+                            </td>
+                            <td class="text-right">
+                                @string.Format("{0:N}", item.Shop_Goods_Issues_Details
+                            .Where(t=>t.GoodsIssue.DateCreated > shop_Goods_ClosingStock.DateClosing)
+                            .Select(t => t.Count).Sum()).Replace(".00", "")
                             </td>
                             <td class="text-right">
                                 @string.Format("{0:N}", item.Count).Replace(".00", "")
@@ -104,12 +126,36 @@
             </table>
             <div class="d-flex justify-content-end">
                 @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page, keyword = ViewBag.Keyword }),
-                    new X.PagedList.Web.Common.PagedListRenderOptions
-                         {
-                                LiElementClasses = new string[] { "page-item" },
-                                PageClasses = new string[] { "page-link" }
-                         })
+                new X.PagedList.Web.Common.PagedListRenderOptions
+                {
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" }
+                })
             </div>
         </div>
     </div>
 </div>
+
+
+<div id="modal-closing-stock" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-modal="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có chắc muốn chốt sổ?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-msg" class="alert"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-accecpt" class="btn btn-success" type="button">Thực hiện</button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal">Hủy bỏ</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+<script src="~/js/Shop_Goods/index.js"></script>
+}

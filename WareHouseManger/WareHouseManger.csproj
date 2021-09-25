@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="EnumType\eNumCardStockType.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="wwwroot\report\rptShop_Goods_Issues.rdlc" />
     <EmbeddedResource Include="wwwroot\report\rptShop_Goods_Receipt.rdlc" />
   </ItemGroup>

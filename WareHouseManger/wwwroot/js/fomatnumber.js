@@ -1,7 +1,7 @@
 ﻿function formatNumber(nStr) {
     var groupSeperate = ',';
 
-    var x = formatString(nStr);
+    var x = formatDisplayNumberToNumber(nStr);
 
     var rgx = /(\d+)(\d{3})/;
 
@@ -11,7 +11,7 @@
     return x;
 }
 
-function formatString(money) {
+function formatDisplayNumberToNumber(money) {
     var x = '';
     var arr = money.toString().split(',');
     arr.forEach((str) => {

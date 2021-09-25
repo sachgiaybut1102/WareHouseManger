@@ -16,6 +16,7 @@ namespace WareHouseManger.Models.EF
         public DateTime? DateCreated { get; set; }
         public string Remark { get; set; }
         public int? EmployeeID { get; set; }
+        public DateTime? DateUpdate { get; set; }
 
         public virtual Employee Employee { get; set; }
         public virtual ICollection<Shop_Goods_StockTake_Detail> Shop_Goods_StockTake_Details { get; set; }

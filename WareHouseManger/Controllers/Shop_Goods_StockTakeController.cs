@@ -32,7 +32,7 @@ namespace WareHouseManger.Controllers
             ViewBag.Keyword = keyword;
 
             return View(await _context.Shop_Goods_StockTakes
-                .Include(t=>t.Employee)
+                .Include(t => t.Employee)
                 .Where(t => t.StockTakeID.Contains(keyword) || t.Employee.Name.Contains(keyword))
                 .OrderByDescending(t => t.StockTakeID)
                 .ToList()
@@ -53,8 +53,8 @@ namespace WareHouseManger.Controllers
                 .Include(s => s.Employee)
                 .Include(t => t.Shop_Goods_StockTake_Details)
                 .ThenInclude(t => t.Template.Category)
-                .Include(t=>t.Shop_Goods_StockTake_Details)
-                .ThenInclude(t=>t.Template.Producer)
+                .Include(t => t.Shop_Goods_StockTake_Details)
+                .ThenInclude(t => t.Template.Producer)
                 .Include(t => t.Shop_Goods_StockTake_Details)
                 .ThenInclude(t => t.Template.Unit)
 
@@ -230,18 +230,28 @@ namespace WareHouseManger.Controllers
 
                 info.StockTakeID = stockTakeID;
 
-                List<Shop_Goods_StockTake_Detail> Shop_Goods_StockTake_Details = JsonConvert.DeserializeObject<List<Shop_Goods_StockTake_Detail>>(json);
+                List<Shop_Goods_StockTake_Detail> shop_Goods_StockTake_Details = JsonConvert.DeserializeObject<List<Shop_Goods_StockTake_Detail>>(json);
 
-                foreach (Shop_Goods_StockTake_Detail Shop_Goods_StockTake_Detail in Shop_Goods_StockTake_Details)
+                foreach (Shop_Goods_StockTake_Detail shop_Goods_StockTake_Detail in shop_Goods_StockTake_Details)
                 {
-                    Shop_Goods_StockTake_Detail.StockTakeID = info.StockTakeID;
+                    shop_Goods_StockTake_Detail.StockTakeID = info.StockTakeID;
                 }
 
-                info.Shop_Goods_StockTake_Details = Shop_Goods_StockTake_Details;
+                info.Shop_Goods_StockTake_Details = shop_Goods_StockTake_Details;
 
                 await _context.Shop_Goods_StockTakes.AddAsync(info);
 
                 //await UpdateCount(Shop_Goods_StockTake_Details, 1);
+
+                await _context.SaveChangesAsync();
+
+                //Update Count ShopGoods
+                foreach (Shop_Goods_StockTake_Detail shop_Goods_StockTake_Detail in shop_Goods_StockTake_Details)
+                {
+                    var template = await _context.Shop_Goods.FindAsync(shop_Goods_StockTake_Detail.TemplateID);
+
+                    template.Count += shop_Goods_StockTake_Detail.AmountOfStock - shop_Goods_StockTake_Detail.ActualAmount;
+                }
 
                 await _context.SaveChangesAsync();
             }

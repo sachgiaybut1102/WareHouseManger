@@ -35,15 +35,16 @@
                     <table id="tb-shopgoods" class="table table-bordered table-sm table-hover table-striped">
                         <thead>
                             <tr>
-                                <th>STT</th>
+                                <th class="text-right">STT</th>
                                 <th>Mã hàng hóa</th>
                                 <th>Tên hàng hóa</th>
                                 <th>Loại hàng hóa</th>
                                 <th>Nhà sản xuất</th>
                                 <th>Đơn vị tính</th>
-                                <th class="text-center">Số lượng tồn</th>
-                                <th class="text-center">Số lượng kiểm</th>
-                                <th class="text-center">Ghi chú</th>
+                                <th class="text-right">Số lượng tồn</th>
+                                <th class="text-right">Số lượng kiểm</th>
+                                <th class="text-right">Chênh lệch</th>
+                                <th class="text-right">Ghi chú</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,8 +60,9 @@
                                         <td class="text-center">@item.Template.Category.Name</td>
                                         <td>@item.Template.Producer.Name</td>
                                         <td class="text-center">@item.Template.Unit.Name</td>
-                                        <td class="text-right">@{ var count = string.Format("{0:N}", item.AmountOfStock); }@count</td>
-                                        <td class="text-right">@{ var unitPrice = string.Format("{0:N}", item.ActualAmount); }@unitPrice</td>
+                                        <td class="text-right">@string.Format("{0:N}", item.AmountOfStock).Replace(".00","")</td>
+                                        <td class="text-right">@string.Format("{0:N}", item.ActualAmount).Replace(".00","")</td>
+                                        <td class="text-right">@string.Format("{0:N}", item.AmountOfStock - item.ActualAmount).Replace(".00","")</td>
                                         <td><textarea class="form-control" readonly rows="6">@item.Remark</textarea></td>
                                     </tr>
 

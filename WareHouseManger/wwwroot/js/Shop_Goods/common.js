@@ -3,7 +3,7 @@
     $('#price').val(formatNumber(num));
 
     $('.num').keyup(function () {
-        var num = formatString($(this).val());
+        var num = formatDisplayNumberToNumber($(this).val());
         var display = formatNumber(num);
         $(this).val(display);
 

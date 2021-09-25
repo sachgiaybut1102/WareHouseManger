@@ -26,9 +26,10 @@
                     '<td>' + $(tds[2]).text() + '</td>' +
                     '<td>' + $(tds[3]).text() + '</td>' +
                     '<td style="width:120px;"><input class="form-control text-right number" min="1" value="' + $(tds[4]).text() + '"  readonly/></td>' +
-                    '<td style="width:120px;"><input class="form-control text-right number" min="1" value="1"  /></td>' +
+                    '<td style="width:120px;"><input class="form-control text-right number actual-amount" min="1" value="1"  /></td>' +
+                    '<td style="width:120px;"><input class="form-control text-right number quantity-difference" min="1" value="1"  /></td>' +
                     '<td style="width:300px;"><textarea class="form-control" rows="5"></textarea></td>' +
-                    '<td class="text-center"><button class="btn btn-sm btn-danger btn-remove">Xóa</button></td>' +
+                    '<td class="text-center" style="width:50px;"><button class="btn btn-sm btn-danger btn-remove">Xóa</button></td>' +
                     '</tr>';
             }
         }
@@ -42,7 +43,7 @@
     });
 
     $('body').on('keyup', '.number', function () {
-        $(this).val(formatNumber(formatString($(this).val())));
+        $(this).val(formatNumber(formatDisplayNumberToNumber($(this).val())));
     });
 
     $('#btn-addrecepit').click(function () {
@@ -60,16 +61,16 @@
             if (tds.length > 0) {
                 var stockTakeDetail = {
                     TemplateID: $(tds[0]).text(),
-                    AmountOfStock: formatString($($(tds[tds.length - 4]).children(0)).val()),
-                    ActualAmount: formatString($($(tds[tds.length - 3]).children(0)).val()),
+                    AmountOfStock: formatDisplayNumberToNumber($($(tds[tds.length - 4]).children(0)).val()),
+                    ActualAmount: formatDisplayNumberToNumber($($(tds[tds.length - 3]).children(0)).val()),
                     Remark: $(tds[tds.length - 2]).text(),
                 };
 
                 console.log(tds.length);
                 //{
                 //    TemplateID: $(tds[0]).text(),
-                //    Count: formatString($(tds[tds.length - 4]).children(0).val()),
-                //    UnitPrice: formatString($(tds[tds.length - 3]).children(0).val()),
+                //    Count: formatDisplayNumberToNumber($(tds[tds.length - 4]).children(0).val()),
+                //    UnitPrice: formatDisplayNumberToNumber($(tds[tds.length - 3]).children(0).val()),
                 //}
 
                 stockTakeDetails.push(stockTakeDetail);
@@ -81,6 +82,15 @@
         console.log(stockTakeDetails);
 
         createConfirmed(stockTake, stockTakeDetails);
+    });
+
+    //23/09/2021
+    $('body').on('keyup', '.actual-amount', function () {
+        updateActualyAmount(this, true);
+    });
+
+    $('body').on('keyup', '.quantity-difference', function () {
+        updateActualyAmount(this, false);
     });
 });
 
@@ -150,4 +160,20 @@ function createConfirmed(info, json) {
             }
         }
     })
+}
+
+function updateActualyAmount(e, isActualAmountChanged) {
+    var parent = $($(e).parent()).parent();
+
+    var inputs = $(parent).find('input');
+
+    var amountOfStock = parseInt($(inputs[0]).val() != "" ? formatDisplayNumberToNumber($(inputs[0]).val()) : "0");
+
+    if (isActualAmountChanged) {
+        var actualAmount = parseInt($(inputs[1]).val() != "" ? formatDisplayNumberToNumber($(inputs[1]).val()) : "0");
+        $(inputs[2]).val(formatNumber(amountOfStock - actualAmount));
+    } else {
+        var quantityDifference = parseInt($(inputs[2]).val() != "" ? formatDisplayNumberToNumber($(inputs[2]).val()) : "0");
+        $(inputs[1]).val(formatNumber(amountOfStock - quantityDifference));
+    }
 }

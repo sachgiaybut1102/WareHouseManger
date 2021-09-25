@@ -267,6 +267,7 @@ namespace WareHouseManger.Controllers
 
                     info.Shop_Goods_Issues_Details = shop_Goods_Issue_Details;
                     info.Total = info.Shop_Goods_Issues_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+                    info.DateCreated = DateTime.Now;
 
                     FinalSettlement_Customer finalSettlement_Customer = new FinalSettlement_Customer()
                     {

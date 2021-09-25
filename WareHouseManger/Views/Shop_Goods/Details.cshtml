@@ -1,7 +1,11 @@
-﻿@model WareHouseManger.Models.EF.Shop_Good
+﻿@using WareHouseManger.Models.EF
+@model Shop_Good
 
 @{
     ViewData["Title"] = "Details";
+    //DateTime dateBegin = ViewData["DateBegin"] as DateTime;
+    // DateTime deateEnd = ViewData["Dateend"] as DateTime;
+    List<StockCard> stockCards = ViewBag.StockCards;
 }
 
 <div class="card shadow ">
@@ -154,6 +158,135 @@
                         </div>
                     </div>
                 </div>
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3>Thẻ kho</h3></h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive shadow overflow-auto" style="max-height:60vh">
+                            <table id="tb" class="table table-bordered table-sm table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" rowspan="2">STT</th>
+                                        <th class="text-center" rowspan="2">Ngày ghi sổ</th>
+                                        <th class="text-center" colspan="2">Số chứng từ</th>
+                                        <th class="text-center" rowspan="2">Diễn giải</th>
+                                        <th class="text-center" rowspan="2">Ngày nhập, xuất</th>
+                                        <th class="text-center" colspan="3">Số lượng</th>
+                                        <th class="text-center" rowspan="2" style="width:300px">ghi chú</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Nhập</th>
+                                        <th class="text-center">Xuất</th>
+                                        <th class="text-center">Nhập</th>
+                                        <th class="text-center">Xuất</th>
+                                        <th class="text-center">Tồn</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">A</th>
+                                        <th class="text-center">B</th>
+                                        <th class="text-center">C</th>
+                                        <th class="text-center">D</th>
+                                        <th class="text-center">E</th>
+                                        <th class="text-center">F</th>
+                                        <th class="text-center">1</th>
+                                        <th class="text-center">2</th>
+                                        <th class="text-center">3</th>
+                                        <th class="text-center">G</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int index = 1;
+                                        int tongNhap = 0;
+                                        int tongXuat = 0;
+                                        int ton = 0;
+                                    }
+                                    @foreach (var item in stockCards)
+                                    {
+                                        if (item.Category == (int)eNumCardStockType.ClossingStock)
+                                        {
+                                            <tr>
+                                                <td>@index</td>
+                                                <td class="text-center">@item.DateCreated.ToString("dd/MM/yyyy")</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-center font-weight-bold">Số dư đầu kỳ</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="font-weight-bold text-right">@string.Format("{0:N}",item.Count).Replace(".00","")</td>
+                                                <td></td>
+                                            </tr>
+
+                                            ton += item.Count;
+                                        }
+                                        else if (item.Category == (int)eNumCardStockType.GoodsReceipt)
+                                        {
+                                            <tr>
+                                                <td>@index</td>
+                                                <td class="text-center">@item.DateCreated.ToString("dd/MM/yyyy")</td>
+                                                <td class="text-center">@item.ID</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-right">@string.Format("{0:N}",item.Count).Replace(".00","")</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+                                            tongNhap += item.Count;
+                                        }
+                                        else if (item.Category == (int)eNumCardStockType.GoodsIsuess)
+                                        {
+                                            <tr>
+                                                <td>@index</td>
+                                                <td class="text-center">@item.DateCreated.ToString("dd/MM/yyyy")</td>
+                                                <td></td>
+                                                <td class="text-center">@item.ID</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-right">@string.Format("{0:N}",item.Count).Replace(".00","")</td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+                                            tongXuat += item.Count;
+                                        }
+
+                                        index++;
+                                    }
+                                    <tr class="font-weight-bold">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-center">Cộng phát sinh trong kỳ</td>
+                                        <td></td>
+                                        <td class="text-right">@string.Format("{0:N}",tongNhap).Replace(".00","")</td>
+                                        <td class="text-right">@string.Format("{0:N}",tongXuat).Replace(".00","")</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="font-weight-bold">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-center">Số dư cuối kỳ</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-right">@string.Format("{0:N}",ton + tongNhap - tongXuat).Replace(".00","")</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 <!-- /.panel-body -->
             </div>
             <!-- /.panel-body -->
@@ -167,10 +300,10 @@
 </div>
 
 @section scripts{
-    <script src="/js/fomatnumber.js"></script>
-    <script src="~/js/plugins/morris/raphael-2.1.0.min.js"></script>
-    <script src="~/js/plugins/morris/morris.js"></script>
-    <script src="/vendor/chart.js/Chart.min.js"></script>
-    <script src="~/js/Shop_Goods/details.js"></script>
+<script src="/js/fomatnumber.js"></script>
+<script src="~/js/plugins/morris/raphael-2.1.0.min.js"></script>
+<script src="~/js/plugins/morris/morris.js"></script>
+<script src="/vendor/chart.js/Chart.min.js"></script>
+<script src="~/js/Shop_Goods/details.js"></script>
 }
 

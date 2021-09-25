@@ -11,8 +11,8 @@
     });
 
     $('.num').keyup(function () {
-        var total = parseInt(formatString($('#remain').val()));
-        var payment = parseInt(formatString($('#num0').val()));
+        var total = parseInt(formatDisplayNumberToNumber($('#remain').val()));
+        var payment = parseInt(formatDisplayNumberToNumber($('#num0').val()));
 
         $('#num0').val(formatNumber(payment));
 

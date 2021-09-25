@@ -32,6 +32,8 @@ namespace WareHouseManger.Models.EF
         public virtual DbSet<ShopGoods_Image> ShopGoods_Images { get; set; }
         public virtual DbSet<Shop_Good> Shop_Goods { get; set; }
         public virtual DbSet<Shop_Goods_Category> Shop_Goods_Categories { get; set; }
+        public virtual DbSet<Shop_Goods_ClosingStock> Shop_Goods_ClosingStocks { get; set; }
+        public virtual DbSet<Shop_Goods_ClosingStock_Detail> Shop_Goods_ClosingStock_Details { get; set; }
         public virtual DbSet<Shop_Goods_Issue> Shop_Goods_Issues { get; set; }
         public virtual DbSet<Shop_Goods_Issues_Detail> Shop_Goods_Issues_Details { get; set; }
         public virtual DbSet<Shop_Goods_Receipt> Shop_Goods_Receipts { get; set; }
@@ -41,7 +43,6 @@ namespace WareHouseManger.Models.EF
         public virtual DbSet<Shop_Goods_Unit> Shop_Goods_Units { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<View_Shop_Goods_Issues_Detail> View_Shop_Goods_Issues_Details { get; set; }
-        public virtual DbSet<WareHouse> WareHouses { get; set; }
         public virtual DbSet<WareHouse_Goods_Detail> WareHouse_Goods_Details { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -49,7 +50,7 @@ namespace WareHouseManger.Models.EF
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-54ADATL\\MINHPC;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
+                optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
             }
         }
 
@@ -353,6 +354,51 @@ namespace WareHouseManger.Models.EF
                     .IsFixedLength(true);
             });
 
+            modelBuilder.Entity<Shop_Goods_ClosingStock>(entity =>
+            {
+                entity.HasKey(e => e.ClosingStockID);
+
+                entity.ToTable("Shop_Goods_ClosingStock");
+
+                entity.Property(e => e.ClosingStockID)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.DateClosing).HasColumnType("datetime");
+
+                entity.Property(e => e.Name).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Shop_Goods_ClosingStock_Detail>(entity =>
+            {
+                entity.HasKey(e => new { e.ClosingStockID, e.TemplateID });
+
+                entity.ToTable("Shop_Goods_ClosingStock_Detail");
+
+                entity.Property(e => e.ClosingStockID)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.TemplateID)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.HasOne(d => d.ClosingStock)
+                    .WithMany(p => p.Shop_Goods_ClosingStock_Details)
+                    .HasForeignKey(d => d.ClosingStockID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Shop_Goods_ClosingStock_Detail_Shop_Goods_ClosingStock");
+
+                entity.HasOne(d => d.Template)
+                    .WithMany(p => p.Shop_Goods_ClosingStock_Details)
+                    .HasForeignKey(d => d.TemplateID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Shop_Goods_ClosingStock_Detail_Shop_Goods");
+            });
+
             modelBuilder.Entity<Shop_Goods_Issue>(entity =>
             {
                 entity.HasKey(e => e.GoodsIssueID);
@@ -362,7 +408,7 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
-                entity.Property(e => e.DateCreated).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
 
                 entity.Property(e => e.Prepay).HasColumnType("decimal(18, 0)");
 
@@ -425,7 +471,7 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
-                entity.Property(e => e.DateCreated).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
 
                 entity.Property(e => e.Prepay).HasColumnType("decimal(18, 0)");
 
@@ -488,7 +534,9 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
-                entity.Property(e => e.DateCreated).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateUpdate).HasColumnType("datetime");
 
                 entity.Property(e => e.Remark).HasMaxLength(1000);
 
@@ -582,22 +630,6 @@ namespace WareHouseManger.Models.EF
                     .IsFixedLength(true);
 
                 entity.Property(e => e.UnitName).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<WareHouse>(entity =>
-            {
-                entity.ToTable("WareHouse");
-
-                entity.Property(e => e.ID).ValueGeneratedNever();
-
-                entity.Property(e => e.Address).HasMaxLength(1000);
-
-                entity.Property(e => e.Name).HasMaxLength(50);
-
-                entity.Property(e => e.PhoneNumber)
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .IsFixedLength(true);
             });
 
             modelBuilder.Entity<WareHouse_Goods_Detail>(entity =>

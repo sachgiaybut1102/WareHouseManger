@@ -268,6 +268,7 @@ namespace WareHouseManger.Controllers
 
                     info.Shop_Goods_Receipt_Details = shop_Goods_Receipt_Details;
                     info.Total = info.Shop_Goods_Receipt_Details.Select(t => (decimal)t.Count * t.UnitPrice).Sum();
+                    info.DateCreated = DateTime.Now;
 
                     FinalSettlement_Suplier finalSettlement_Suplier = new FinalSettlement_Suplier()
                     {

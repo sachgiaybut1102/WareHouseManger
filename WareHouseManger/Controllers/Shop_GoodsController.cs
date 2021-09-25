@@ -11,6 +11,7 @@ using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
+    [Authorize]
     public class Shop_GoodsController : Controller
     {
         private readonly DB_WareHouseMangerContext _context;
@@ -30,12 +31,32 @@ namespace WareHouseManger.Controllers
 
             ViewBag.Keyword = keyword;
 
+            Shop_Goods_ClosingStock shop_Goods_ClosingStock = await _context.Shop_Goods_ClosingStocks.OrderBy(t => t.ClosingStockID).LastOrDefaultAsync();
+
+            if (shop_Goods_ClosingStock == null)
+            {
+                shop_Goods_ClosingStock = new Shop_Goods_ClosingStock()
+                {
+                    DateClosing = new DateTime(),
+                };
+
+                ViewBag.DateClosingStock = "Chưa chốt sổ lần nào!";
+            }
+            else
+            {
+                ViewBag.DateClosingStock = shop_Goods_ClosingStock.DateClosing.Value.ToString("HH:mm:ss dd/MM/yyyy");
+            }
+
+            ViewBag.Shop_Goods_ClosingStock = shop_Goods_ClosingStock;
+
             return View(await _context.Shop_Goods
                 .Include(s => s.Category)
                 .Include(s => s.Producer)
                 .Include(s => s.Unit)
                 .Include(s => s.Shop_Goods_Issues_Details)
+                .ThenInclude(s => s.GoodsIssue)
                 .Include(s => s.Shop_Goods_Receipt_Details)
+                .ThenInclude(s => s.GoodsReceipt)
                 .Where(t => t.TemplateID.Contains(keyword) || t.Name.Contains(keyword))
                 .OrderByDescending(t => t.TemplateID)
                 .ToList()
@@ -59,12 +80,115 @@ namespace WareHouseManger.Controllers
                 .Include(s => s.Shop_Goods_Issues_Details)
                 .Include(s => s.Shop_Goods_Receipt_Details)
                 .FirstOrDefaultAsync(m => m.TemplateID == id);
+
+            Shop_Goods_ClosingStock shop_Goods_ClosingStock = await _context.Shop_Goods_ClosingStocks
+                .OrderBy(t => t.ClosingStockID)
+                .LastOrDefaultAsync();
+
+            if (shop_Goods_ClosingStock == null)
+            {
+                shop_Goods_ClosingStock = new Shop_Goods_ClosingStock()
+                {
+                    DateClosing = new DateTime()
+                };
+            }
+
+
+            List<StockCard> stockCards = await GetStockCardsAsync((DateTime)shop_Goods_ClosingStock.DateClosing, DateTime.Now, id);
+
+            ViewData["DateBegin"] = shop_Goods_ClosingStock.DateClosing;
+            ViewData["DateEnd"] = DateTime.Now;
+            ViewBag.StockCards = stockCards;
+
+
             if (shop_Good == null)
             {
                 return NotFound();
             }
 
             return View(shop_Good);
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> GetStockCard(DateTime dateBegin, DateTime dateEnd, string templateID)
+        {
+            return Json(new { date = await GetStockCardsAsync(dateBegin, dateEnd, templateID) });
+        }
+
+        private async Task<List<StockCard>> GetStockCardsAsync(DateTime dateBegin, DateTime dateEnd, string templateID)
+        {
+            List<StockCard> stockCards = new List<StockCard>();
+
+            List<Shop_Goods_Issues_Detail> shop_Goods_Issues_Details = await _context.Shop_Goods_Issues_Details
+                .Include(t => t.GoodsIssue)
+                .Where(t => t.TemplateID == templateID &&
+                dateBegin <= t.GoodsIssue.DateCreated && t.GoodsIssue.DateCreated <= dateEnd)
+                .ToListAsync();
+
+            List<Shop_Goods_Receipt_Detail> shop_Goods_Receipt_Details = await _context.Shop_Goods_Receipt_Details
+                .Include(t => t.GoodsReceipt)
+                .Where(t => t.TemplateID == templateID &&
+                dateBegin <= t.GoodsReceipt.DateCreated && t.GoodsReceipt.DateCreated <= dateEnd)
+                .ToListAsync();
+
+            Shop_Goods_ClosingStock_Detail closingStockDetailBeforeDateBegin = await _context.Shop_Goods_ClosingStock_Details
+                .Include(t => t.ClosingStock)
+                .Where(t => t.ClosingStock.DateClosing <= dateBegin)
+                .OrderBy(t => t.ClosingStockID)
+                .LastOrDefaultAsync();
+
+            List<Shop_Goods_ClosingStock_Detail> closingStockDetailAfterDateBegin = await _context.Shop_Goods_ClosingStock_Details
+                .Include(t => t.ClosingStock)
+                .Where(t => t.ClosingStock.DateClosing > dateBegin)
+                .OrderBy(t => t.ClosingStockID)
+                .ToListAsync();
+
+            foreach (var item in shop_Goods_Issues_Details)
+            {
+                stockCards.Add(initStockCard(item.GoodsIssueID, (DateTime)item.GoodsIssue.DateCreated, (int)eNumCardStockType.GoodsIsuess, (int)item.Count, (int)item.UnitPrice));
+            }
+
+            foreach (var item in shop_Goods_Receipt_Details)
+            {
+                stockCards.Add(initStockCard(item.GoodsReceiptID, (DateTime)item.GoodsReceipt.DateCreated, (int)eNumCardStockType.GoodsReceipt, (int)item.Count, (int)item.UnitPrice));
+            }
+
+            if (closingStockDetailBeforeDateBegin == null)
+            {
+                stockCards.Add(initStockCard("", new DateTime(), (int)eNumCardStockType.ClossingStock, 0, 0));
+            }
+            else
+            {
+                stockCards.Add(initStockCard(closingStockDetailBeforeDateBegin.ClosingStockID,
+                    (DateTime)closingStockDetailBeforeDateBegin.ClosingStock.DateClosing,
+                    (int)eNumCardStockType.ClossingStock, (int)closingStockDetailBeforeDateBegin.Count, 0));
+            }
+
+            foreach (var item in closingStockDetailAfterDateBegin)
+            {
+                stockCards.Add(initStockCard(item.ClosingStockID,
+                    (DateTime)item.ClosingStock.DateClosing,
+                    (int)eNumCardStockType.ClossingStock, (int)item.Count, 0));
+            }
+
+            stockCards = stockCards.OrderBy(t => t.DateCreated).ToList();
+
+            return stockCards;
+        }
+
+        private StockCard initStockCard(string id, DateTime dateCreated, int category, int count, int price)
+        {
+            StockCard stockCard = new StockCard()
+            {
+                ID = id,
+                DateCreated = dateCreated,
+                Category = category,
+                Count = count,
+                Price = price
+            };
+
+            return stockCard;
         }
 
         [Authorize(Roles = "Shop_Goods_Create")]
