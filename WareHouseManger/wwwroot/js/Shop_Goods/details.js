@@ -53,6 +53,12 @@ $(document).ready(function () {
             $('#month').attr('disabled', 'disabled');
         }
     });
+
+    $('#btn-submit-stockcard').click(function () {
+        var dateBegin = $('#date-begin-stockcard').val();
+        var dateEnd = $('#date-end-stockcard').val();
+        getViewStockCard(dateBegin, dateEnd, $('#TemplateID').val());
+    });
 });
 
 function getCountRecepitShopGoods() {
@@ -485,3 +491,20 @@ var myBarChart = new Chart(ctx2, {
 //        }
 //    }
 //});
+
+function getViewStockCard(dateBegin, dateEnd,templateID) {
+    $.ajax({
+        type: 'GET',
+        datatype: 'JSON',
+        data: {
+            dateBegin: dateBegin,
+            dateEnd: dateEnd,
+            templateID: templateID,
+        },
+        url: '/Shop_Goods/ViewStockCard',
+        success: function (result) {
+            //console.log(result);
+            $('#tb tbody').html(result);
+        }
+    })
+}

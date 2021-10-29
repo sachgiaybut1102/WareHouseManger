@@ -92,6 +92,8 @@ namespace WareHouseManger.Controllers
         {
             if (ModelState.IsValid)
             {
+                shop_Goods_StockTake.DateCreated = DateTime.Now;
+                shop_Goods_StockTake.DateUpdate = shop_Goods_StockTake.DateCreated;
                 _context.Add(shop_Goods_StockTake);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -229,6 +231,8 @@ namespace WareHouseManger.Controllers
                 stockTakeID += newID;
 
                 info.StockTakeID = stockTakeID;
+                info.DateCreated = DateTime.Now;
+                info.DateUpdate = info.DateCreated;
 
                 List<Shop_Goods_StockTake_Detail> shop_Goods_StockTake_Details = JsonConvert.DeserializeObject<List<Shop_Goods_StockTake_Detail>>(json);
 

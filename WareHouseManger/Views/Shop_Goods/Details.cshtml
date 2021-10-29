@@ -160,9 +160,16 @@
                 </div>
                 <div class="card mt-3">
                     <div class="card-header">
-                        <h3>Thẻ kho</h3></h3>
+                        <h3>Thẻ kho</h3>
                     </div>
                     <div class="card-body">
+                        <div class="form-group form-inline">
+                            <label class="font-weight-bold mr-1">Từ ngày:</label>
+                            <input id="date-begin-stockcard" class="form-control mr-3" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <label class="font-weight-bold mr-1">Đến ngày:</label>
+                            <input id="date-end-stockcard" class="form-control mr-3" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <button id="btn-submit-stockcard" class="btn btn-primary">Xem thống kê</button>
+                        </div>
                         <div class="table-responsive shadow overflow-auto" style="max-height:60vh">
                             <table id="tb" class="table table-bordered table-sm table-hover table-striped">
                                 <thead>
