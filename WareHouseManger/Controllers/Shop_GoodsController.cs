@@ -123,10 +123,13 @@ namespace WareHouseManger.Controllers
         }
         private async Task<List<StockCard>> GetStockCardsAsync(DateTime dateBegin, DateTime dateEnd, string templateID)
         {
-            if(dateBegin == dateEnd)
-            {
-                dateEnd = dateEnd.AddHours(24);
-            }    
+            dateBegin = new DateTime(dateBegin.Year, dateBegin.Month, dateBegin.Day);
+            dateEnd = new DateTime(dateEnd.Year, dateEnd.Month, dateEnd.Day).AddHours(24);
+
+            //if (dateBegin == dateEnd)
+            //{
+            //    dateEnd = dateEnd.AddHours(24);
+            //}
 
             List<StockCard> stockCards = new List<StockCard>();
 
