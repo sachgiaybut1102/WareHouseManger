@@ -59,6 +59,8 @@ $(document).ready(function () {
         var dateEnd = $('#date-end-stockcard').val();
         getViewStockCard(dateBegin, dateEnd, $('#TemplateID').val());
     });
+
+    $('#btn-submit-stockcard').trigger('click');
 });
 
 function getCountRecepitShopGoods() {
