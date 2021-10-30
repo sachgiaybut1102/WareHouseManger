@@ -69,7 +69,11 @@
     </div>
 </div>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/fomatnumber.js"></script>
-    <script src="~/js/Shop_Goods/common.js"></script>
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+<script src="~/js/fomatnumber.js"></script>
+<script src="~/js/Shop_Goods/common.js"></script>
+<script src="~/js/Shop_Goods/edit.js"></script>
+
 }
