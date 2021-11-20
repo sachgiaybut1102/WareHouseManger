@@ -76,7 +76,7 @@ namespace WareHouseManger.Controllers
                 DateCreated = DateTime.Now
             };
 
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name");
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name");
             ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name");
 
             return View(model);

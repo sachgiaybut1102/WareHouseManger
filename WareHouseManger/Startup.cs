@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -90,3 +90,5 @@ namespace WareHouseManger
 }
 
 //Scaffold-DbContext "Data Source=DESKTOP-Q7IUOUM;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models\EF -f -UseDatabaseNames 
+//Scaffold-DbContext "Data Source=WOODEN-PC\\SQLEXPRESS01;Initial Catalog=DB_WareHouseManger;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models\EF -f -UseDatabaseNames 
+//Scaffold-DbContext "Server= Server_name;Database=SchoolDB;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models\EF -f -UseDatabaseNames 

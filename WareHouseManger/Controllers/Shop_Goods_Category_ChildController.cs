@@ -30,9 +30,9 @@ namespace WareHouseManger.Controllers
 
             ViewBag.Keyword = keyword;
 
-            return View(await _context.Shop_Goods_Categories
+            return View(await _context.Shop_Goods_Category_Children
                 .Where(t => t.Name.Contains(keyword))
-                .OrderByDescending(t => t.CategoryID)
+                .OrderByDescending(t => t.CategoryChildID)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10));
         }
@@ -47,8 +47,8 @@ namespace WareHouseManger.Controllers
                 return NotFound();
             }
 
-            var shop_Goods_Category = await _context.Shop_Goods_Categories
-                .FirstOrDefaultAsync(m => m.CategoryID == id);
+            var shop_Goods_Category = await _context.Shop_Goods_Category_Children
+                .FirstOrDefaultAsync(m => m.CategoryChildID == id);
             if (shop_Goods_Category == null)
             {
                 return NotFound();
@@ -70,7 +70,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryID,Name,SortName")] Shop_Goods_Category shop_Goods_Category)
+        public async Task<IActionResult> Create([Bind("CategoryChildID,Name,SortName")] Shop_Goods_Category shop_Goods_Category)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace WareHouseManger.Controllers
                 return NotFound();
             }
 
-            var shop_Goods_Category = await _context.Shop_Goods_Categories.FindAsync(id);
+            var shop_Goods_Category = await _context.Shop_Goods_Category_Children.FindAsync(id);
             if (shop_Goods_Category == null)
             {
                 return NotFound();
@@ -104,9 +104,9 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryID,Name,SortName")] Shop_Goods_Category shop_Goods_Category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryChildID,Name,SortName")] Shop_Goods_Category_Child shop_Goods_Category_Child)
         {
-            if (id != shop_Goods_Category.CategoryID)
+            if (id != shop_Goods_Category_Child.CategoryChildID)
             {
                 return NotFound();
             }
@@ -115,12 +115,12 @@ namespace WareHouseManger.Controllers
             {
                 try
                 {
-                    _context.Update(shop_Goods_Category);
+                    _context.Update(shop_Goods_Category_Child);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Shop_Goods_CategoryExists(shop_Goods_Category.CategoryID))
+                    if (!Shop_Goods_CategoryExists(shop_Goods_Category_Child.CategoryChildID))
                     {
                         return NotFound();
                     }
@@ -131,7 +131,7 @@ namespace WareHouseManger.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(shop_Goods_Category);
+            return View(shop_Goods_Category_Child);
         }
 
         [Authorize(Roles = "Shop_Goods_Category_Delete")]
@@ -143,8 +143,8 @@ namespace WareHouseManger.Controllers
                 return NotFound();
             }
 
-            var shop_Goods_Category = await _context.Shop_Goods_Categories
-                .FirstOrDefaultAsync(m => m.CategoryID == id);
+            var shop_Goods_Category = await _context.Shop_Goods_Category_Children
+                .FirstOrDefaultAsync(m => m.CategoryChildID == id);
             if (shop_Goods_Category == null)
             {
                 return NotFound();
@@ -161,8 +161,8 @@ namespace WareHouseManger.Controllers
         {
             try
             {
-                var shop_Goods_Category = await _context.Shop_Goods_Categories.FindAsync(id);
-                _context.Shop_Goods_Categories.Remove(shop_Goods_Category);
+                var shop_Goods_Category = await _context.Shop_Goods_Category_Children.FindAsync(id);
+                _context.Shop_Goods_Category_Children.Remove(shop_Goods_Category);
                 await _context.SaveChangesAsync();
             }
             catch
@@ -174,7 +174,7 @@ namespace WareHouseManger.Controllers
 
         private bool Shop_Goods_CategoryExists(int id)
         {
-            return _context.Shop_Goods_Categories.Any(e => e.CategoryID == id);
+            return _context.Shop_Goods_Category_Children.Any(e => e.CategoryChildID == id);
         }
     }
 }

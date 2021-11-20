@@ -28,7 +28,7 @@ namespace WareHouseManger.Models.EF
         public int? ImageID { get; set; }
         public bool? IsDelete { get; set; }
 
-        public virtual Shop_Goods_Category Category { get; set; }
+        public virtual Shop_Goods_Category_Child Category { get; set; }
         public virtual ShopGoods_Image Image { get; set; }
         public virtual Producer Producer { get; set; }
         public virtual Shop_Goods_Unit Unit { get; set; }

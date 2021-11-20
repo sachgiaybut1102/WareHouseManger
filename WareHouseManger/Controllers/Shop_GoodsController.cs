@@ -146,13 +146,13 @@ namespace WareHouseManger.Controllers
                 .ToListAsync() : new List<Shop_Goods_Receipt_Detail>();
 
             Shop_Goods_ClosingStock_Detail closingStockDetailBeforeDateBegin = _context.Shop_Goods_ClosingStock_Details.Count() > 0 ? await _context.Shop_Goods_ClosingStock_Details
-                .Include(t => t.ClosingStock)
-                .Where(t => t.ClosingStock.DateClosing <= dateBegin && t.TemplateID == templateID)
+                .Include(t => t.Shop_Goods_ClosingStock)
+                .Where(t => t.Shop_Goods_ClosingStock.DateClosing <= dateBegin && t.TemplateID == templateID)
                 .OrderBy(t => t.ClosingStockID)
                 .LastOrDefaultAsync() : new Shop_Goods_ClosingStock_Detail()
                 {
                     ClosingStockID = "",
-                    ClosingStock = new Shop_Goods_ClosingStock()
+                    Shop_Goods_ClosingStock = new Shop_Goods_ClosingStock()
                     {
                         DateClosing = new DateTime()
                     },
@@ -160,8 +160,8 @@ namespace WareHouseManger.Controllers
                 };
 
             List<Shop_Goods_ClosingStock_Detail> closingStockDetailAfterDateBegin = _context.Shop_Goods_ClosingStock_Details.Count() > 0 ? await _context.Shop_Goods_ClosingStock_Details
-                .Include(t => t.ClosingStock)
-                .Where(t => t.ClosingStock.DateClosing > dateBegin && t.ClosingStock.DateClosing <= dateEnd && t.TemplateID == templateID)
+                .Include(t => t.Shop_Goods_ClosingStock)
+                .Where(t => t.Shop_Goods_ClosingStock.DateClosing > dateBegin && t.Shop_Goods_ClosingStock.DateClosing <= dateEnd && t.TemplateID == templateID)
                 .OrderBy(t => t.ClosingStockID)
                 .ToListAsync() : new List<Shop_Goods_ClosingStock_Detail>();
 
@@ -202,14 +202,14 @@ namespace WareHouseManger.Controllers
             else
             {
                 stockCards.Add(InitStockCard(closingStockDetailBeforeDateBegin.ClosingStockID,
-                    (DateTime)closingStockDetailBeforeDateBegin.ClosingStock.DateClosing,
+                    (DateTime)closingStockDetailBeforeDateBegin.Shop_Goods_ClosingStock.DateClosing,
                     (int)eNumCardStockType.ClossingStock, (int)closingStockDetailBeforeDateBegin.Count, 0));
             }
 
             foreach (var item in closingStockDetailAfterDateBegin)
             {
                 stockCards.Add(InitStockCard(item.ClosingStockID,
-                    (DateTime)item.ClosingStock.DateClosing,
+                    (DateTime)item.Shop_Goods_ClosingStock.DateClosing,
                     (int)eNumCardStockType.ClossingStock, (int)item.Count, 0));
             }
 
@@ -236,7 +236,7 @@ namespace WareHouseManger.Controllers
         // GET: Shop_Goods/Create
         public IActionResult Create()
         {
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name");
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name");
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name");
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name");
             return View();
@@ -252,7 +252,7 @@ namespace WareHouseManger.Controllers
         {
             if (ModelState.IsValid)
             {
-                var category = await _context.Shop_Goods_Categories.FindAsync(shop_Good.CategoryID);
+                var category = await _context.Shop_Goods_Category_Children.FindAsync(shop_Good.CategoryID);
 
                 string maxID = await _context.Shop_Goods.Where(t => t.TemplateID.Contains(category.SortName.Trim())).MaxAsync(t => t.TemplateID);
 
@@ -282,7 +282,7 @@ namespace WareHouseManger.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name", shop_Good.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name", shop_Good.CategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name", shop_Good.ProducerID);
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name", shop_Good.UnitID);
             return View(shop_Good);
@@ -302,7 +302,7 @@ namespace WareHouseManger.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name", shop_Good.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name", shop_Good.CategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name", shop_Good.ProducerID);
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name", shop_Good.UnitID);
             return View(shop_Good);
@@ -351,7 +351,7 @@ namespace WareHouseManger.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Categories, "CategoryID", "Name", shop_Good.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name", shop_Good.CategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name", shop_Good.ProducerID);
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name", shop_Good.UnitID);
             return View(shop_Good);
