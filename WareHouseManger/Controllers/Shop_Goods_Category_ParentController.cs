@@ -30,6 +30,7 @@ namespace WareHouseManger.Controllers
             ViewBag.Keyword = keyword;
 
             return View(await _context.Shop_Goods_Category_Parents
+                .Include(t=>t.Shop_Goods_Category_Children)
                 .Where(t => t.Name.Contains(keyword))
                 .OrderByDescending(t => t.CategoryParentID)
                 .ToList()

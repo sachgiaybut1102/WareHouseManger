@@ -11,11 +11,11 @@ using X.PagedList;
 
 namespace WareHouseManger.Controllers
 {
-    public class Shop_Goods_CategoryController : Controller
+    public class Shop_Goods_Category_ChildController : Controller
     {
         private readonly DB_WareHouseMangerContext _context;
 
-        public Shop_Goods_CategoryController(DB_WareHouseMangerContext context)
+        public Shop_Goods_Category_ChildController(DB_WareHouseMangerContext context)
         {
             _context = context;
         }
@@ -31,6 +31,7 @@ namespace WareHouseManger.Controllers
             ViewBag.Keyword = keyword;
 
             return View(await _context.Shop_Goods_Category_Children
+                .Include(t=>t.CategoryParent)
                 .Where(t => t.Name.Contains(keyword))
                 .OrderByDescending(t => t.CategoryChildID)
                 .ToList()
@@ -53,7 +54,6 @@ namespace WareHouseManger.Controllers
             {
                 return NotFound();
             }
-
             return View(shop_Goods_Category);
         }
 
@@ -70,7 +70,7 @@ namespace WareHouseManger.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryChildID,Name,SortName")] Shop_Goods_Category shop_Goods_Category)
+        public async Task<IActionResult> Create([Bind("CategoryChildID,Name,SortName")] Shop_Goods_Category_Child shop_Goods_Category)
         {
             if (ModelState.IsValid)
             {

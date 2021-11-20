@@ -1,12 +1,11 @@
-﻿@model WareHouseManger.Models.EF.Shop_Goods_Category
-
+﻿@model WareHouseManger.Models.EF.Shop_Goods_Category_Child
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Details";
 }
+
 <div class="card shadow container col-6">
     <div class="card-body">
-        <h1>Xóa</h1>
-        <h3>Bạn có chắc muốn xóa?</h3>
+        <h1>Chi tiết</h1>
         <h4>Loại hàng hóa</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -21,11 +20,8 @@
             <span asp-validation-for="SortName" class="text-danger"></span>
         </div>
         <div class="panel-footer text-right">
-            <form asp-action="Delete">
-                <input type="hidden" asp-for="CategoryID" />
-                <input type="submit" value="Xóa" class="btn btn-danger" />
-                <a class="btn btn-light" asp-action="Index">Quay lại</a>
-            </form>
+            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.CategoryChildID">Chỉnh sửa</a>
+            <a class="btn btn-light" asp-action="Index">Quay lại</a>
         </div>
     </div>
 </div>
