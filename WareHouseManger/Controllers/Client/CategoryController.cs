@@ -18,19 +18,24 @@ namespace WareHouseManger.Controllers.Client
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int? page = 1, int pageSize = 15, string keyword = "")
+        public async Task<IActionResult> Index(int? page = 1, int pageSize = 15, string keyword = "", string Name = "")
         {
             int currentPage = (int)(page != null ? page : 1);
 
             keyword = keyword != null ? keyword : "";
 
             ViewBag.Keyword = keyword;
+            ViewBag.Shop_Goods = _context.Shop_Goods
+                .Where(t => t.Name.Equals(Name))
+                .OrderBy(t => t.Name)
+                .ToList()
+                .ToPagedListAsync(currentPage, pageSize);
             return View(await _context.Shop_Goods_Category_Parents
                 .Include(t => t.Shop_Goods_Category_Children)
                 .Where(t => t.Name.Contains(keyword))
                 .OrderBy(t => t.CategoryParentID)
                 .ToList()
-                .ToPagedListAsync(currentPage, 10));
+                .ToPagedListAsync(currentPage, pageSize));
         }
 
         public async Task<IActionResult> GetCategoryChildren(int? page = 1, int pageSize = 15, string keyword = "")
@@ -40,18 +45,16 @@ namespace WareHouseManger.Controllers.Client
             keyword = keyword != null ? keyword : "";
 
             ViewBag.Keyword = keyword;
-            var a = _context.Shop_Goods_Category_Children
-                .Include(t => t.CategoryParent)
-                .Where(t => t.CategoryParent.Name.Contains(keyword))
-                .OrderBy(t => t.CategoryChildID)
+            ViewBag.Shop_Goods = _context.Shop_Goods
+                .Where(t => t.CategoryID.ToString().Contains(keyword))
+                .OrderByDescending(t => t.Name)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10);
-            return View(await _context.Shop_Goods_Category_Children
-                .Include(t => t.CategoryParent)
-                .Where(t => t.CategoryParentID.ToString().Contains(keyword))
+            return PartialView(await _context.Shop_Goods
+                .Where(t => t.CategoryID.ToString().Contains(keyword))
                 .OrderByDescending(t => t.Name)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10));
         }
-    } 
+    }
 }

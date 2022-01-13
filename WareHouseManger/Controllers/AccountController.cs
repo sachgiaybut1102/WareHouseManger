@@ -21,7 +21,6 @@ namespace WareHouseManger.Controllers
             _context = context;
         }
 
-
         public IActionResult Login()
         {
             bool isAuthenticated = User.Identity.IsAuthenticated;
