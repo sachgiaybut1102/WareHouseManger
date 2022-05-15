@@ -29,7 +29,7 @@ namespace WareHouseManger.Controllers.Client
             ViewBag.Keyword = keyword;
 
             return View(await _context.Shop_Goods
-                .Include(s => s.Category)
+                .Include(s => s.SubCategory)
                 .Include(s => s.Producer)
                 .Include(s => s.Unit)
                 .Include(s => s.Shop_Goods_Issues_Details)

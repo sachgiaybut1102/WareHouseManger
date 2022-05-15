@@ -50,7 +50,7 @@ namespace WareHouseManger.Controllers
             ViewBag.Shop_Goods_ClosingStock = shop_Goods_ClosingStock;
 
             return View(await _context.Shop_Goods
-                .Include(s => s.Category)
+                .Include(s => s.SubCategory)
                 .Include(s => s.Producer)
                 .Include(s => s.Unit)
                 .Include(s => s.Shop_Goods_Issues_Details)
@@ -74,7 +74,7 @@ namespace WareHouseManger.Controllers
             }
 
             var shop_Good = await _context.Shop_Goods
-                .Include(s => s.Category)
+                .Include(s => s.SubCategory)
                 .Include(s => s.Producer)
                 .Include(s => s.Unit)
                 .Include(s => s.Shop_Goods_Issues_Details)
@@ -146,13 +146,13 @@ namespace WareHouseManger.Controllers
                 .ToListAsync() : new List<Shop_Goods_Receipt_Detail>();
 
             Shop_Goods_ClosingStock_Detail closingStockDetailBeforeDateBegin = _context.Shop_Goods_ClosingStock_Details.Count() > 0 ? await _context.Shop_Goods_ClosingStock_Details
-                .Include(t => t.Shop_Goods_ClosingStock)
-                .Where(t => t.Shop_Goods_ClosingStock.DateClosing <= dateBegin && t.TemplateID == templateID)
+                .Include(t => t.ClosingStock)
+                .Where(t => t.ClosingStock.DateClosing <= dateBegin && t.TemplateID == templateID)
                 .OrderBy(t => t.ClosingStockID)
                 .LastOrDefaultAsync() : new Shop_Goods_ClosingStock_Detail()
                 {
                     ClosingStockID = "",
-                    Shop_Goods_ClosingStock = new Shop_Goods_ClosingStock()
+                    ClosingStock = new Shop_Goods_ClosingStock()
                     {
                         DateClosing = new DateTime()
                     },
@@ -160,8 +160,8 @@ namespace WareHouseManger.Controllers
                 };
 
             List<Shop_Goods_ClosingStock_Detail> closingStockDetailAfterDateBegin = _context.Shop_Goods_ClosingStock_Details.Count() > 0 ? await _context.Shop_Goods_ClosingStock_Details
-                .Include(t => t.Shop_Goods_ClosingStock)
-                .Where(t => t.Shop_Goods_ClosingStock.DateClosing > dateBegin && t.Shop_Goods_ClosingStock.DateClosing <= dateEnd && t.TemplateID == templateID)
+                .Include(t => t.ClosingStock)
+                .Where(t => t.ClosingStock.DateClosing > dateBegin && t.ClosingStock.DateClosing <= dateEnd && t.TemplateID == templateID)
                 .OrderBy(t => t.ClosingStockID)
                 .ToListAsync() : new List<Shop_Goods_ClosingStock_Detail>();
 
@@ -202,14 +202,14 @@ namespace WareHouseManger.Controllers
             else
             {
                 stockCards.Add(InitStockCard(closingStockDetailBeforeDateBegin.ClosingStockID,
-                    (DateTime)closingStockDetailBeforeDateBegin.Shop_Goods_ClosingStock.DateClosing,
+                    (DateTime)closingStockDetailBeforeDateBegin.ClosingStock.DateClosing,
                     (int)eNumCardStockType.ClossingStock, (int)closingStockDetailBeforeDateBegin.Count, 0));
             }
 
             foreach (var item in closingStockDetailAfterDateBegin)
             {
                 stockCards.Add(InitStockCard(item.ClosingStockID,
-                    (DateTime)item.Shop_Goods_ClosingStock.DateClosing,
+                    (DateTime)item.ClosingStock.DateClosing,
                     (int)eNumCardStockType.ClossingStock, (int)item.Count, 0));
             }
 
@@ -236,7 +236,7 @@ namespace WareHouseManger.Controllers
         // GET: Shop_Goods/Create
         public IActionResult Create()
         {
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name");
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "CategoryID", "Name");
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name");
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name");
             return View();
@@ -252,7 +252,7 @@ namespace WareHouseManger.Controllers
         {
             if (ModelState.IsValid)
             {
-                var category = await _context.Shop_Goods_Category_Children.FindAsync(shop_Good.CategoryID);
+                var category = await _context.Shop_Goods_SubCategories.FindAsync(shop_Good.SubCategoryID);
 
                 string maxID = await _context.Shop_Goods.Where(t => t.TemplateID.Contains(category.SortName.Trim())).MaxAsync(t => t.TemplateID);
 
@@ -282,7 +282,7 @@ namespace WareHouseManger.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name", shop_Good.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "CategoryID", "Name", shop_Good.SubCategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name", shop_Good.ProducerID);
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name", shop_Good.UnitID);
             return View(shop_Good);
@@ -302,7 +302,7 @@ namespace WareHouseManger.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name", shop_Good.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "CategoryID", "Name", shop_Good.SubCategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name", shop_Good.ProducerID);
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name", shop_Good.UnitID);
             return View(shop_Good);
@@ -328,7 +328,7 @@ namespace WareHouseManger.Controllers
                     var shop_Good0 = await _context.Shop_Goods.FindAsync(shop_Good.TemplateID);
 
                     shop_Good0.Name = shop_Good.Name;
-                    shop_Good0.CategoryID = shop_Good.CategoryID;
+                    shop_Good0.SubCategoryID = shop_Good.SubCategoryID;
                     shop_Good0.UnitID = shop_Good.UnitID;
                     shop_Good0.Description = shop_Good.Description;
                     shop_Good0.Price = shop_Good.Price;
@@ -351,7 +351,7 @@ namespace WareHouseManger.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name", shop_Good.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "CategoryID", "Name", shop_Good.SubCategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name", shop_Good.ProducerID);
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name", shop_Good.UnitID);
             return View(shop_Good);
@@ -367,7 +367,7 @@ namespace WareHouseManger.Controllers
             }
 
             var shop_Good = await _context.Shop_Goods
-                .Include(s => s.Category)
+                .Include(s => s.SubCategory)
                 .Include(s => s.Producer)
                 .Include(s => s.Unit)
                 .FirstOrDefaultAsync(m => m.TemplateID == id);
@@ -412,8 +412,8 @@ namespace WareHouseManger.Controllers
             if (categoryID != -1)
             {
                 templates = await _context.Shop_Goods
-                .Where(t => !templateIDs.Contains(t.TemplateID) && t.CategoryID == categoryID)
-                .Include(t => t.Category)
+                .Where(t => !templateIDs.Contains(t.TemplateID) && t.SubCategoryID == categoryID)
+                .Include(t => t.SubCategory)
                 .Include(t => t.Unit)
                 .Include(t => t.Producer)
                 .ToListAsync();
@@ -422,7 +422,7 @@ namespace WareHouseManger.Controllers
             {
                 templates = await _context.Shop_Goods
                 .Where(t => !templateIDs.Contains(t.TemplateID))
-                .Include(t => t.Category)
+                .Include(t => t.SubCategory)
                 .Include(t => t.Unit)
                 .Include(t => t.Producer)
                 .ToListAsync();
@@ -434,7 +434,7 @@ namespace WareHouseManger.Controllers
                 {
                     id = t.TemplateID,
                     name = t.Name,
-                    category = t.Category.Name,
+                    category = t.SubCategory.SubCategoriName,
                     price = t.Price,
                     costprice = t.CostPrice,
                     count = t.Count,

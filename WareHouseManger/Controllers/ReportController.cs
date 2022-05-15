@@ -53,7 +53,7 @@ namespace WareHouseManger.Controllers
                 .ThenInclude(t => t.Unit)
                 .Include(t => t.Shop_Goods_Issues_Details)
                 .ThenInclude(t => t.Template)
-                .ThenInclude(t => t.Category)
+                .ThenInclude(t => t.SubCategory)
                 .FirstOrDefaultAsync();
 
             if (model == null)
@@ -97,7 +97,7 @@ namespace WareHouseManger.Controllers
                     GoodsIssueID = t.GoodsIssueID,
                     TemplateID = t.TemplateID,
                     Name = t.Template.Name,
-                    CategoryName = t.Template.Category.Name,
+                    CategoryName = t.Template.SubCategory.SubCategoriName,
                     UnitName = t.Template.Unit.Name,
                     Count = t.Count,
                     UnitPrice = t.UnitPrice,
@@ -127,7 +127,7 @@ namespace WareHouseManger.Controllers
                 .ThenInclude(t => t.Unit)
                 .Include(t => t.Shop_Goods_Receipt_Details)
                 .ThenInclude(t => t.Template)
-                .ThenInclude(t => t.Category)
+                .ThenInclude(t => t.SubCategory)
                 .FirstOrDefaultAsync();
 
             if (model == null)
@@ -170,7 +170,7 @@ namespace WareHouseManger.Controllers
                     GoodsIssueID = t.GoodsReceiptID,
                     TemplateID = t.TemplateID,
                     Name = t.Template.Name,
-                    CategoryName = t.Template.Category.Name,
+                    CategoryName = t.Template.SubCategory.SubCategoriName,
                     UnitName = t.Template.Unit.Name,
                     Count = t.Count,
                     UnitPrice = t.UnitPrice,

@@ -30,10 +30,10 @@ namespace WareHouseManger.Controllers.Client
                 .OrderBy(t => t.Name)
                 .ToList()
                 .ToPagedListAsync(currentPage, pageSize);
-            return View(await _context.Shop_Goods_Category_Parents
-                .Include(t => t.Shop_Goods_Category_Children)
+            return View(await _context.Shop_Goods_Categories
+                .Include(t => t.Shop_Goods_SubCategories)
                 .Where(t => t.Name.Contains(keyword))
-                .OrderBy(t => t.CategoryParentID)
+                .OrderBy(t => t.CategoryID)
                 .ToList()
                 .ToPagedListAsync(currentPage, pageSize));
         }
@@ -46,12 +46,12 @@ namespace WareHouseManger.Controllers.Client
 
             ViewBag.Keyword = keyword;
             ViewBag.Shop_Goods = _context.Shop_Goods
-                .Where(t => t.CategoryID.ToString().Contains(keyword))
+                .Where(t => t.Name.ToString().Contains(keyword))
                 .OrderByDescending(t => t.Name)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10);
             return PartialView(await _context.Shop_Goods
-                .Where(t => t.CategoryID.ToString().Contains(keyword))
+                .Where(t => t.Name.ToString().Contains(keyword))
                 .OrderByDescending(t => t.Name)
                 .ToList()
                 .ToPagedListAsync(currentPage, 10));

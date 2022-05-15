@@ -1,0 +1,149 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+
+@model IPagedList<WareHouseManger.Models.EF.Shop_Goods_Category>
+
+@{
+    ViewData["Title"] = "Categories Manager";
+}
+<div class="row">
+    <div class="col-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h1>Loại hàng hóa</h1>
+                <div>
+                    <a class="btn btn-sm btn-success float-left" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+                    <div class="form-inline float-right mb-1">
+                        <form method="get" asp-action="Index">
+                            <input id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa cần tìm" value="@ViewBag.Keyword" />
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"> Tìm kiếm</i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap text-center">
+                                    Tên danh mục
+                                </th>
+                                <th class="text-nowrap text-center">
+                                    Tên viết tắt
+                                </th>
+                                <th class="text-nowrap text-center" >
+                                    Thao tác
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id = "TableCategoriElememt">
+                            @foreach (var item in Model)
+                            {
+                                <tr onclick="selectRow(@item.CategoryID)">
+                                    <td>
+                                        <input  type="hidden" value="@item.CategoryID"/>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.SortName)
+                                    </td>
+                                    <td class="text-nowrap text-center">
+                                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.CategoryID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>
+                                        @*<a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.CategoryID"><i class="fa fa-file"> Chi tiết</i></a>*@
+                                        <a class="btn btn-sm btn-danger" onclick="deleteConfirm('@item.CategoryID')"><i class="fa fa-trash-o"> Xóa</i></a>
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-end">
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page, keyword = ViewBag.Keyword }),
+                        new X.PagedList.Web.Common.PagedListRenderOptions
+                        {
+                        LiElementClasses = new string[] { "page-item" },
+                        PageClasses = new string[] { "page-link" }
+                        })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h1 id="CategoryName">Loại hàng hóa cấp 2</h1>
+                <div>
+                    <a class="btn btn-sm btn-success float-left" id="btnCreateNewSubCate"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+                    <div class="form-inline float-right mb-3">
+                        <form method="get" asp-action="Index">
+                            <input id="keyword" name="keyword" class="form-control" placeholder="Nhập từ khóa cần tìm" value="@ViewBag.Keyword" />
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"> Tìm kiếm</i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Tên danh mục con
+                                </th>
+                                <th>
+                                    Mô tả
+                                </th>
+                                <th>
+                                    Tên viết tắt danh mục con
+                                </th>
+                                <th>Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="TableSubCategori">
+                            
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-end">
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page, keyword = ViewBag.Keyword }),
+                        new X.PagedList.Web.Common.PagedListRenderOptions
+                        {
+                        LiElementClasses = new string[] { "page-item" },
+                        PageClasses = new string[] { "page-link" }
+                        })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="delete-conformation" tabindex="-1" role="dialog" aria-labelledby="deleteconformation">
+    <div class="modal-dialog" style="width:501px !important;margin:0 auto;">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#d9534f;color:white;">
+                <h4 class="modal-title" id="delete-conformation">
+                    Delete Confirmation
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <span>
+                                Bạn có muốn xóa?
+                            </span>
+                            <strong id="deletedValueName"></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input type="submit" class="btn btn-danger" value="Delete" onclick="deleteData()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+<script src="~/js/Shop_Goods_Category/Shop_Goods_Category.js"></script>
+}

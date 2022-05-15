@@ -18,7 +18,7 @@ namespace WareHouseManger.Models.EF
 
         public string TemplateID { get; set; }
         public string Name { get; set; }
-        public int? CategoryID { get; set; }
+        public int? SubCategoryID { get; set; }
         public int? UnitID { get; set; }
         public string Description { get; set; }
         public int? Price { get; set; }
@@ -28,9 +28,9 @@ namespace WareHouseManger.Models.EF
         public int? ImageID { get; set; }
         public bool? IsDelete { get; set; }
 
-        public virtual Shop_Goods_Category_Child Category { get; set; }
         public virtual ShopGoods_Image Image { get; set; }
         public virtual Producer Producer { get; set; }
+        public virtual Shop_Goods_SubCategory SubCategory { get; set; }
         public virtual Shop_Goods_Unit Unit { get; set; }
         public virtual ICollection<ShopGoods_Image> ShopGoods_Images { get; set; }
         public virtual ICollection<Shop_Goods_ClosingStock_Detail> Shop_Goods_ClosingStock_Details { get; set; }

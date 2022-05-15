@@ -31,8 +31,7 @@ namespace WareHouseManger.Models.EF
         public virtual DbSet<RoleGroup> RoleGroups { get; set; }
         public virtual DbSet<ShopGoods_Image> ShopGoods_Images { get; set; }
         public virtual DbSet<Shop_Good> Shop_Goods { get; set; }
-        public virtual DbSet<Shop_Goods_Category_Child> Shop_Goods_Category_Children { get; set; }
-        public virtual DbSet<Shop_Goods_Category_Parent> Shop_Goods_Category_Parents { get; set; }
+        public virtual DbSet<Shop_Goods_Category> Shop_Goods_Categories { get; set; }
         public virtual DbSet<Shop_Goods_ClosingStock> Shop_Goods_ClosingStocks { get; set; }
         public virtual DbSet<Shop_Goods_ClosingStock_Detail> Shop_Goods_ClosingStock_Details { get; set; }
         public virtual DbSet<Shop_Goods_Issue> Shop_Goods_Issues { get; set; }
@@ -41,20 +40,18 @@ namespace WareHouseManger.Models.EF
         public virtual DbSet<Shop_Goods_Receipt_Detail> Shop_Goods_Receipt_Details { get; set; }
         public virtual DbSet<Shop_Goods_StockTake> Shop_Goods_StockTakes { get; set; }
         public virtual DbSet<Shop_Goods_StockTake_Detail> Shop_Goods_StockTake_Details { get; set; }
+        public virtual DbSet<Shop_Goods_SubCategory> Shop_Goods_SubCategories { get; set; }
         public virtual DbSet<Shop_Goods_Unit> Shop_Goods_Units { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<View_Shop_Goods_Issues_Detail> View_Shop_Goods_Issues_Details { get; set; }
-        public virtual DbSet<WareHouse> WareHouses { get; set; }
         public virtual DbSet<WareHouse_Goods_Detail> WareHouse_Goods_Details { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#pragma warning disable CS1030 // #warning directive
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server= WOODEN-PC\\SQLEXPRESS01;Database=DB_WareHouseManger;Trusted_Connection=True;");
-#pragma warning restore CS1030 // #warning directive
+                optionsBuilder.UseSqlServer("Data Source=VANDOAN;Initial Catalog=DB_WareHouseManger;User ID=sa;Password=123456;");
             }
         }
 
@@ -318,14 +315,9 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
-                entity.Property(e => e.Description).HasMaxLength(1000);
+                entity.Property(e => e.Description).HasMaxLength(1024);
 
                 entity.Property(e => e.Name).HasMaxLength(50);
-
-                entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Shop_Goods)
-                    .HasForeignKey(d => d.CategoryID)
-                    .HasConstraintName("FK_Shop_Goods_Shop_Goods_Category");
 
                 entity.HasOne(d => d.Image)
                     .WithMany(p => p.Shop_Goods)
@@ -337,38 +329,30 @@ namespace WareHouseManger.Models.EF
                     .HasForeignKey(d => d.ProducerID)
                     .HasConstraintName("FK_Shop_Goods_Producer");
 
+                entity.HasOne(d => d.SubCategory)
+                    .WithMany(p => p.Shop_Goods)
+                    .HasForeignKey(d => d.SubCategoryID)
+                    .HasConstraintName("FK_Shop_Goods_Shop_Goods_SubCategory");
+
                 entity.HasOne(d => d.Unit)
                     .WithMany(p => p.Shop_Goods)
                     .HasForeignKey(d => d.UnitID)
                     .HasConstraintName("FK_Shop_Goods_Shop_Goods_Unit");
             });
 
-            modelBuilder.Entity<Shop_Goods_Category_Child>(entity =>
+            modelBuilder.Entity<Shop_Goods_Category>(entity =>
             {
-                entity.HasKey(e => e.CategoryChildID)
+                entity.HasKey(e => e.CategoryID)
                     .HasName("PK_Shop_Goods_Categorys");
 
-                entity.ToTable("Shop_Goods_Category_Child");
+                entity.ToTable("Shop_Goods_Category");
 
-                entity.Property(e => e.Name).HasMaxLength(100);
+                entity.Property(e => e.Name).HasMaxLength(512);
 
-                entity.HasOne(d => d.CategoryParent)
-                    .WithMany(p => p.Shop_Goods_Category_Children)
-                    .HasForeignKey(d => d.CategoryParentID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Shop_Goods_Category_Child_Shop_Goods_Category_Parent");
-            });
-
-            modelBuilder.Entity<Shop_Goods_Category_Parent>(entity =>
-            {
-                entity.HasKey(e => e.CategoryParentID)
-                    .HasName("PK__Shop_Goo__FE361DF3E2E90F2E");
-
-                entity.ToTable("Shop_Goods_Category_Parent");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.SortName)
+                    .HasMaxLength(128)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
             });
 
             modelBuilder.Entity<Shop_Goods_ClosingStock>(entity =>
@@ -389,8 +373,7 @@ namespace WareHouseManger.Models.EF
 
             modelBuilder.Entity<Shop_Goods_ClosingStock_Detail>(entity =>
             {
-                entity.HasKey(e => e.ClosingStockID)
-                    .HasName("PK__Shop_Goo__3F9AD65EA105F11D");
+                entity.HasKey(e => new { e.ClosingStockID, e.TemplateID });
 
                 entity.ToTable("Shop_Goods_ClosingStock_Detail");
 
@@ -404,10 +387,17 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
+                entity.HasOne(d => d.ClosingStock)
+                    .WithMany(p => p.Shop_Goods_ClosingStock_Details)
+                    .HasForeignKey(d => d.ClosingStockID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Shop_Goods_ClosingStock_Detail_Shop_Goods_ClosingStock");
+
                 entity.HasOne(d => d.Template)
                     .WithMany(p => p.Shop_Goods_ClosingStock_Details)
                     .HasForeignKey(d => d.TemplateID)
-                    .HasConstraintName("FK__Shop_Good__Templ__6CA31EA0");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Shop_Goods_ClosingStock_Detail_Shop_Goods");
             });
 
             modelBuilder.Entity<Shop_Goods_Issue>(entity =>
@@ -419,7 +409,7 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
-                entity.Property(e => e.DateCreated).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
 
                 entity.Property(e => e.Prepay).HasColumnType("decimal(18, 0)");
 
@@ -482,7 +472,7 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
-                entity.Property(e => e.DateCreated).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
 
                 entity.Property(e => e.Prepay).HasColumnType("decimal(18, 0)");
 
@@ -545,7 +535,9 @@ namespace WareHouseManger.Models.EF
                     .IsUnicode(false)
                     .IsFixedLength(true);
 
-                entity.Property(e => e.DateCreated).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateUpdate).HasColumnType("datetime");
 
                 entity.Property(e => e.Remark).HasMaxLength(1000);
 
@@ -585,6 +577,34 @@ namespace WareHouseManger.Models.EF
                     .HasForeignKey(d => d.TemplateID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Shop_Goods_StockTake_Detail_Shop_Goods");
+            });
+
+            modelBuilder.Entity<Shop_Goods_SubCategory>(entity =>
+            {
+                entity.HasKey(e => e.SubCategoryID)
+                    .HasName("PK_Shop_Goods_Category_Child");
+
+                entity.ToTable("Shop_Goods_SubCategory");
+
+                entity.Property(e => e.SubCategoryID).ValueGeneratedNever();
+
+                entity.Property(e => e.SubCategoriDescription).HasMaxLength(1024);
+
+                entity.Property(e => e.SubCategoriName)
+                    .IsRequired()
+                    .HasMaxLength(512);
+
+                entity.Property(e => e.SortName)
+                    .HasMaxLength(128)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.HasOne(d => d.CategoryParent)
+                    .WithMany(p => p.Shop_Goods_SubCategories)
+                    .HasForeignKey(d => d.CategoryParentID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Shop_Goods_Category_Child_Shop_Goods_Category");
+
             });
 
             modelBuilder.Entity<Shop_Goods_Unit>(entity =>
@@ -639,22 +659,6 @@ namespace WareHouseManger.Models.EF
                     .IsFixedLength(true);
 
                 entity.Property(e => e.UnitName).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<WareHouse>(entity =>
-            {
-                entity.ToTable("WareHouse");
-
-                entity.Property(e => e.ID).ValueGeneratedNever();
-
-                entity.Property(e => e.Address).HasMaxLength(1000);
-
-                entity.Property(e => e.Name).HasMaxLength(50);
-
-                entity.Property(e => e.PhoneNumber)
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .IsFixedLength(true);
             });
 
             modelBuilder.Entity<WareHouse_Goods_Detail>(entity =>

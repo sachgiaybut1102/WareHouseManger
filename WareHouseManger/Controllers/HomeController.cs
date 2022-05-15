@@ -252,7 +252,7 @@ namespace WareHouseManger.Controllers
         {
             int count = int.Parse(_configuration["OutOfStock:Value"]);
             var list = await _context.Shop_Goods
-                .Include(t => t.Category)
+                .Include(t => t.SubCategory)
                 .Include(t => t.Unit)
                 .Where(t => t.Count <= count && t.Count > 0).ToListAsync();
 
@@ -262,7 +262,7 @@ namespace WareHouseManger.Controllers
                 {
                     TemplateID = t.TemplateID,
                     Name = t.Name,
-                    Category = t.Category.Name,
+                    //Category = t.SubCategory.SubCategoriName,
                     Unit = t.Unit.Name,
                     Count = t.Count,
                 }).AsEnumerable()
@@ -275,7 +275,7 @@ namespace WareHouseManger.Controllers
         {
             int count = 0;
             var list = await _context.Shop_Goods
-                .Include(t => t.Category)
+                .Include(t => t.SubCategory)
                 .Include(t => t.Unit)
                 .Where(t => t.Count == count).ToListAsync();
 
@@ -285,7 +285,7 @@ namespace WareHouseManger.Controllers
                 {
                     TemplateID = t.TemplateID,
                     Name = t.Name,
-                    Category = t.Category.Name,
+                    //Category = t.SubCategory.SubCategoriName,
                     Unit = t.Unit.Name,
                     Count = t.Count,
                 }).AsEnumerable()

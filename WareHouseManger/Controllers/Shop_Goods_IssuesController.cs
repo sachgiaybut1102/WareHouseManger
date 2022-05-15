@@ -66,7 +66,7 @@ namespace WareHouseManger.Controllers
                         .ThenInclude(t => t.Unit)
                 .Include(t => t.Shop_Goods_Issues_Details)
                     .ThenInclude(t => t.Template)
-                        .ThenInclude(t => t.Category)
+                        .ThenInclude(t => t.SubCategory)
                 .FirstOrDefaultAsync(m => m.GoodsIssueID == id);
 
             if (shop_Goods_Issue == null)
@@ -86,8 +86,8 @@ namespace WareHouseManger.Controllers
                 DateCreated = DateTime.Now
             };
 
-            var category = await _context.Shop_Goods_Category_Children.ToListAsync();
-            category.Insert(0, new Shop_Goods_Category_Child() { CategoryChildID = -1, Name = "Tất cả" });
+            var category = await _context.Shop_Goods_SubCategories.ToListAsync();
+            category.Insert(0, new Shop_Goods_SubCategory() { SubCategoryID = -1, SubCategoriName = "Tất cả" });
             ViewData["CategoryID"] = new SelectList(category, "CategoryID", "Name");
             ViewData["EmployeeID"] = await _context.Employees.Where(t => !(bool)t.IsDelete).ToListAsync();
             ViewData["CustomerID"] = await _context.Customers.Where(t => !(bool)t.IsDelete).ToListAsync(); /*new SelectList(_context.Customers, "CustomerID", "Name");*/

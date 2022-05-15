@@ -52,7 +52,7 @@ namespace WareHouseManger.Controllers
             var shop_Goods_StockTake = await _context.Shop_Goods_StockTakes
                 .Include(s => s.Employee)
                 .Include(t => t.Shop_Goods_StockTake_Details)
-                .ThenInclude(t => t.Template.Category)
+                .ThenInclude(t => t.Template.SubCategory)
                 .Include(t => t.Shop_Goods_StockTake_Details)
                 .ThenInclude(t => t.Template.Producer)
                 .Include(t => t.Shop_Goods_StockTake_Details)
@@ -76,7 +76,7 @@ namespace WareHouseManger.Controllers
                 DateCreated = DateTime.Now
             };
 
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_Category_Children, "CategoryID", "Name");
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "CategoryID", "Name");
             ViewData["EmployeeID"] = new SelectList(_context.Employees, "EmployeeID", "Name");
 
             return View(model);
