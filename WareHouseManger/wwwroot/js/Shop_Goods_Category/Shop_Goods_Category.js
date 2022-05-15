@@ -25,9 +25,9 @@ var selectRow = function (val) {
                     stringInside += "<td>" + item.descrip + "</td>";
                     stringInside += "<td>" + item.subname + "</td>";
                     stringInside += "<td class='text-nowrap text-center'>";
-                    stringInside += "<a class='btn btn-sm btn-warning' asp-action='EditSubCate' asp-route-id='" + item.id + "'> <i class='fa fa-edit'> Chỉnh sửa</i></a>";
+                    stringInside += "<a class='btn btn-sm btn-warning' href='" + "/" + nameController + '/EditSubCate/' + item.id + "'> <i class='fa fa-edit'> Chỉnh sửa</i></a>";
                     //stringInside += "<a class='btn btn-sm btn-info' asp-action='Details' asp-route-id='" + item.id + "'><i class='fa fa-file'> Chi tiết</i></a>";
-                    stringInside += "<a class='btn btn-sm btn-danger' asp-action='DeleteSubCate' asp-route-id='" + item.id + "'><i class='fa fa-trash-o'> Xóa</i></a>";
+                    stringInside += "<a class='btn btn-sm btn-danger' onclick='deleteConfirmSubCate(" + item.id + ")'><i class='fa fa-trash-o'> Xóa</i></a>";
                     stringInside += "</td></tr >";
                     htmlBlock += stringInside;
                     console.log(item);
@@ -79,6 +79,42 @@ var deleteData = function () {
         },
         error: function () {
             $("#delete-conformation").modal('hide');
+        }
+    });
+}
+
+
+var deleteConfirmSubCate = function (val) {
+    $.ajax({
+        type: "GET",
+        url: "/" + nameController + '/DetailSubCate',
+        data: {
+            id: val,
+        },
+        success: function (result) {
+            var info = result.data;
+            objectId = info.id;
+            objectName = info.name;
+            $('#deletedSubCateValueName').text(objectName);
+            $('#deleteSubCate-conformation').modal('show');
+        }
+    })
+};
+
+var deleteSubCateData = function () {
+    $.ajax({
+        type: "POST",
+        url: "/" + nameController + '/DeleteConfirmedSubCate',
+        data: {
+            id: objectId,
+        },
+        success: function (result) {
+            $("#deleteSubCate-conformation").modal('hide');
+            alert("Xóa thành công: " + objectName);
+            location.reload();
+        },
+        error: function () {
+            $("#deleteSubCate-conformation").modal('hide');
         }
     });
 }

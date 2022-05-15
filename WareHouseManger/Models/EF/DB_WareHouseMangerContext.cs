@@ -586,7 +586,9 @@ namespace WareHouseManger.Models.EF
 
                 entity.ToTable("Shop_Goods_SubCategory");
 
-                entity.Property(e => e.SubCategoryID).ValueGeneratedNever();
+                entity.Property(e => e.SortName)
+                    .HasMaxLength(128)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.SubCategoriDescription).HasMaxLength(1024);
 
@@ -594,17 +596,11 @@ namespace WareHouseManger.Models.EF
                     .IsRequired()
                     .HasMaxLength(512);
 
-                entity.Property(e => e.SortName)
-                    .HasMaxLength(128)
-                    .IsUnicode(false)
-                    .IsFixedLength(true);
-
                 entity.HasOne(d => d.CategoryParent)
                     .WithMany(p => p.Shop_Goods_SubCategories)
                     .HasForeignKey(d => d.CategoryParentID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Shop_Goods_Category_Child_Shop_Goods_Category");
-
             });
 
             modelBuilder.Entity<Shop_Goods_Unit>(entity =>
