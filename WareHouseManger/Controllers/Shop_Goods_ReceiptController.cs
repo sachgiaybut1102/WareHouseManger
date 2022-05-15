@@ -87,7 +87,7 @@ namespace WareHouseManger.Controllers
             };
             var category = await _context.Shop_Goods_SubCategories.ToListAsync();
             category.Insert(0, new Shop_Goods_SubCategory() { SubCategoryID = -1, SubCategoriName = "Tất cả" });
-            ViewData["CategoryID"] = new SelectList(category, "CategoryID", "Name");
+            ViewData["CategoryID"] = new SelectList(category, "SubCategoryID", "SubCategoriName", -1);
             ViewData["EmployeeID"] = await _context.Employees.Where(t => !(bool)t.IsDelete).ToListAsync();
             ViewData["SupplierID"] = await _context.Suppliers.Where(t => !(bool)t.IsDelete).ToListAsync();
 

@@ -236,7 +236,7 @@ namespace WareHouseManger.Controllers
         // GET: Shop_Goods/Create
         public IActionResult Create()
         {
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "CategoryID", "Name");
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "SubCategoryID", "SubCategoriName");
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name");
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name");
             return View();
@@ -282,7 +282,7 @@ namespace WareHouseManger.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "CategoryID", "Name", shop_Good.SubCategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "SubCategoryID", "SubCategoriName", shop_Good.SubCategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name", shop_Good.ProducerID);
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name", shop_Good.UnitID);
             return View(shop_Good);
@@ -302,7 +302,8 @@ namespace WareHouseManger.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "CategoryID", "Name", shop_Good.SubCategoryID);
+
+            ViewData["CategoryID"] = new SelectList(_context.Shop_Goods_SubCategories, "SubCategoryID", "SubCategoriName", shop_Good.SubCategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ProducerID", "Name", shop_Good.ProducerID);
             ViewData["UnitID"] = new SelectList(_context.Shop_Goods_Units, "UnitID", "Name", shop_Good.UnitID);
             return View(shop_Good);
