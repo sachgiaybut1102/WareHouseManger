@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +18,12 @@ namespace WareHouseManger.Controllers
     public class Shop_GoodsController : Controller
     {
         private readonly DB_WareHouseMangerContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public Shop_GoodsController(DB_WareHouseMangerContext context)
+        public Shop_GoodsController(DB_WareHouseMangerContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         [Authorize(Roles = "Shop_Goods_Index")]
@@ -443,6 +448,47 @@ namespace WareHouseManger.Controllers
                     producer = t.Producer.Name
                 })
             });
+        }
+
+        [Authorize(Roles = "Shop_Goods_Index")]
+        // GET: Shop_Goods
+        public async Task<IActionResult> Image(string templateId)
+        {
+            var models = await _context.ShopGoods_Images.Where(t=>t.TemplateID == templateId).ToListAsync();
+            ViewBag.TemplateId = templateId;
+
+            return View(models);
+        }
+
+        [Authorize(Roles = "Shop_Goods_Index")]
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile imageFile, string templateId)
+        {
+            if (ModelState.IsValid)
+            {
+                //Save image to wwwroot/image
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(imageFile.FileName);
+                string extension = Path.GetExtension(imageFile.FileName);
+                string imageName = fileName = templateId + DateTime.Now.ToString("yymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/resources/", fileName);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+                ShopGoods_Image shopGoods_Image = new ShopGoods_Image()
+                {
+                    TemplateID = templateId,
+                    Name = imageName,
+                    DateUploaded = DateTime.Now,
+                };
+
+                await _context.AddAsync(shopGoods_Image);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

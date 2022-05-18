@@ -110,12 +110,13 @@
                                 @Html.DisplayFor(modelItem => item.Unit.Name)
                             </td>
                             <td class="text-right">
-                                @string.Format("{0:N}", item.CostPrice).Replace(".00", "")
+                                @string.Format("{0:N}", item.Price).Replace(".00", "")
                             </td>
                             <td class="text-right">
                                 @string.Format("{0:N}", item.Price).Replace(".00", "")
                             </td>
                             <td class="text-nowrap text-center" width="250px">
+                                <a class="btn btn-sm btn-info" asp-action="Image" asp-route-templateId="@item.TemplateID"> <i class="fa fa-edit"> Xem ảnh</i></a>
                                 <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.TemplateID"> <i class="fa fa-edit"> Chỉnh sửa</i></a>
                                 <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.TemplateID"><i class="fa fa-file"> Chi tiết</i></a>
                                 <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.TemplateID"><i class="fa fa-trash-o"> Xóa</i></a>

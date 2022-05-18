@@ -1,0 +1,71 @@
+﻿@model IEnumerable<WareHouseManger.Models.EF.ShopGoods_Image>
+
+@{
+    ViewData["Title"] = "Image";
+}
+
+<div class="card shadow">
+    <div class="card-body">
+        <h1>Ảnh</h1>
+        <div>
+            <a class="btn btn-sm btn-success float-left" asp-action="Create"><i class="fa fa-plus-circle"> Thêm mới</i></a>
+        </div>
+        <form asp-action="UploadImage" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="file" id="imageFile" name="imageFile" accept="image/*" />
+                <input type="text" id="templateId" name="templateId" value="@ViewBag.TemplateId" hidden />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Tên hình ảnh
+                        </th>
+                        <th>
+                            Hình ảnh
+                        </th>
+                        <th>
+                            Ngày đăng
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                <img src="/resources/@item.Name" style="width:300px;height:auto"/>
+                            </td>
+                            <td>
+                                @item.DateUploaded.Value.ToString("dd/MM/yyyy HH:mm:ss")
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.ImageID">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.ImageID">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.ImageID">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @* <div class="d-flex justify-content-end">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page, keyword = ViewBag.Keyword }),
+                new X.PagedList.Web.Common.PagedListRenderOptions
+                {
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" }
+                })
+                </div>*@
+        </div>
+    </div>
+</div>
